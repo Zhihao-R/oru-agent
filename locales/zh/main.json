@@ -1,0 +1,163 @@
+{
+  "approval": {
+    "readonlyToolBlocked": "当前是「只读」挡：{{tool}} 会改动你的环境，已停下未执行。如需放行，请把 {{name}} 切到「工作」挡后重试。",
+    "readonlyWriteDenied": "当前是「只读」挡：{{tool}} 可能改动你的环境，已拒绝。要让它动手，请把 {{name}} 切到「工作」挡后重试。"
+  },
+  "scheduled": {
+    "noActiveAgent": "无活跃 Oru，无法触发定时任务",
+    "runCard": {
+      "ok": "定时任务「{{title}}」已在后台执行完毕",
+      "error": "定时任务「{{title}}」执行失败"
+    },
+    "channelPushFailed": "定时任务「{{title}}」的结果没能推送到远程渠道（可能是网络问题，或该聊天已失效），只留在了这条对话里。"
+  },
+  "loop": {
+    "compileFailed": "准备验收标准时出了错，这轮 Loop 没有开跑，稍后再发一次即可。"
+  },
+  "gitHint": "当前项目未启用 git，{{name}} 的改动难以一键回退。",
+  "backend": {
+    "noUsableBackend": "尚未配置可用的模型后端——请在设置里添加供应商并分配模型，或登录 Claude Code 复用本机登录态。"
+  },
+  "platform": {
+    "bindSuccess": "绑定成功，之后可以直接和我聊了。",
+    "userAuthLink": "Oru 请求飞书用户授权：请打开链接完成授权 {{link}}（验证码 {{code}}）。链接 {{minutes}} 分钟内有效。",
+    "notAuthenticated": "您尚未通过 Oru 认证。请在桌面 Oru 的「设置 → 平台连接」生成配对码，发给我完成绑定。",
+    "noRemoteDefault": "还没在 Oru 设置里指定「远程默认 Oru」，去设置里选一个再聊。",
+    "approvalBlocked": "当前挡位不允许这步。回复 /mode danger 切到危险挡我再继续。",
+    "unsupportedMessage": "这类消息我暂时看不了——目前只支持文字和图片。",
+    "imageFailed": "图片没能处理成功（超过 5MB 或格式不支持也会这样），麻烦重发一次试试。",
+    "visionUnsupported": "当前使用的模型不支持看图，我看不到你发的图片——去 Oru 设置里换一个支持视觉的模型再发。",
+    "modeSwitched": "已切到「{{mode}}」。",
+    "modeUsage": "用法：/mode danger（危险 · 全放手）、/mode work（工作 · 危险的才问）、/mode readonly（只读 · 只看不动手）。",
+    "modeNameReadonly": "只读挡",
+    "modeNameWork": "工作挡",
+    "modeNameDanger": "危险挡",
+    "stopped": "已停止。",
+    "newDone": "已开新篇。上一段对话已收进「已归档」区，从下一条消息起我们重新开始。",
+    "newBusy": "我正在跑活，这会儿开不了新篇——先 /stop 打断，再发 /new。",
+    "newNone": "当前还没有进行中的对话，直接发消息就会开新的一段。",
+    "compressDone": "压缩完成：早期内容已整理成摘要，上下文腾出来了。",
+    "compressDoneFallback": "压缩完成：摘要模型没调通，改为直接丢弃了早期内容，上下文腾出来了。",
+    "compressBusy": "我正在跑活，等这轮说完再 /compress。",
+    "compressEmptyTooShort": "对话还太短，没什么可压的。",
+    "compressEmptyNothingNew": "上次压缩之后还没有新内容，没什么可压的。",
+    "compressFailed": "压缩失败了（可能是某条消息太大）。对话内容没动，可以稍后再试。",
+    "compressNone": "当前还没有对话，没什么可压的。",
+    "modelList": "主对话模型（当前：{{current}}）：\n{{list}}\n\n回 /model 编号 切换（如 /model 2）。切换的是全局主对话模型——所有 Oru 的主对话（含桌面）都跟着换，且下一轮才生效。",
+    "modelCurrentMark": "（当前）",
+    "modelSwitched": "已切到「{{label}}」，下一轮生效（正在跑的这轮不受影响）。注意这是全局主对话模型：所有 Oru 的主对话（含桌面）都会跟着换。",
+    "modelUsage": "用法：/model 看编号清单，/model 编号 切换（如 /model 2）。",
+    "modelStale": "这个编号已失效，重新 /model 看最新清单。",
+    "modelEmpty": "还没注册任何模型——去桌面 Oru 的设置里添加。",
+    "statusBody": "Oru：{{agent}}\n挡位：{{mode}}\n在用模型：{{model}}\n{{state}}",
+    "statusIdle": "状态：空闲，随时说话。",
+    "statusBusy_one": "状态：正在跑活，还有 {{count}} 条排队。",
+    "statusBusy_other": "状态：正在跑活，还有 {{count}} 条排队。",
+    "statusDefaultModel": "默认档（未指定模型）",
+    "help": "我能懂的命令：\n/new 归档当前这段、开新篇\n/compress（或 /compact）立刻压缩上下文\n/model 看模型清单，/model 编号 切换（全局生效，下一轮起效）\n/mode readonly|work|danger 切审批挡位\n/status 看当前状态\n/stop 打断正在跑的活\n/help 看这份清单",
+    "capabilityUnavailable": "这个能力还没接上，请稍后再试。",
+    "commandFailed": "命令执行失败了，请稍后再试。"
+  },
+  "tableGate": {
+    "editorUnreachable": "编辑器无响应，无法确认是否有未保存草稿——稍后重试这个操作",
+    "draftUnsaved": "{{name}} 在编辑器里还有没保存的改动，你动手会基于磁盘上的旧版本，已停下。这一步只能由用户完成——请直接告诉用户：这张表有未保存的改动，先保存一下（⌘S），保存好我再继续。",
+    "encodingNotUtf8": "{{path}} 不是 UTF-8 编码（GBK 或带 BOM），往里写 UTF-8 内容会产出半截乱码的文件，已停下。用 convert_csv_encoding 对它提一个转换提案（原地转成 UTF-8 规范格式，会重写整个文件的字节、原编码回不来，所以要用户点确认）。用户确认后重新 read_file 看一眼现状，再重试刚才这一步。用户不愿意动原件的话，再问他要不要改成另存一份规范副本。"
+  },
+  "xlsxPreview": {
+    "noData": "该文件中没有发现数据",
+    "notFound": "文件不存在：{{path}}",
+    "readFailed": "无法读取该文件：可能已加密或损坏（{{reason}}）"
+  },
+  "fileWrite": {
+    "overwriteGuardUnread": "守卫复检拒绝（{{guard}}）：{{path}} 你还没读过，已取消写入以防盲目覆盖",
+    "editTargetGone": "编辑目标已不存在：{{path}}",
+    "editGuardChanged": "守卫复检拒绝（{{guard}}）：{{path}} 的目标段在审批期间被改没了，已取消编辑",
+    "editNoChange": "编辑未产生改动（目标片段可能在审批期间被改）：{{path}}",
+    "overwriteBaselineMoved": "锁内基线校验拒绝：{{path}} 在读取之后被改动过（或已不存在），已取消覆盖以防丢字。请重新读取现状后再写",
+    "createPathOccupied": "锁内校验拒绝：目标路径 {{path}} 已被占用（可能在审批期间被创建），已取消新建。请先读取现有内容再决定",
+    "editTargetNotUnique": "锁内重验拒绝：要替换的原文此刻在 {{path}} 里出现 {{count}} 处，无法确定改哪一处，已取消编辑。请重新读取现状、带更多上下文再试",
+    "conflictDeferred": "{{path}} 正开着冲突对照卡：你和用户改到了同一段，用户在裁决。这笔我先没落——等用户拍板后，系统会把裁决结果交回给你，再基于新内容重新决定怎么改。你可以先做别的、或先收尾这一轮。",
+    "mutateTargetGone": "移动/重命名目标已不存在：{{path}}",
+    "mutateNotInProject": "移动/重命名仅支持项目内文件，{{path}} 不在任何已纳管项目里",
+    "moveCrossProject": "移动的目标目录必须与源在同一项目内：{{path}}（跨项目移动不支持）",
+    "moveDestNotDir": "移动的目标不是已存在的目录，已取消：{{path}}",
+    "mutate_conflict": "目标已存在，已取消（绝不覆盖撞名）：{{path}}",
+    "mutate_invalid": "路径非法（越界 / 移动进自身子目录 / 名字含非法字符），已取消：{{path}}",
+    "mutate_not-found": "源已不在（可能被并发删除），已取消：{{path}}",
+    "mutate_incomplete": "操作部分完成、未能干净收尾，请检查现场：{{path}}"
+  },
+  "mcp": {
+    "startFailed": "server 启动失败",
+    "updateFailedGoSettings": "{{error}}（配置已更新但启动失败，去 设置 › 能力 调整）",
+    "unknownReason": "原因不明",
+    "probeFailed": "MCP 服务「{{label}}」的下游探活未通过（{{reason}}）。请告诉用户：「看着这个 MCP 服务下游连不通——可能是 Chrome 没启用 chrome://inspect/#remote-debugging，或者类似的依赖没就绪。要不要去 设置 › 能力 的「MCP 服务」看一下？」",
+    "notReady": "MCP 服务「{{label}}」还没就绪（当前状态：{{status}}）。请告诉用户：「{{label}} 还在准备中，稍后再试，或先用 web_search 看看。」",
+    "callFailed": "MCP 工具调用失败（{{tool}}）：{{error}}",
+    "callCancelled": "MCP 工具调用已取消（{{tool}}）",
+    "reconnectFailed": "MCP 服务「{{label}}」这次没连上，稍后会再试；先别依赖它。",
+    "circuitOpen": "MCP 服务「{{label}}」连续重连失败，已暂停自动重试。请不要再调用此工具，并告诉用户去 设置 › 能力 的「MCP 服务」手动重连。"
+  },
+  "artifact": {
+    "updateBusyWhileRunning": "Oru 正忙于当前任务，等这轮结束后再点「据文稿更新」。"
+  },
+  "chat": {
+    "emptyCompletion": "模型没有返回内容",
+    "emptyCompletionAfterReasoning": "模型思考了一阵但没有给出回答"
+  },
+  "memoryRevert": {
+    "changed-since": "这份档案在这次记录之后又改过了——现在撤回会把后来的改动一并抹掉。要回到更早的样子，在档案里翻「历史版本」挑一个。",
+    "history-gone": "那次之前的版本已经不在历史里了。在档案里翻「历史版本」看看还剩哪些。",
+    "ambiguous": "这份档案改来改去，现在认不准该退回到哪一版了。在档案里翻「历史版本」挑一个更稳妥。",
+    "no-earlier-version": "没有更早的版本可以回了。"
+  },
+  "proposalChip": {
+    "skillInstallOk": "已安装 skill {{name}}",
+    "skillInstallFailed": "安装 skill 失败：{{error}}",
+    "skillCreateOk": "已新建 skill {{name}}",
+    "skillCreateFailed": "新建 skill 失败：{{error}}",
+    "skillPatchOk": "已修改 skill {{name}}",
+    "skillPatchFailed": "修改 skill 失败：{{error}}",
+    "pluginInstallOk": "已安装 plugin {{name}}",
+    "pluginInstallFailed": "安装 plugin 失败：{{error}}",
+    "pluginUninstallOk": "已卸载 plugin {{name}}",
+    "pluginUninstallFailed": "卸载 plugin 失败：{{error}}",
+    "pluginUpdateOk": "已升级 plugin {{name}}",
+    "pluginUpdateFailed": "升级 plugin 失败：{{error}}",
+    "warningSuffix": "（注意：{{warnings}}）",
+    "mcpConflictSkipped_one": "{{count}} 个内含 MCP 同名冲突（已跳过保留旧的）：{{names}}",
+    "mcpConflictSkipped_other": "{{count}} 个内含 MCP 同名冲突（已跳过保留旧的）：{{names}}",
+    "mcpStartFailed_one": "{{count}} 个内含 MCP 启动失败（拓展页可查 stderr）",
+    "mcpStartFailed_other": "{{count}} 个内含 MCP 启动失败（拓展页可查 stderr）"
+  },
+  "proposalFailure": {
+    "skillInstallInFlight": "skill {{id}} 正在安装中，别重复触发",
+    "skillAlreadyInstalled": "skill {{id}} 已经装过了",
+    "skillDestExists": "目标目录已存在：~/.oru/skills/{{id}}",
+    "skillStatFailed": "检查目标目录失败：{{error}}",
+    "skillCloneFailed": "从仓库拉取失败：{{error}}",
+    "skillMdNotFound": "仓库里找不到 SKILL.md（根目录或 skills/<x>/ 下都没有）",
+    "skillSourceGone": "源目录不存在或缺 SKILL.md：{{path}}",
+    "skillCopyFailed": "复制到 ~/.oru/skills/ 失败：{{error}}",
+    "skillRegisterFailed": "注册到技能表失败：{{error}}",
+    "skillNameTaken": "skill {{name}} 已存在",
+    "skillWriteFailed": "写盘失败：{{error}}",
+    "skillNotFound": "找不到 skill：{{name}}",
+    "skillInPluginNotPatchable": "插件内的 skill 不能直接改——改插件的激活描述试试",
+    "patchTargetReadFailed": "读取目标文件失败：{{error}}",
+    "patchOldStringMissing": "要替换的原文没找到（可能已经被改过了）",
+    "patchOldStringAmbiguous": "要替换的原文出现了 {{count}} 次，定位不唯一",
+    "pluginAlreadyInstalled": "plugin {{id}} 已经装在 ~/.oru/plugins/ 了",
+    "pluginStatFailed": "检查目标目录失败：{{error}}",
+    "pluginCloneFailed": "从仓库拉取失败：{{error}}",
+    "pluginManifestWriteFailed": "写 .oru-plugin.json 失败：{{error}}",
+    "pluginRegisterFailed": "注册到插件表失败：{{error}}",
+    "pluginNotFound": "找不到 plugin：{{id}}",
+    "pluginHasDependents": "还有东西依赖它，先卸载这些：{{dependents}}",
+    "pluginRemoveDirFailed": "删除目录失败：{{error}}",
+    "pluginGitFailed": "拉取 / 切换版本失败：{{error}}",
+    "pluginReloadFailed": "升级后重新加载失败：{{error}}",
+    "mcpServerNotFound": "找不到这个 MCP 服务：{{serverId}}",
+    "mcpStartFailed": "MCP 服务没能启动：{{error}}",
+    "mcpUpdateStartFailed": "{{error}}（配置已更新但启动失败，去 设置 ▸ 能力 ▸ MCP 调整）"
+  }
+}

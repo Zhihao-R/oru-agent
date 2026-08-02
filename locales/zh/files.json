@@ -1,0 +1,41 @@
+{
+  "heading": "文件",
+  "newTitle": "新建",
+  "refreshTitle": "刷新",
+  "noProject": "请在顶栏选择一个项目",
+  "loading": "加载中...",
+  "loadFailed": "加载失败，点击右上刷新",
+  "emptyFolder": "空文件夹",
+  "moreItems": "… 还有 {{count}} 项未显示",
+  "adoptRootHtmlError": "项目根目录下的 html 不能直接加入演示稿，请将它放进子文件夹",
+  "adoptFailed": "加入演示稿失败，请稍后重试",
+  "trashConfirm": "将「{{name}}」移到回收站？",
+  "trashDirConfirm": "将「{{name}}」移到回收站？（含其中所有内容）",
+  "trashMultiConfirm": "将 {{count}} 项移到回收站？",
+  "newMenuCsv": "新建 CSV 表格",
+  "duplicateSuffix": "副本",
+  "fsError": {
+    "conflict": "目标已有同名文件",
+    "invalid": "该位置不能移动到（目标在自身目录内）",
+    "notFound": "原文件已不存在",
+    "incomplete": "操作未完成：文档已改名但 .assets 可能没跟上，请检查该文件夹",
+    "failed": "操作失败",
+    "illegalChars": "名称不能包含 / 或 :",
+    "emptyOrIllegal": "名称不能为空或含 / :",
+    "createFailed": "创建失败",
+    "exists": "已存在",
+    "illegalName": "名称不合法"
+  },
+  "menu": {
+    "newMd": "新建 Markdown",
+    "newCsv": "新建表格",
+    "newFolder": "新建文件夹",
+    "adoptDeck": "加入演示稿",
+    "reference": "引用到对话",
+    "rename": "重命名",
+    "duplicate": "创建副本",
+    "copyPath": "复制路径",
+    "reveal": "在访达中显示",
+    "trash": "移到回收站"
+  }
+}

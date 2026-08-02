@@ -1,0 +1,50 @@
+{
+  "title": "通知",
+  "allClear": "没有要你处理的事，Oru 这边都妥了。",
+  "needAction": "需要你处理",
+  "done": "完成",
+  "running": "进行中",
+  "runningFootnote": "另外还有 {{count}} 个子任务在跑。",
+  "retry": "重试",
+  "ignore": "忽略",
+  "missedScheduled": "错过的定时任务",
+  "interrupted": "执行中断",
+  "moreDone": "还有 {{count}} 条已完成…",
+  "taskRunning": "运行中…",
+  "oruReplying": "Oru 正在回复…",
+  "stop": "停止",
+  "emptyNoTasks": "还没有任务记录。让 Oru 改点东西、或排一个定时任务，跑起来就会出现在这里。",
+  "system": "系统",
+  "desktop": {
+    "fallbackTitle": "Oru",
+    "awaiting-approval": "有个操作在等你批准",
+    "awaiting-answer": "Oru 在等你回答",
+    "errored": "一条对话出了状况，等你看看",
+    "missed": "有个定时任务错过了"
+  },
+  "systemSignal": {
+    "channel-offline": "{{platform}} 连接已断开",
+    "credential-expired": "{{platform}} 凭据已失效，需重新授权",
+    "storage-corruption": "检测到存储损坏：{{where}}",
+    "write-failed": "写入磁盘失败，产出可能没能保存",
+    "scheduler-stalled": "定时任务调度似乎停摆了",
+    "budget-warning": "用量接近预算上限——去「用量」看看花在哪",
+    "budget-exhausted": "用量已达预算上限——去「用量」查看，或在设置调整预算",
+    "history-milestone-archived_one": "{{count}} 个历史版本已到期归档（仍可在历史里找回）",
+    "history-milestone-archived_other": "{{count}} 个历史版本已到期归档（仍可在历史里找回）",
+    "history-conflict-recoverable_one": "有 {{count}} 处内容因冲突未落盘，已存进历史可找回",
+    "history-conflict-recoverable_other": "有 {{count}} 处内容因冲突未落盘，已存进历史可找回",
+    "trashed-profile-found_one": "发现 {{count}} 份档案曾被旧版误删，还在记忆回收站（30 天内可找回）",
+    "trashed-profile-found_other": "发现 {{count}} 份档案曾被旧版误删，还在记忆回收站（30 天内可找回）",
+    "platformName": {
+      "feishu": "飞书",
+      "discord": "Discord"
+    }
+  },
+  "badgeExplain": "角标 {{total}} = 需处理 {{need}} + 系统 {{sys}} · 单一口径",
+  "reply": "回复",
+  "view": "查看",
+  "awaitingReply": "等你回复",
+  "awaitingConfirm": "等你确认",
+  "pendingReview": "待验收"
+}

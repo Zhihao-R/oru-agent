@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oru · 唤起对话</title>
+    <script>
+      // 与主窗同口径的启动期主题同步（浮层面板用 pop-* token，须先把 data-theme / dark 设对）。
+      (function () {
+        try {
+          var cs = localStorage.getItem('oru.colorScheme');
+          if (cs && cs !== 'terracotta') document.documentElement.setAttribute('data-theme', cs);
+          var mode = localStorage.getItem('oru.theme');
+          var dark =
+            mode === 'dark' ||
+            (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (_) {}
+      })();
+    </script>
+    <style>
+      /* 承载窗透明：只有浮层面板可见，其余穿透到背后 app（主进程 setIgnoreMouseEvents） */
+      html,
+      body,
+      #overlay-root {
+        margin: 0;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body class="text-text-primary antialiased">
+    <div id="overlay-root"></div>
+    <script type="module" src="/overlay/main.tsx"></script>
+  </body>
+</html>

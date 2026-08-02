@@ -1,0 +1,41 @@
+{
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "close": "Close",
+  "remove": "Remove",
+  "refresh": "Refresh",
+  "listSeparator": ", ",
+  "compare": {
+    "before": "Before",
+    "after": "After",
+    "toggle": "Compare",
+    "unavailable": "Compare (before/after) becomes available after Oru makes changes"
+  },
+  "sync": {
+    "syncing": "Syncing…",
+    "updated": "Updated"
+  },
+  "loading": "Loading…",
+  "saving": "Saving…",
+  "deleteConfirm": {
+    "title": "Delete this?",
+    "confirmLabel": "Delete",
+    "busyLabel": "Deleting…"
+  },
+  "attachment": {
+    "zoomHint": "(click to enlarge)",
+    "rejectFormat": "Unsupported format: {{name}} (PNG / JPEG / GIF / WEBP only)",
+    "rejectSize": "{{name}} ({{size}} MB) exceeds the 5 MB per-image limit",
+    "countLimit": "Up to {{max}} images per message ({{prev}} already, {{cur}} this time)"
+  },
+  "relativeTime": {
+    "justNow": "Just now",
+    "minutesAgo_one": "{{count}} minute ago",
+    "minutesAgo_other": "{{count}} minutes ago",
+    "hoursAgo_one": "{{count}} hour ago",
+    "hoursAgo_other": "{{count}} hours ago",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago"
+  }
+}

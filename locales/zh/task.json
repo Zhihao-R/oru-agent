@@ -1,0 +1,35 @@
+{
+  "branch": "分支: {{branch}}",
+  "taskFallback": "任务",
+  "cancelConfirm": "取消这个任务？工作树会自动回滚到任务开始前。",
+  "cancelFailedWith": "取消失败：{{error}}",
+  "qaHistory": "问答历史",
+  "cancelTask": "取消任务",
+  "awaitingUser": "等你回答",
+  "awaitingTwin": "等 {{name}} 答中…",
+  "escalation": {
+    "oneAsking": "任务 \"{{title}}\" 等你回答",
+    "manyAsking": "{{count}} 个任务等你回答",
+    "jumpHint": "点击跳转"
+  },
+  "queued": "准备中…",
+  "terminalPlaceholder": "任务 {{title}} 已 {{status}}",
+  "rollbackConfirmCommits": "撤回任务 \"{{title}}\"？\n\n这会创建 {{count}} 条 revert commit（保留 git history）。",
+  "rollbackConfirmBaseline": "撤回任务 \"{{title}}\"？\n\n会反向应用本任务的改动到 baseline。",
+  "rollbackFailedWith": "回滚失败：{{error}}",
+  "inProject": "在项目 {{project}} 里执行",
+  "committed": "已 commit ({{count}} 条)",
+  "rollback": "撤回",
+  "answerFailedWith": "回答失败: {{error}}",
+  "userOriginalQuote": "（你原话：\"{{answer}}\"，{{name}} 加工后给子 agent）",
+  "answerPlaceholder": "回答 {{name}} 转给你的问题（Cmd+Enter 提交）",
+  "submit": "提交",
+  "submitting": "提交中…",
+  "twinProcessHint": "{{name}} 会把你的回答加工成清晰指令再发给子 agent",
+  "roleSubagent": "子 agent",
+  "roleUser": "你",
+  "report": {
+    "expand": "展开全文",
+    "collapse": "收起"
+  }
+}

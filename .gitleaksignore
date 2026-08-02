@@ -1,0 +1,9 @@
+# 以下 5 处均为 tests/ 脱敏与防护功能的测试夹具（假 key / 假 JWT），非真实凭证：
+# - redact.test.ts 用假 key 验证出站脱敏逻辑（jwt 样本 + abc123def456 + fk_live_假 key）
+# - executeBashProposal.test.ts 用 sk-abcdefghijklmnop1234 假 key 测提案解析
+# - inboundOutbound.integration.test.ts 用 t-abcdef12345678 假 token 测进出站防护
+55ff2d1cb8f453eb490d0428a5c52c1bb616b915:tests/platform/redact.test.ts:generic-api-key:51
+55ff2d1cb8f453eb490d0428a5c52c1bb616b915:tests/platform/redact.test.ts:generic-api-key:59
+55ff2d1cb8f453eb490d0428a5c52c1bb616b915:tests/platform/redact.test.ts:jwt:64
+55ff2d1cb8f453eb490d0428a5c52c1bb616b915:tests/proposals/executeBashProposal.test.ts:generic-api-key:149
+55ff2d1cb8f453eb490d0428a5c52c1bb616b915:tests/platform/inboundOutbound.integration.test.ts:generic-api-key:46

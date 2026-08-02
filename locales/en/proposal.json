@@ -1,0 +1,260 @@
+{
+  "accept": "Go ahead",
+  "reject": "I'll do it myself",
+  "nevermind": "Never mind",
+  "decline": "Decline",
+  "autoExecuting": "Auto-running…",
+  "executing": "Running…",
+  "processing": "Processing…",
+  "dispatching": "Dispatching…",
+  "youChose": "You chose to do it yourself",
+  "addNote": "Add a note",
+  "notePlaceholder": "Optional: say why you declined — Oru will see it next turn",
+  "cancelled": "Cancelled",
+  "failedWith": "Failed: {{error}}",
+  "unknownError": "Unknown error",
+  "skill": {
+    "kvSource": "Source",
+    "kvContainedSkill": "Contains skill",
+    "kvContainedMcp": "Contains MCP",
+    "kvLicense": "License",
+    "execScriptsWarn": "⚠ Contains executable scripts (the plugin's scripts/ folder); they run with the same boundary as agent bash",
+    "ignored": "Ignored: {{sections}} (Oru has no equivalent)",
+    "mcpConflicts_one": "Found {{count}} MCP name conflict (override / skip / coexist options coming in phase 2)",
+    "mcpConflicts_other": "Found {{count}} MCP name conflicts (override / skip / coexist options coming in phase 2)",
+    "upgrade": "Upgrade",
+    "keyFilesChanged_one": "{{count}} key file changed",
+    "keyFilesChanged_other": "{{count}} key files changed",
+    "otherFiles_one": "{{count}} other file changed",
+    "otherFiles_other": "{{count}} other files changed",
+    "noOther": "No other changes",
+    "uninstall": "Uninstall",
+    "blockingDependents": "⛔ Depended on by the following — uninstall these first: {{list}}",
+    "activatedInConv": "Active in the current conversation — uninstalling will break references in this turn",
+    "dependentSkills": "{{list}} depend on the MCP in this plugin and will break if it's uninstalled",
+    "createSkill": "New skill",
+    "descEditable": "description (editable)",
+    "skillMdFull_one": "Full SKILL.md ({{count}} character)",
+    "skillMdFull_other": "Full SKILL.md ({{count}} characters)",
+    "scriptsCount_one": "Includes {{count}} scripts/* file",
+    "scriptsCount_other": "Includes {{count}} scripts/* files",
+    "modify": "Modify",
+    "pluginActivationDesc": "Plugin activation description",
+    "diffPreview": "Diff preview",
+    "execFailed": "Execution failed",
+    "executed": "Executed"
+  },
+  "mcp": {
+    "enable": "Enable",
+    "disable": "Disable",
+    "modify": "Modify",
+    "configColon": " config:",
+    "delete": "Delete",
+    "deleteStatus_one": "Currently {{status}} · exposes {{count}} tool",
+    "deleteStatus_other": "Currently {{status}} · exposes {{count}} tools",
+    "tokenWarn": "The token in env can't be recovered once deleted.",
+    "installed": "✓ Installed",
+    "deleted": "✓ Deleted",
+    "enabledDone": "✓ Enabled",
+    "disabledDone": "✓ Disabled",
+    "configModified": "✓ Config updated",
+    "executedCheck": "✓ Executed",
+    "execFailedX": "✗ Execution failed"
+  },
+  "bash": {
+    "title": "Agent action approval",
+    "dangerCommand": "Dangerous command",
+    "catastrophic": "Catastrophic command (rm -rf /, wiping a disk, formatting) — forced to stop even in danger mode; double-check carefully before approving.",
+    "willOverwrite": "Will overwrite existing {{targets}}",
+    "blockedDraft": "{{file}} has an unsaved draft — press ⌘S in the editor to save, and this card will become approvable again",
+    "bgStarted": "Started in the background",
+    "executedSeeChat": "Executed — see the result in chat",
+    "approveDestructive": "Confirm and run",
+    "allow": "Allow",
+    "prevProposal": "Previous",
+    "nextProposal": "Next",
+    "delivery": "Will send content outside your environment: {{targets}} — once sent it cannot be recalled; make sure you trust the target before approving."
+  },
+  "scheduledTask": {
+    "action": {
+      "create": "Create scheduled task",
+      "update": "Update scheduled task",
+      "delete": "Delete scheduled task",
+      "pause": "Pause scheduled task",
+      "resume": "Enable scheduled task"
+    },
+    "pending": "Pending",
+    "kvExecContent": "What to do",
+    "kvTrigger": "Frequency",
+    "kvLocation": "Where it runs",
+    "kvStop": "Stop condition",
+    "locNewConv": "New conversation each time",
+    "locSpecified": "Specific conversation",
+    "locChannel": "Push to {{platform}}",
+    "platformFeishu": "Lark",
+    "stopAfter_one": "Stop after {{count}} run",
+    "stopAfter_other": "Stop after {{count}} runs",
+    "stopNever": "None (runs indefinitely; can be disabled anytime)",
+    "effective": "Active",
+    "confirm": "Confirm"
+  },
+  "file": {
+    "createVerb": "Create file",
+    "createApprove": "Write",
+    "overwriteVerb": "Overwrite file",
+    "overwriteApprove": "Overwrite",
+    "editVerb": "Edit file",
+    "editApprove": "Apply changes",
+    "appendVerb": "Append to file",
+    "appendApprove": "Append",
+    "deleteVerb": "Delete file",
+    "deleteApprove": "Delete",
+    "moveVerb": "Move file",
+    "moveApprove": "Move",
+    "renameVerb": "Rename file",
+    "renameApprove": "Rename",
+    "deleteHint": "Will be moved to the system Trash; recoverable.",
+    "blockedDraft": "{{file}} has an unsaved draft — press ⌘S to save, and this card will become approvable again",
+    "deletedToTrash": "Moved to Trash",
+    "written": "Written",
+    "truncated_one": "\n…[preview truncated, {{count}} character total]",
+    "truncated_other": "\n…[preview truncated, {{count}} characters total]",
+    "caution": {
+      "encoding-conversion": "This is an irreversible conversion: every byte of the file is rewritten as UTF-8 and the original GBK/BOM encoding cannot be recovered. If unsure, ask Oru to save a canonical copy instead."
+    }
+  },
+  "deck": {
+    "startedGenerating": "Generation started — the subagent is running, and the preview will refresh automatically",
+    "startGenerate": "⇡ Start generating"
+  },
+  "code": {
+    "riskHigh": "High risk",
+    "riskMedium": "Medium risk",
+    "riskLow": "Low risk",
+    "noAutoRollback": "Can't auto-roll back (git not enabled for this project)",
+    "canRollback": "One-click rollback available",
+    "haveThoughts": "I have something to add",
+    "autoDispatched": "Auto-dispatched"
+  },
+  "webFetch": {
+    "pending": "Web fetch needs confirmation",
+    "hint": "Oru wants to fetch an external address it found on its own (not a link you gave). The request sends the address and parameters to that site and cannot be recalled once sent.",
+    "confirm": "Allow fetch",
+    "fetched": "Fetched — see chat for content"
+  },
+  "browserNavigate": {
+    "pending": "Open webpage needs confirmation",
+    "hint": "Oru wants to open an external address it found on its own (not a link you gave) in its built-in browser and interact with the page. The request sends the address to that site and cannot be recalled once sent.",
+    "confirm": "Allow open"
+  },
+  "source": {
+    "fromScheduledTask": "From scheduled task \"{{title}}\"",
+    "fromSubagent": "From subagent: {{desc}}"
+  },
+  "grant": {
+    "deliveryTo": "Sending to {{target}}"
+  },
+  "remote": {
+    "allow": "Allow",
+    "always": "Always allow",
+    "reject": "Reject",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "record": {
+    "byYou": "You",
+    "byChannel": "From {{platform}}",
+    "grantPersistFailed": "Always allow couldn't be saved — you'll be asked again next time",
+    "platform": {
+      "feishu": "Feishu",
+      "discord": "Discord"
+    }
+  },
+  "trace": {
+    "done": "Done",
+    "failed": "Failed: "
+  },
+  "behaviors": {
+    "read": {
+      "title": "Read content",
+      "desc": "Reading files, read-only commands, and fetching URLs you provided verbatim."
+    },
+    "webAccess": {
+      "title": "Visit websites",
+      "desc": "Fetching or opening URLs Oru found on its own — the request sends the address and parameters to that site."
+    },
+    "create": {
+      "title": "Create content",
+      "desc": "Creating files, decks, and creating or editing Skills."
+    },
+    "modify": {
+      "title": "Modify existing content",
+      "desc": "Editing, appending, moving, and renaming files (backstopped by real-time save and edit history)."
+    },
+    "overwrite": {
+      "title": "Overwrite existing content",
+      "desc": "Overwriting an existing file wholesale (including encoding conversion, with a separate irreversibility warning on the card)."
+    },
+    "fileDelete": {
+      "title": "Delete content",
+      "desc": "Deleting an entire file (moved to the system Trash, recoverable)."
+    },
+    "sendExternal": {
+      "title": "Send content externally",
+      "desc": "Sending content to people or external services via commands. On = never ask for any outbound send (careful); off = confirm per recipient.",
+      "tip": "Why per-recipient by default: what you send can't be taken back, and the stakes depend on who receives it — a search engine gets your query, but an unknown address could get your files. Recipients you've confirmed are listed below and can be revoked individually; with the master switch on, even brand-new recipients won't be asked."
+    },
+    "mcp": {
+      "title": "Change system environment · MCP",
+      "desc": "Installing, upgrading, and removing MCP servers."
+    },
+    "plugin": {
+      "title": "Change system environment · Plugins",
+      "desc": "Installing, upgrading, and uninstalling plugins."
+    },
+    "skillInstall": {
+      "title": "Change system environment · Skills",
+      "desc": "Installing Skills (creating or editing a Skill is content authoring and is not asked)."
+    },
+    "scheduledTask": {
+      "title": "Create automated tasks",
+      "desc": "Creating, modifying, deleting, pausing, and resuming scheduled tasks."
+    },
+    "destructiveCommand": {
+      "title": "Destructive commands",
+      "desc": "Commands matching the destructive list: rm / mv / cp / sudo / kill / package installs / data-losing git operations."
+    },
+    "dispatchSubagent": {
+      "title": "Dispatch subagents",
+      "desc": "Subagents inherit the current mode, and each of their own actions passes the gate separately."
+    },
+    "catastrophic": {
+      "title": "Catastrophic commands",
+      "desc": "rm -rf /, disk wiping, formatting — always asked, can never be authorized away.",
+      "tip": "These commands can destroy the whole machine's data in an instant, so they're excluded from every \"always allow\" — each one requires your personal confirmation."
+    },
+    "unknown": {
+      "title": "Unreadable commands",
+      "desc": "Commands nested inside commands ($(…), eval, etc.) — Oru can't tell what they'll actually do.",
+      "tip": "Technically: these can't be statically analyzed — their content is only known at runtime. When we can't tell, we assume the worst: asked every time by default. Turn on to skip the card even for unreadable commands."
+    },
+    "noStructureGuarantee": {
+      "title": "File changes via the shell",
+      "desc": "Deleting or changing files via the shell has no Trash and no overwrite protection, so it's always asked as a destructive command.",
+      "tip": "The same deletion: the file tool moves it to the system Trash (recoverable); the shell (bash) removes it for good. The shell can't offer these protections, so file changes through it are escalated to destructive commands. This row is informational and follows the \"Destructive commands\" setting."
+    },
+    "aiOwned": {
+      "title": "Overwriting Oru's own output",
+      "desc": "Overwriting a file Oru produced and you haven't edited yet is not asked.",
+      "tip": "How it's judged: the file's current content matches Oru's last written version verbatim, which counts as untouched. Change a single character and overwriting asks again. Turn off = ask even when overwriting Oru's own output."
+    },
+    "alwaysWhole": "Always allow: {{name}} (all)",
+    "alwaysTo": "Always allow: send to {{target}}",
+    "alwaysMultiple": "Always allow: {{count}} consequence types",
+    "alwaysMultipleHint": "This will also always allow: {{list}}",
+    "alwaysAsk": "Always ask",
+    "askEveryTime": "Ask every time",
+    "noAsk": "Run directly",
+    "sendTo": "send to {{target}}"
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "pageTitle": "Scheduled tasks",
+  "newTask": "New scheduled task",
+  "fmt": {
+    "once": "One-time",
+    "daily": "Every day at {{time}}",
+    "weekly": "{{days}} at {{time}}",
+    "intervalMinute_one": "Every {{count}} minute",
+    "intervalMinute_other": "Every {{count}} minutes",
+    "intervalHour_one": "Every {{count}} hour",
+    "intervalHour_other": "Every {{count}} hours",
+    "weekday": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "withRuns_one": "{{base}}, {{count}} time",
+    "withRuns_other": "{{base}}, {{count}} times",
+    "unparseable": "Can't parse"
+  },
+  "filterLabel": "Filter:",
+  "filter": {
+    "active": "Active",
+    "ended": "Ended"
+  },
+  "ended": {
+    "triggered": "Triggered",
+    "notTriggered": "Didn’t run",
+    "expired": "Scheduled time passed, never ran",
+    "dismissed": "You dismissed it"
+  },
+  "missed": {
+    "header": "⚠ Missed · {{total}} pending",
+    "original": "Scheduled for {{when}}",
+    "run": "Run",
+    "dismiss": "Dismiss",
+    "collapse": "Collapse",
+    "expandAll": "Show all {{total}} ▾"
+  },
+  "agentBadge": "By Oru",
+  "next": "Next",
+  "format": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "afterTomorrow": "In 2 days",
+    "yesterday": "Yesterday",
+    "dateMD": "{{month}}/{{day}}",
+    "lastRunNever": "Last run: never",
+    "lastRun": "Last run: {{when}} {{result}}",
+    "lastRunLate": "Last run: catch-up {{when}} {{result}}",
+    "resultOk": "✓ Success",
+    "resultFailed": "✗ Failed",
+    "resultFailedWith": "✗ Failed ({{error}})",
+    "resultAborted": "⏹ Stopped"
+  },
+  "status": {
+    "ended": "Ended",
+    "paused": "Paused",
+    "running": "Running"
+  },
+  "toggle": {
+    "pause": "Pause",
+    "enable": "Enable"
+  },
+  "menu": {
+    "edit": "Edit",
+    "runNow": "Run now",
+    "history": "Run history"
+  },
+  "runLoc": {
+    "newConversation": "New conversation each time",
+    "inConversation": "Runs in “{{title}}”",
+    "deletedConv": "Deleted conversation",
+    "toChannel": "Push to {{platform}}"
+  },
+  "empty": {
+    "endedNone": "No ended scheduled tasks yet.",
+    "none": "No scheduled tasks yet. Have something done automatically at a set time — start here.",
+    "custom": "Or create a custom one"
+  },
+  "samples": {
+    "daily": {
+      "title": "Daily briefing",
+      "desc": "Every day at 08:00",
+      "prompt": "Summarize my notes from yesterday and today's calendar, and put together a daily briefing"
+    },
+    "once": {
+      "title": "One-time reminder",
+      "desc": "In 45 minutes",
+      "prompt": "Remind me to do the thing I just mentioned"
+    },
+    "weekly": {
+      "title": "Weekly project report",
+      "desc": "Every Friday at 16:00",
+      "prompt": "Review this week's changes to this project and draft a weekly report"
+    }
+  },
+  "compose": {
+    "editTitle": "Edit scheduled task",
+    "newTitle": "New scheduled task",
+    "content": "What to do",
+    "contentPlaceholder": "Write it the way you'd talk to Oru, e.g. “Summarize my notes from yesterday into a daily briefing”",
+    "name": "Name (optional)",
+    "namePlaceholder": "Leave blank to name automatically",
+    "triggers": "Trigger times",
+    "runLocation": "Where it runs",
+    "locNewDesc": "Opens a fresh conversation on each trigger",
+    "locPick": "Run in a specific conversation",
+    "locPickDesc": "Continues the context of an existing conversation",
+    "repeat": "Repeat",
+    "timesThenStop": "times, then stop",
+    "create": "Create",
+    "confirmIncomplete": "Please complete the frequency",
+    "confirmOnce": "Will trigger once at {{first}}, then be removed from the list.",
+    "confirmRecurring": "First triggers at {{first}}; frequency: {{frequency}}.",
+    "locChannel": "Push to channel",
+    "locChannelDesc": "Send the result to an authenticated person",
+    "noChannelPeople": "No authenticated users to push to yet — DM Oru on Lark / Discord to bind first",
+    "channelSingle": "Push to: {{name}}",
+    "channelPickPerson": "Choose who to push to",
+    "channelTargetGone": "The original recipient is no longer authenticated — please choose again"
+  },
+  "mode": {
+    "timer": "Timer",
+    "alarm": "Alarm"
+  },
+  "rule": {
+    "addTrigger": "Add trigger time",
+    "remove": "Remove this trigger time",
+    "addTitle": "Add trigger time",
+    "editTitle": "Edit trigger time",
+    "add": "Add",
+    "everyDayHint": "None selected = every day",
+    "weekLabel": "Weekdays",
+    "repeatLabel": "Repeat count",
+    "stopForever": "Repeat forever",
+    "timerCountLabel": "Run count",
+    "timerRun": "Run",
+    "timerCount": "for",
+    "timerTimes": "times",
+    "timerOnceHint": "1 = no repeat",
+    "timerNeedDuration": "Set a duration first",
+    "onceFrozen": "Set to trigger once at {{when}}",
+    "durHour_one": "{{count}} hour",
+    "durHour_other": "{{count}} hours",
+    "durMinute_one": "{{count}} minute",
+    "durMinute_other": "{{count}} minutes",
+    "timerSummaryOnce": "runs once after {{dur}}",
+    "timerSummaryN": "runs {{count}} times, every {{dur}}",
+    "dailyAt": "Every day at {{at}}",
+    "weeklyAt": "Every {{days}} at {{at}}",
+    "alarmSummary": "{{when}}, {{stop}}",
+    "stopForeverText": "repeats forever",
+    "stopCountN": "{{count}} times",
+    "nextAt": "Next {{when}}"
+  },
+  "wheel": {
+    "hour": "Hour",
+    "minute": "Minute",
+    "hint": "Scroll · drag · type"
+  },
+  "weekdaysShort": [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat"
+  ],
+  "detail": {
+    "unitMinute": "minutes",
+    "unitHour": "hours"
+  },
+  "picker": {
+    "select": "Select a conversation…",
+    "search": "Search conversation titles…",
+    "noMatch": "No matching conversations"
+  },
+  "platform": {
+    "feishu": "Feishu",
+    "discord": "Discord"
+  },
+  "history": {
+    "title": "Run history",
+    "empty": "No runs yet",
+    "viewOutput": "View output",
+    "deletedConv": "Conversation deleted"
+  }
+}

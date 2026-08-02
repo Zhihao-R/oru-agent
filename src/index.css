@@ -1,0 +1,1252 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Oru 主题 token — Notion / Arc 风格起手
+ * 冷白底 + 冷墨文字 + 单点强调色（teal 绿）
+ * 严禁出现紫色、严禁渐变背景
+ *
+ * 默认主题（:root/.dark）= 2026-07 UI/UX 改造采纳的设计稿色板（竹青 teal #1b9e6b + 冷白）；
+ * 「严禁紫色/渐变」只约束这套默认色板，命名主题按各自气质取色。
+ * 词汇表与语义映射见 docs/tech/2026-07-15-ui-ux-设计词汇表.md。
+ * 三档下沉/边框、四档文字、语义色 base/deep/soft 三件套的成因都在词汇表里。
+ *
+ * 命名主题（2026-07-24 主题重做批次，全量适配）每块定义完整 22 token：
+ * 面 5 + 边框 3 + 文字 4 + accent 6 + avatar 1 + pop 3。铁律：亮块定义了的 token
+ * 暗块必须同样定义——:root[data-theme] 特异度 (0,2,0) 高于 .dark (0,1,0)，暗块漏写
+ * 会把亮值压进暗态。语义色三件套及其 -fg、note-* 数据色、lamp-*、shadow-night
+ * 刻意不随主题（全站语义一致），级联回落 :root/.dark。
+ */
+
+:root {
+  --bg-canvas: #fbfdfe;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #eef4f7;
+  --bg-sunken-2: #f6f9fb;
+  --bg-hover: rgba(20, 40, 48, 0.04);
+  --border-default: #e7eef1;
+  --border-strong: #d7e2e7;
+  --border-heavy: #c4d3da;
+  --text-primary: #18242d;
+  --text-secondary: #51616b;
+  --text-tertiary: #8696a0;
+  --text-quaternary: #a9b7bf;
+  --accent: #1b9e6b;
+  --accent-deep: #127a54;
+  --accent-soft: #e4f4ec;
+  --accent-line: #a6e0c6;
+  --accent-ring: rgba(27, 158, 107, 0.35);
+  --accent-fg: #ffffff;
+  /* 笔记五类数据色（词汇表无 token 位的 sanctioned 例外，集中声明在此一处，含 fg + bg）：
+     浅色值取主页设计稿；约定=accent（复用 teal，dark 自动跟随），其余四类的深色变体在 .dark 里推导。
+     type→色的映射在 src/components/memory/shared/typeLabels.ts。 */
+  --note-user: #5c8a26;
+  --note-user-bg: rgba(92, 138, 38, 0.10);
+  --note-feedback: #127a54;
+  --note-feedback-bg: rgba(18, 122, 84, 0.09);
+  --note-project: #4d7cc0;
+  --note-project-bg: rgba(77, 124, 192, 0.10);
+  --note-reference: #a1751f;
+  --note-reference-bg: rgba(161, 117, 31, 0.10);
+  --note-agent: #7f63b8;
+  --note-agent-bg: rgba(127, 99, 184, 0.10);
+  --danger: #b0483a;
+  --danger-deep: #8f382c;
+  --danger-soft: #f7ebe9;
+  --success: #3a8f5f;
+  --success-deep: #2e7d54;
+  --success-soft: #e8f5ee;
+  --warn: #b07d1a;
+  --warn-deep: #7a5c14;
+  --warn-soft: #fdf9ee;
+  /* 实心语义色底上的前景（同 --accent-fg 语义）：日间白字；夜间语义色提亮成粉彩后
+     白字对比塌，在 .dark 里反转成墨字。命名主题未定义时级联回落到这里。 */
+  --danger-fg: #ffffff;
+  --success-fg: #ffffff;
+  --warn-fg: #ffffff;
+  --avatar-default-bg: #d6ebe0;
+  /* 随手评点浮层的反色 token：亮色主题重墨色 + 透明度与画布拉开，夜间反转成亮色 */
+  --pop-bg: rgba(18, 36, 45, 0.88);
+  --pop-fg: #f4f8fa;
+  --pop-fg-dim: rgba(244, 248, 250, 0.55);
+  /* 夜间环境投影：日间白纸自带层次、置空；夜间给浮起元素（输入框/浮层）托底。
+     消费方式：tailwind 的 shadow-night 与 shadow-focus（后者拼接了本 token）。 */
+  --shadow-night: 0 0 #0000;
+  /* 聚焦亮灯（.oru-lamp）的日夜分流：日间保持现有聚焦视觉逐字节不变——
+     边线沿用 accent-line、呼吸光晕置空（伪元素不可见）；夜间在 .dark 里给灯光值。
+     方案对比与拍板 demo 见 docs/superpowers/mockups/2026-07-20-dark-focus-glow.html。 */
+  --lamp-line: var(--accent-line);
+  --lamp-halo: 0 0 #0000;
+  /* 分段控件选中段的实底（左栏 tab / 查看器工具条 / 定时触发弹窗 / 设置明暗模式四处）。
+     默认＝accent 实底，跟随 --accent 与 --accent-fg 的日夜切换，六套主题零配置。
+     单独立 token 是给「轨道本身带色」的主题留改写位——雪线的轨道是淡紫，绿实底压上去
+     成了两支彩色打架，故它改写成同族深紫。要给第二套主题改也只是两行。 */
+  --segment-on: var(--accent);
+  --segment-on-fg: var(--accent-fg);
+}
+
+/* 2026-07-20 夜间去绿（收敛绿方案）：底色红绿通道差从 10 收到 5、elevated 抬高一档、
+   灰阶去绿、accent 提亮。推导与对比 demo 见
+   docs/superpowers/mockups/2026-07-20-dark-mode-refresh.html。 */
+.dark {
+  --bg-canvas: #131817;
+  --bg-elevated: #1d2421;
+  --bg-sunken: #0b100f;
+  --bg-sunken-2: #171d1b;
+  --bg-hover: rgba(232, 240, 237, 0.05);
+  --border-default: rgba(232, 240, 237, 0.10);
+  --border-strong: rgba(232, 240, 237, 0.18);
+  --border-heavy: rgba(232, 240, 237, 0.28);
+  --text-primary: #e7edea;
+  --text-secondary: #a4b1ab;
+  --text-tertiary: #7d8c85;
+  --text-quaternary: #606e66;
+  --accent: #41c795;
+  /* deep 的语义是「对环境底更高对比」：亮底更暗、暗底更亮——故暗色 deep 比 base 提亮，
+     与 danger/success/warn-deep 同向（暗底上同色文字/hover 要更亮才够对比与醒目）。 */
+  --accent-deep: #6cd6ac;
+  --accent-soft: rgba(65, 199, 149, 0.16);
+  --accent-line: rgba(65, 199, 149, 0.35);
+  --accent-ring: rgba(65, 199, 149, 0.45);
+  --accent-fg: #0c1310;
+  /* 五类数据色深色变体：提亮降饱和以在暗底站得住，bg 转低 alpha 同色。五类一律固定、不跟随 accent。 */
+  --note-user: #9fc46a;
+  --note-user-bg: rgba(159, 196, 106, 0.16);
+  --note-feedback: #58c294;
+  --note-feedback-bg: rgba(88, 194, 148, 0.16);
+  --note-project: #8fb3e6;
+  --note-project-bg: rgba(143, 179, 230, 0.16);
+  --note-reference: #d6ab5e;
+  --note-reference-bg: rgba(214, 171, 94, 0.16);
+  --note-agent: #b39ee0;
+  --note-agent-bg: rgba(179, 158, 224, 0.16);
+  --danger: #e08b7f;
+  --danger-deep: #ec9d92;
+  --danger-soft: rgba(224, 139, 127, 0.16);
+  --success: #6bc796;
+  --success-deep: #82cfa2;
+  --success-soft: rgba(107, 199, 150, 0.16);
+  --warn: #d6a44a;
+  --warn-deep: #e4bd72;
+  --warn-soft: rgba(214, 164, 74, 0.15);
+  --danger-fg: #0c1310;
+  --success-fg: #0c1310;
+  --warn-fg: #0c1310;
+  --avatar-default-bg: #1e2a25;
+  --pop-bg: rgba(231, 237, 234, 0.92);
+  --pop-fg: #131817;
+  --pop-fg-dim: rgba(19, 24, 23, 0.55);
+  --shadow-night: 0 2px 16px rgba(0, 0, 0, 0.35);
+  /* 聚焦亮灯：边线亮起 + 收窄减淡的双层光晕（内 10px 亮、外 26px 柔）。
+     纸面不染色——大半径中透明度的色雾在暗底上显脏，光的信号主要在边线。 */
+  --lamp-line: color-mix(in srgb, var(--accent) 48%, transparent);
+  --lamp-halo: 0 0 10px color-mix(in srgb, var(--accent) 16%, transparent),
+    0 0 26px -6px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* ─── 配色主题：克莱因 Klein ──────────────────────────────────────────
+   Yves Klein 的画廊观感：无彩灰白纸面 + 单点 IKB。PM 2026-07-27 定的三条硬约束
+   （改这套色前先满足它们）：① 蓝一律是克莱因蓝，只许再有一支淡的作补充；
+   ② 蓝不许泛滥，落不到那两支上的位置一律黑白灰；③ 纸面不许带蓝。
+   落法：纸面 / 边框 / 文字四档取零色度灰（与水墨 mono 同一套），蓝只出现在 accent
+   一族；头像回落底也压成灰——它既不是 IKB 也不是淡克莱因，按约束②归中性。
+   两支蓝＝IKB #002fa7（日）与淡克莱因 #5c8aff（夜），色相同锁 223.1°。
+   deep / soft / line / ring 都是当前 accent 的机械深浅稀释，不新增第三支蓝。
+   日间：白字压 IKB 10.69、deep 压 soft 11.65。 */
+:root[data-theme="klein"] {
+  --bg-canvas: #fcfcfc;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f2f2f2;
+  --bg-sunken-2: #f8f8f8;
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --border-default: #e9e9e9;
+  --border-strong: #dadada;
+  --border-heavy: #c6c6c6;
+  --text-primary: #161616;
+  --text-secondary: #515151;
+  --text-tertiary: #888888;
+  --text-quaternary: #aaaaaa;
+  --accent: #002fa7;
+  --accent-deep: #00227d;
+  --accent-soft: #e8ecf7;
+  --accent-line: #b3c1e5;
+  --accent-ring: rgba(0, 47, 167, 0.30);
+  --accent-fg: #ffffff;
+  --avatar-default-bg: #e6e6e6;
+  --pop-bg: rgba(22, 22, 22, 0.88);
+  --pop-fg: #fcfcfc;
+  --pop-fg-dim: rgba(252, 252, 252, 0.55);
+}
+
+/* IKB 夜：accent 换成淡克莱因（唯一那支补充蓝），纸面维持无彩近黑。
+   为什么夜间不能直接用 IKB：纯 #002fa7 压在近黑纸面上只有 1.64:1，实底按钮糊成暗块；
+   更要命的是 --accent 同时充当前景色（全站 100+ 处 text-accent、42 处 chip 里
+   bg-accent-soft + text-accent），深蓝当字读不出来。取值按前景位反推：色相锁死 223.1°
+   只提明度到 L68%，得文字压纸面 5.47、chip 里 4.39（其余彩色主题 4.87–6.19，鸢尾最低）、
+   墨字压实底 5.88。再深一档（L56 #1e5eff）chip 只剩 2.96，连非文字的 3:1 都过不去。 */
+:root[data-theme="klein"].dark {
+  --bg-canvas: #0f0f0f;
+  --bg-elevated: #191919;
+  --bg-sunken: #070707;
+  --bg-sunken-2: #141414;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-heavy: rgba(255, 255, 255, 0.28);
+  --text-primary: #ececec;
+  --text-secondary: #a8a8a8;
+  --text-tertiary: #7c7c7c;
+  --text-quaternary: #5a5a5a;
+  --accent: #5c8aff;
+  --accent-deep: #85a7ff;
+  --accent-soft: rgba(92, 138, 255, 0.16);
+  --accent-line: rgba(92, 138, 255, 0.35);
+  --accent-ring: rgba(92, 138, 255, 0.45);
+  --accent-fg: #111111;
+  --avatar-default-bg: #262626;
+  --pop-bg: rgba(236, 236, 236, 0.92);
+  --pop-fg: #0f0f0f;
+  --pop-fg-dim: rgba(15, 15, 15, 0.55);
+}
+
+/* ─── 配色主题：落霞 Ember（焦柿橙 #bc5b1f，暖米纸面、炭褐夜） ─── */
+:root[data-theme="ember"] {
+  --bg-canvas: #fefefd;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f5f3ef;
+  --bg-sunken-2: #fbfaf7;
+  --bg-hover: rgba(48, 34, 20, 0.04);
+  --border-default: #efe6d8;
+  --border-strong: #e1d3bf;
+  --border-heavy: #cfbda2;
+  --text-primary: #2a2118;
+  --text-secondary: #5e5244;
+  --text-tertiary: #94897a;
+  --text-quaternary: #b5ab9d;
+  --accent: #bc5b1f;
+  --accent-deep: #954513;
+  --accent-soft: #f9ead9;
+  --accent-line: #eec49c;
+  --accent-ring: rgba(188, 91, 31, 0.32);
+  --accent-fg: #ffffff;
+  --avatar-default-bg: #f4dfc7;
+  --pop-bg: rgba(42, 33, 24, 0.88);
+  --pop-fg: #fefefd;
+  --pop-fg-dim: rgba(254, 254, 253, 0.55);
+}
+
+:root[data-theme="ember"].dark {
+  --bg-canvas: #16120e;
+  --bg-elevated: #201b15;
+  --bg-sunken: #0e0b08;
+  --bg-sunken-2: #1a1610;
+  --bg-hover: rgba(241, 232, 220, 0.05);
+  --border-default: rgba(241, 232, 220, 0.10);
+  --border-strong: rgba(241, 232, 220, 0.18);
+  --border-heavy: rgba(241, 232, 220, 0.28);
+  --text-primary: #ece4d9;
+  --text-secondary: #b2a795;
+  --text-tertiary: #8b8170;
+  --text-quaternary: #685f51;
+  --accent: #e08a4a;
+  --accent-deep: #eca470;
+  --accent-soft: rgba(224, 138, 74, 0.16);
+  --accent-line: rgba(224, 138, 74, 0.35);
+  --accent-ring: rgba(224, 138, 74, 0.45);
+  --accent-fg: #1a1008;
+  --avatar-default-bg: #2f2417;
+  --pop-bg: rgba(236, 228, 217, 0.92);
+  --pop-fg: #16120e;
+  --pop-fg-dim: rgba(22, 18, 14, 0.55);
+}
+
+/* ─── 配色主题：水墨 Ink（纯中性黑白，accent=墨，日浓夜宣） ─── */
+:root[data-theme="mono"] {
+  --bg-canvas: #fcfcfc;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f2f2f2;
+  --bg-sunken-2: #f8f8f8;
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --border-default: #e9e9e9;
+  --border-strong: #dadada;
+  --border-heavy: #c6c6c6;
+  --text-primary: #161616;
+  --text-secondary: #515151;
+  --text-tertiary: #888888;
+  --text-quaternary: #aaaaaa;
+  --accent: #161616;
+  --accent-deep: #000000;
+  --accent-soft: #ededed;
+  --accent-line: #bfbfbf;
+  --accent-ring: rgba(22, 22, 22, 0.28);
+  --accent-fg: #ffffff;
+  --avatar-default-bg: #e6e6e6;
+  --pop-bg: rgba(22, 22, 22, 0.88);
+  --pop-fg: #fcfcfc;
+  --pop-fg-dim: rgba(252, 252, 252, 0.55);
+}
+
+:root[data-theme="mono"].dark {
+  --bg-canvas: #0f0f0f;
+  --bg-elevated: #191919;
+  --bg-sunken: #070707;
+  --bg-sunken-2: #141414;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-heavy: rgba(255, 255, 255, 0.28);
+  --text-primary: #ececec;
+  --text-secondary: #a8a8a8;
+  --text-tertiary: #7c7c7c;
+  --text-quaternary: #5a5a5a;
+  --accent: #f2f2f2;
+  --accent-deep: #ffffff;
+  --accent-soft: rgba(242, 242, 242, 0.12);
+  --accent-line: rgba(242, 242, 242, 0.30);
+  --accent-ring: rgba(242, 242, 242, 0.35);
+  --accent-fg: #111111;
+  --avatar-default-bg: #262626;
+  --pop-bg: rgba(236, 236, 236, 0.92);
+  --pop-fg: #0f0f0f;
+  --pop-fg-dim: rgba(15, 15, 15, 0.55);
+}
+
+/* ─── 配色主题：鸢尾 Iris（蓝紫 #5b4bbe，雾紫纸面、暗紫夜） ─── */
+:root[data-theme="iris"] {
+  --bg-canvas: #fdfdfe;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f3f2f7;
+  --bg-sunken-2: #faf9fc;
+  --bg-hover: rgba(30, 24, 50, 0.04);
+  --border-default: #e8e5f1;
+  --border-strong: #d8d3e8;
+  --border-heavy: #c4bcdb;
+  --text-primary: #1e1832;
+  --text-secondary: #554d70;
+  --text-tertiary: #8b84a4;
+  --text-quaternary: #aea7c4;
+  --accent: #5b4bbe;
+  --accent-deep: #46389c;
+  --accent-soft: #edeaf9;
+  --accent-line: #c6bdee;
+  --accent-ring: rgba(91, 75, 190, 0.32);
+  --accent-fg: #ffffff;
+  --avatar-default-bg: #e2dcf4;
+  --pop-bg: rgba(30, 24, 50, 0.88);
+  --pop-fg: #fdfdfe;
+  --pop-fg-dim: rgba(253, 253, 254, 0.55);
+}
+
+:root[data-theme="iris"].dark {
+  --bg-canvas: #131019;
+  --bg-elevated: #1c1826;
+  --bg-sunken: #0b0910;
+  --bg-sunken-2: #171321;
+  --bg-hover: rgba(233, 229, 244, 0.05);
+  --border-default: rgba(233, 229, 244, 0.10);
+  --border-strong: rgba(233, 229, 244, 0.18);
+  --border-heavy: rgba(233, 229, 244, 0.28);
+  --text-primary: #e8e4f1;
+  --text-secondary: #aaa3bf;
+  --text-tertiary: #817a98;
+  --text-quaternary: #5f5975;
+  --accent: #9d8cee;
+  --accent-deep: #b7a9f4;
+  --accent-soft: rgba(157, 140, 238, 0.16);
+  --accent-line: rgba(157, 140, 238, 0.35);
+  --accent-ring: rgba(157, 140, 238, 0.45);
+  --accent-fg: #130d24;
+  --avatar-default-bg: #251e3a;
+  --pop-bg: rgba(232, 228, 241, 0.92);
+  --pop-fg: #131019;
+  --pop-fg-dim: rgba(19, 16, 25, 0.55);
+}
+
+/* ─── 配色主题：孔雀蓝 Peacock（深青 #0d7089，蓝倾青灰纸面，区别于竹青的绿倾） ─── */
+:root[data-theme="peacock"] {
+  --bg-canvas: #fafdfe;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #e9f2f5;
+  --bg-sunken-2: #f3f9fa;
+  --bg-hover: rgba(13, 36, 44, 0.04);
+  --border-default: #e1edf0;
+  --border-strong: #cee0e6;
+  --border-heavy: #b7d1d9;
+  --text-primary: #12242c;
+  --text-secondary: #46606b;
+  --text-tertiary: #7b929d;
+  --text-quaternary: #a0b3bc;
+  --accent: #0d7089;
+  --accent-deep: #095467;
+  --accent-soft: #e1f1f5;
+  --accent-line: #99d2e0;
+  --accent-ring: rgba(13, 112, 137, 0.32);
+  --accent-fg: #ffffff;
+  --avatar-default-bg: #d3e9ef;
+  --pop-bg: rgba(18, 36, 44, 0.88);
+  --pop-fg: #f4fafc;
+  --pop-fg-dim: rgba(244, 250, 252, 0.55);
+}
+
+:root[data-theme="peacock"].dark {
+  --bg-canvas: #0f161a;
+  --bg-elevated: #172227;
+  --bg-sunken: #080e11;
+  --bg-sunken-2: #131c21;
+  --bg-hover: rgba(225, 240, 245, 0.05);
+  --border-default: rgba(225, 240, 245, 0.10);
+  --border-strong: rgba(225, 240, 245, 0.18);
+  --border-heavy: rgba(225, 240, 245, 0.28);
+  --text-primary: #e1ebef;
+  --text-secondary: #9db3bc;
+  --text-tertiary: #758c96;
+  --text-quaternary: #556b75;
+  --accent: #3db4cd;
+  --accent-deep: #69c8dc;
+  --accent-soft: rgba(61, 180, 205, 0.16);
+  --accent-line: rgba(61, 180, 205, 0.35);
+  --accent-ring: rgba(61, 180, 205, 0.45);
+  --accent-fg: #06161b;
+  --avatar-default-bg: #143039;
+  --pop-bg: rgba(225, 235, 239, 0.92);
+  --pop-fg: #0f161a;
+  --pop-fg-dim: rgba(15, 22, 26, 0.55);
+}
+
+/* ─── 配色主题：雪线 Snowline（川西灌木带苔绿 #4e663d + 冰川带紫灰纸面） ───
+   取色与三段海拔→三类角色的推导见 docs/superpowers/mockups/2026-07-26-雪线主题-配色提案.html。
+   两处与其余六套不同、都是刻意的：①日间画布压到 #f9f8fb（其余六套贴近纯白），
+   因为这套主题的立意就是那片灰，纸面若接近纯白等于丢掉三段里的一段；
+   ②accent 与中性支近乎互补（其余六套的纸面是 accent 的低色度回响），
+   这是「低饱和绿」这个诉求的直接结果，代价是绿作为信号偏弱。 */
+:root[data-theme="snowline"] {
+  --bg-canvas: #f9f8fb;
+  --bg-elevated: #ffffff;
+  /* 紫点缀（PM 2026-07-27 定）：日间的紫在照片实测量级（色度 0.005–0.027）下几乎看不见，
+     故挑五处小面积 / 非承重位置把色度提到 0.015–0.06——侧栏与 hover 底、最强边框、
+     头像回落底、评点浮层底。五处的明度一律锁回原值，对比度逐项不变。 */
+  --bg-sunken: #f0ecfd;
+  --bg-sunken-2: #f6f4ff;
+  --bg-hover: rgba(35, 29, 53, 0.04);
+  --border-default: #e8e6ef;
+  --border-strong: #dbd7e4;
+  --border-heavy: #c6bde1;
+  --text-primary: #221e2f;
+  --text-secondary: #5d586f;
+  --text-tertiary: #8f899f;
+  --text-quaternary: #b1acbe;
+  /* 苔绿取提案 §07 的深档（PM 2026-07-27 定：中档偏浅）。白字对比 8.22 */
+  --accent: #3f5530;
+  --accent-deep: #2e3f22;
+  /* 用户气泡底＝全站最大的一块绿，随 accent 一起浓一档（色度 0.020→0.026，
+     仍在同侪 0.018–0.028 带内，不自成一套） */
+  --accent-soft: #e2ecda;
+  --accent-line: #a9c398;
+  --accent-ring: rgba(63, 85, 48, 0.30);
+  --accent-fg: #ffffff;
+  /* 唯一换色系的一处：其余各套的头像回落底都落在自家 accent 家族或中性灰上，这里刻意给淡紫——
+     头像代表「人」、accent 代表「动作」，也是紫点缀里最容易被看见的小面积位置。 */
+  --avatar-default-bg: #e4ddfc;
+  --pop-bg: rgba(33, 23, 56, 0.88);
+  --pop-fg: #f6f5f9;
+  --pop-fg-dim: rgba(246, 245, 249, 0.55);
+  /* 分段控件实底改写成与轨道（bg-sunken 淡紫 h297）同族的深紫，而不是 accent 绿——
+     绿实底压在淡紫轨道上是两支彩色对撞。白字对比 9.61，与轨道明度拉开 8.29 倍。 */
+  --segment-on: #4e3979;
+  --segment-on-fg: #ffffff;
+}
+
+/* 夜间用户气泡（accent-soft 叠 16%）在这套里几乎是中性色块：accent 色度只有同侪一半，
+   叠出来 0.008。已知并接受——提色度会丢掉「低饱和」、调透明度到不了同侪水平，两头不划算。 */
+:root[data-theme="snowline"].dark {
+  --bg-canvas: #17151c;
+  --bg-elevated: #23202a;
+  --bg-sunken: #0e0d12;
+  --bg-sunken-2: #1d1b23;
+  --bg-hover: rgba(232, 228, 241, 0.05);
+  --border-default: rgba(232, 228, 241, 0.10);
+  --border-strong: rgba(232, 228, 241, 0.18);
+  --border-heavy: rgba(232, 228, 241, 0.28);
+  --text-primary: #e6e4ec;
+  --text-secondary: #afabba;
+  --text-tertiary: #847f94;
+  --text-quaternary: #666175;
+  --accent: #9ebd7f;
+  --accent-deep: #b8d39c;
+  --accent-soft: rgba(158, 189, 127, 0.16);
+  --accent-line: rgba(158, 189, 127, 0.35);
+  --accent-ring: rgba(158, 189, 127, 0.45);
+  --accent-fg: #121019;
+  --avatar-default-bg: #333d29;
+  --pop-bg: rgba(230, 228, 236, 0.92);
+  --pop-fg: #17151c;
+  --pop-fg-dim: rgba(23, 21, 28, 0.55);
+  /* 夜间反向：暗底上深紫会糊进轨道，改用同族浅紫 + 墨字（墨字对比 8.59）。
+     方向与 accent-deep 的日暗夜亮同理——实底要对环境底有反差，不是固定取深色。 */
+  --segment-on: #b5a8d9;
+  --segment-on-fg: #121019;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* 原生表单控件（勾选框 / 单选 / range）的实底随主题 accent 走。写在 body 上靠继承一次覆盖
+     全站：缺省值是 macOS 系统强调色（默认蓝，不随主题），逐元素补 `accent-accent` 已经漏过
+     两处（CSV 查找条与列筛选），且够不着第三方 DOM——CodeMirror 查找面板那三个勾选框在库里。
+     有这条之后逐元素再写 accent-accent 属冗余（无害，未清理）。 */
+  accent-color: var(--accent);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* 文本选区随主题 accent 走（不设 color——accent-ring 是半透明色，叠原文字色即可读） */
+::selection {
+  background: var(--accent-ring);
+}
+
+/* macOS 拖拽区 */
+.drag-region {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* 滚动条：常态隐藏，正在滚动、或指针落进滚动条走廊时浮现（见 lib/scrollbarAutoHide.ts，
+   显示条件合成为滚动元素上的 data-scrollbar-visible）。
+   轨道宽度恒定、thumb 仅切颜色，故出现/消失不引起布局抖动。
+   注意：10px 这个宽度被 ChatArea 的水平几何依赖（scrollbar-gutter:stable + 输入区/置顶条
+   pr-[34px]=24+10 逐像素对齐消息列）——改这里要同步改那边。
+   注意：严禁给滚动条伪元素加 transition——Chromium 会把它提升为合成层
+   并把透明 thumb 渲染成实心白块；且伪元素本就不支持动画，加了纯害无益。 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+[data-scrollbar-visible]::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+}
+[data-scrollbar-visible]::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-tertiary);
+}
+
+/* 输入框专用细滚动条：全局 10px 塞进小输入框偏粗，这里收到 6px（浮现时机同全局）。
+   thumb 用满 6px（去掉全局的 2px 透明边+padding-box），窄条里才看得清。禁 transition 同全局。 */
+.oru-input-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.oru-input-scroll::-webkit-scrollbar-thumb {
+  border: 0;
+  background-clip: border-box;
+}
+.oru-input-scroll[data-scrollbar-visible]::-webkit-scrollbar-thumb {
+  background-color: var(--border-heavy);
+}
+.oru-input-scroll[data-scrollbar-visible]::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-tertiary);
+}
+
+/* 主页滚动容器：滚动条全程视觉隐藏——单列叙事页面，靠渐隐箭头提示「下面还有」。
+   不隐藏也不切 overflow 时，滚动条在首屏阈值处开关会造成回流抖动（错位来源），故全程隐藏、overflow 恒定。 */
+.oru-home-scroll {
+  scrollbar-width: none;
+}
+.oru-home-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* csv 表格是二维数据网格，横向滚动没有鼠标滚轮兜底——滚动条常驻可见可拖（区别于全站自动隐藏，
+   §七）。淡色常驻、hover 加深，克制不吵；圆角/内边距沿用上面的全站 thumb 规则。只作用于表格容器。 */
+.oru-table-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+}
+.oru-table-scroll:hover::-webkit-scrollbar-thumb,
+.oru-table-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-tertiary);
+}
+
+
+/* Markdown 预览样式 — Notion / Arc 风格，严禁紫色 / 渐变 / 大圆角 */
+.oru-md {
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.7;
+  word-wrap: break-word;
+}
+.oru-md > *:first-child { margin-top: 0; }
+.oru-md > *:last-child { margin-bottom: 0; }
+
+.oru-md h1, .oru-md h2, .oru-md h3, .oru-md h4, .oru-md h5, .oru-md h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.6em 0 0.6em;
+  letter-spacing: -0.01em;
+}
+.oru-md h1 { font-size: 1.75em; border-bottom: 1px solid var(--border-default); padding-bottom: 0.3em; }
+.oru-md h2 { font-size: 1.4em; border-bottom: 1px solid var(--border-default); padding-bottom: 0.25em; }
+.oru-md h3 { font-size: 1.2em; }
+.oru-md h4 { font-size: 1.05em; }
+.oru-md h5, .oru-md h6 { font-size: 1em; color: var(--text-secondary); }
+
+.oru-md p {
+  margin: 0.6em 0;
+  color: var(--text-primary);
+}
+
+.oru-md a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-soft);
+  text-underline-offset: 2px;
+}
+.oru-md a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.oru-md strong { color: var(--text-primary); font-weight: 600; }
+.oru-md em { color: var(--text-primary); font-style: italic; }
+.oru-md del { color: var(--text-tertiary); }
+
+/* Tailwind preflight 把 list-style 重置为 none，这里必须显式恢复，否则 marker 不存在 */
+.oru-md ul, .oru-md ol {
+  margin: 0.6em 0;
+  padding-left: 1.6em;
+}
+.oru-md ul { list-style: disc; }
+.oru-md ul ul { list-style: circle; }
+.oru-md ul ul ul { list-style: square; }
+.oru-md ol { list-style: decimal; }
+/* 任务列表项自带 checkbox，不再要圆点 */
+.oru-md li.task-list-item { list-style: none; }
+.oru-md li { margin: 0.2em 0; }
+.oru-md li > p { margin: 0.2em 0; }
+.oru-md ul li::marker { color: var(--text-tertiary); }
+.oru-md ol li::marker { color: var(--text-tertiary); }
+
+/* 脚注与 KaTeX：与 .oru-chat-md 同一套处理，注释见彼处 */
+.oru-md .footnotes {
+  margin-top: 1.4em;
+  padding-top: 0.8em;
+  border-top: 1px solid var(--border-default);
+  font-size: 0.86em;
+  color: var(--text-secondary);
+}
+.oru-md .footnotes > h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.oru-md sup a { text-decoration: none; }
+.oru-md .katex-display { margin: 0.9em 0; }
+
+.oru-md blockquote {
+  margin: 0.8em 0;
+  padding: 0.2em 0 0.2em 1em;
+  border-left: 3px solid var(--accent);
+  color: var(--text-secondary);
+  font-style: italic;
+  background: var(--accent-soft);
+  border-radius: 0 6px 6px 0;
+}
+
+.oru-md code {
+  font-family: 'SF Mono', ui-monospace, Menlo, Monaco, monospace;
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+.oru-md pre {
+  margin: 0.8em 0;
+  padding: 14px 16px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.oru-md pre code {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.oru-md hr {
+  margin: 1.6em 0;
+  border: none;
+  border-top: 1px solid var(--border-default);
+}
+
+.oru-md table {
+  margin: 0.8em 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.oru-md th, .oru-md td {
+  padding: 6px 12px;
+  border: 1px solid var(--border-default);
+  text-align: left;
+}
+.oru-md th {
+  background: var(--bg-sunken);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.oru-md img {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--border-default);
+}
+
+.oru-md input[type='checkbox'] {
+  margin-right: 0.5em;
+  accent-color: var(--accent);
+}
+
+/* highlight.js 配色 — 用 token 串联，避免外部 css 主题 */
+.oru-md .hljs { color: var(--text-primary); background: transparent; }
+.oru-md .hljs-comment, .oru-md .hljs-quote { color: var(--text-tertiary); font-style: italic; }
+.oru-md .hljs-keyword, .oru-md .hljs-selector-tag, .oru-md .hljs-built_in,
+.oru-md .hljs-name, .oru-md .hljs-tag { color: var(--accent); }
+.oru-md .hljs-string, .oru-md .hljs-title, .oru-md .hljs-section,
+.oru-md .hljs-attribute, .oru-md .hljs-literal, .oru-md .hljs-template-tag,
+.oru-md .hljs-template-variable, .oru-md .hljs-type, .oru-md .hljs-addition { color: var(--success); }
+.oru-md .hljs-number, .oru-md .hljs-symbol, .oru-md .hljs-bullet,
+.oru-md .hljs-link, .oru-md .hljs-meta, .oru-md .hljs-deletion { color: var(--accent); }
+.oru-md .hljs-emphasis { font-style: italic; }
+.oru-md .hljs-strong { font-weight: 600; }
+
+/* 聊天专用 markdown 样式 — 书本风，比 .oru-md 更轻
+   规则锚定在 docs/superpowers/specs/2026-04-26-chat-ui-md-and-toolcard-design.md
+   原则：高级标题（h1/h2）用衬线出彩，正文绝对安静。
+   禁止：紫色/渐变/heading 下边框/heading 背景/code 块外的彩色 chip。
+   ⚠ 视觉耦合：本块（含下方 hljs 着色）的导出端镜像在 src/lib/exportTheme.ts 的 baseExportCss
+   （var() 落成默认暖光具体色值，供脱离 Oru 的导出物使用）——改这里的视觉规则需同步那里。 */
+.oru-chat-md {
+  color: var(--text-primary);
+  /* 对话正文 14px（设计稿 c-text 四阶「14 正文」），行高 1.62 */
+  font-size: 14px;
+  line-height: 1.62;
+  word-wrap: break-word;
+}
+.oru-chat-md > *:first-child { margin-top: 0; }
+.oru-chat-md > *:last-child { margin-bottom: 0; }
+
+/* h1, h2 衬线出彩。无下边框，无背景。 */
+.oru-chat-md h1 {
+  font-family: 'New York', 'Source Serif Pro', Georgia, serif;
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 1.4em 0 0.5em;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.oru-chat-md h2 {
+  font-family: 'New York', 'Source Serif Pro', Georgia, serif;
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 1.3em 0 0.4em;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+/* h3-h6 sans，仅加粗 */
+.oru-chat-md h3 {
+  font-size: 1.08em;
+  font-weight: 600;
+  margin: 1.1em 0 0.3em;
+  color: var(--text-primary);
+}
+.oru-chat-md h4, .oru-chat-md h5, .oru-chat-md h6 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0.9em 0 0.3em;
+  color: var(--text-primary);
+}
+
+.oru-chat-md p { margin: 0.7em 0; }
+.oru-chat-md strong { font-weight: 600; color: var(--text-primary); }
+.oru-chat-md em { font-style: italic; }
+.oru-chat-md del { color: var(--text-tertiary); }
+
+.oru-chat-md a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-soft);
+  text-underline-offset: 2px;
+}
+.oru-chat-md a:hover { text-decoration-color: var(--accent); }
+
+/* Tailwind preflight 把 list-style 重置为 none，这里必须显式恢复，否则 marker 不存在 */
+.oru-chat-md ul, .oru-chat-md ol {
+  margin: 0.6em 0;
+  padding-left: 1.5em;
+}
+.oru-chat-md ul { list-style: disc; }
+.oru-chat-md ul ul { list-style: circle; }
+.oru-chat-md ul ul ul { list-style: square; }
+.oru-chat-md ol { list-style: decimal; }
+/* 任务列表项自带 checkbox，不再要圆点 */
+.oru-chat-md li.task-list-item { list-style: none; }
+.oru-chat-md li { margin: 0.3em 0; }
+.oru-chat-md li > p { margin: 0.2em 0; }
+.oru-chat-md ul li::marker, .oru-chat-md ol li::marker { color: var(--text-tertiary); }
+
+/* blockquote 极简：无背景、无圆角 */
+.oru-chat-md blockquote {
+  margin: 0.9em 0;
+  padding: 0.1em 0 0.1em 0.9em;
+  border-left: 2px solid var(--border-default);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* 行内 code：无 border，比 .oru-md 轻 */
+.oru-chat-md code {
+  font-family: 'SF Mono', ui-monospace, Menlo, Monaco, monospace;
+  font-size: 0.88em;
+  padding: 0.1em 0.35em;
+  background: var(--bg-sunken);
+  border-radius: 3px;
+  color: var(--text-primary);
+}
+/* code 块：无 border */
+.oru-chat-md pre {
+  margin: 0.9em 0;
+  padding: 12px 14px;
+  background: var(--bg-sunken);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.oru-chat-md pre code {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.oru-chat-md hr {
+  margin: 1.6em 0;
+  border: none;
+  border-top: 1px solid var(--border-default);
+}
+
+/* 宽表横向滚动，避免撑破气泡（组件把 table 包进此容器） */
+.oru-chat-md-table-wrap {
+  overflow-x: auto;
+}
+/* 表格只有水平线，无格子 */
+.oru-chat-md table {
+  margin: 0.9em 0;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.oru-chat-md th, .oru-chat-md td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-default);
+  text-align: left;
+}
+.oru-chat-md th {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.oru-chat-md img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+.oru-chat-md input[type='checkbox'] {
+  margin-right: 0.5em;
+  accent-color: var(--accent);
+}
+
+/* 脚注区：分隔线 + 小字号。react-markdown 会输出一个英文 "Footnotes" 标题
+   （自带 sr-only class 但本项目没生成该工具类），视觉上藏掉、读屏保留。 */
+.oru-chat-md .footnotes {
+  margin-top: 1.4em;
+  padding-top: 0.8em;
+  border-top: 1px solid var(--border-default);
+  font-size: 0.86em;
+  color: var(--text-secondary);
+}
+.oru-chat-md .footnotes > h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.oru-chat-md sup a { text-decoration: none; }
+
+/* KaTeX：块级公式留白；行内公式色彩继承正文（katex 用 currentColor） */
+.oru-chat-md .katex-display { margin: 0.9em 0; }
+
+/* highlight.js 配色 — 镜像 .oru-md 同套 token，避免耦合 */
+.oru-chat-md .hljs { color: var(--text-primary); background: transparent; }
+.oru-chat-md .hljs-comment, .oru-chat-md .hljs-quote { color: var(--text-tertiary); font-style: italic; }
+.oru-chat-md .hljs-keyword, .oru-chat-md .hljs-selector-tag, .oru-chat-md .hljs-built_in,
+.oru-chat-md .hljs-name, .oru-chat-md .hljs-tag { color: var(--accent); }
+.oru-chat-md .hljs-string, .oru-chat-md .hljs-title, .oru-chat-md .hljs-section,
+.oru-chat-md .hljs-attribute, .oru-chat-md .hljs-literal, .oru-chat-md .hljs-template-tag,
+.oru-chat-md .hljs-template-variable, .oru-chat-md .hljs-type, .oru-chat-md .hljs-addition { color: var(--success); }
+.oru-chat-md .hljs-number, .oru-chat-md .hljs-symbol, .oru-chat-md .hljs-bullet,
+.oru-chat-md .hljs-link, .oru-chat-md .hljs-meta, .oru-chat-md .hljs-deletion { color: var(--accent); }
+.oru-chat-md .hljs-emphasis { font-style: italic; }
+.oru-chat-md .hljs-strong { font-weight: 600; }
+
+/* CodeMirror 容器：去除默认聚焦边框，跟整体配色对齐 */
+.cm-editor {
+  background: var(--bg-canvas);
+}
+.cm-editor.cm-focused {
+  outline: none;
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/* AvatarPair — 主页用户 + Twin 双头像                          */
+/*                                                              */
+/* 几何：user 永远在左 (rest 0,12) scale 1.0 / 0.7 切前后        */
+/*      twin 永远在右 (rest 72,-8) scale 0.7 / 1.0              */
+/* swap：行星轨道半圈，中间 scale 0.85 飞向各自外侧不重叠         */
+/*                                                              */
+/* base transform 字符串与 keyframe 0%/100% 完全一致（含          */
+/* identity scale(1)），避免 forwards 退出闪烁                    */
+/* ──────────────────────────────────────────────────────────── */
+
+.oru-pair {
+  position: relative;
+  width: 196px;
+  height: 132px;
+}
+.oru-pair .planet {
+  position: absolute;
+  top: 0; left: 0;
+  width: 124px; height: 124px;
+  backface-visibility: hidden;
+}
+.oru-pair .planet[data-id="user"] {
+  --rest-x: 0px;
+  --rest-y: 12px;
+  --mid-x: -25px;
+  --mid-y: -10px;
+}
+.oru-pair .planet[data-id="twin"] {
+  --rest-x: 72px;
+  --rest-y: -8px;
+  --mid-x: 97px;
+  --mid-y: 14px;
+}
+
+/* 静态归位：仅 scale + z-index 跟 data-front 绑定，位置永不互换 */
+.oru-pair[data-front="user"] .planet[data-id="user"],
+.oru-pair[data-front="twin"] .planet[data-id="twin"] {
+  transform: translate(var(--rest-x), var(--rest-y)) scale(1);
+  z-index: 2;
+}
+.oru-pair[data-front="user"] .planet[data-id="twin"],
+.oru-pair[data-front="twin"] .planet[data-id="user"] {
+  transform: translate(var(--rest-x), var(--rest-y)) scale(0.7);
+  z-index: 1;
+}
+
+/* 行星轨道交换 keyframes */
+@keyframes oru-pair-recede {
+  0%   { transform: translate(var(--rest-x), var(--rest-y)) scale(1); z-index: 2; }
+  49%  { z-index: 2; }
+  50%  { transform: translate(var(--mid-x),  var(--mid-y))  scale(0.85); z-index: 1; }
+  100% { transform: translate(var(--rest-x), var(--rest-y)) scale(0.7); z-index: 1; }
+}
+@keyframes oru-pair-emerge {
+  0%   { transform: translate(var(--rest-x), var(--rest-y)) scale(0.7); z-index: 1; }
+  49%  { z-index: 1; }
+  50%  { transform: translate(var(--mid-x),  var(--mid-y))  scale(0.85); z-index: 2; }
+  100% { transform: translate(var(--rest-x), var(--rest-y)) scale(1); z-index: 2; }
+}
+
+.oru-pair[data-swapping="user-to-twin"] .planet[data-id="user"] {
+  animation: oru-pair-recede 0.55s cubic-bezier(.45,0,.55,1) forwards;
+}
+.oru-pair[data-swapping="user-to-twin"] .planet[data-id="twin"] {
+  animation: oru-pair-emerge 0.55s cubic-bezier(.45,0,.55,1) forwards;
+}
+.oru-pair[data-swapping="twin-to-user"] .planet[data-id="user"] {
+  animation: oru-pair-emerge 0.55s cubic-bezier(.45,0,.55,1) forwards;
+}
+.oru-pair[data-swapping="twin-to-user"] .planet[data-id="twin"] {
+  animation: oru-pair-recede 0.55s cubic-bezier(.45,0,.55,1) forwards;
+}
+
+/* 呼吸（独立内层 transform） */
+.oru-pair .breathe {
+  width: 100%; height: 100%;
+  position: relative;
+}
+@keyframes oru-pair-breathe-up   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes oru-pair-breathe-down { 0%,100% { transform: translateY(0); } 50% { transform: translateY( 3px); } }
+.oru-pair .planet[data-id="user"] .breathe { animation: oru-pair-breathe-up   5.4s ease-in-out infinite; }
+.oru-pair .planet[data-id="twin"] .breathe { animation: oru-pair-breathe-down 6.2s ease-in-out infinite -1.2s; }
+.oru-pair[data-swapping] .breathe,
+.oru-pair[data-paused] .breathe { animation-play-state: paused; }
+
+/* 头像本体 */
+.oru-pair .face {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 12px 32px rgba(40,30,15,0.10),
+    0 0 0 3px var(--bg-canvas);
+  transition: transform 0.25s cubic-bezier(.2,.8,.2,1);
+}
+.oru-pair .face img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.oru-pair .face .initial {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'New York', 'Source Serif Pro', Georgia, serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 56px;
+  user-select: none;
+}
+/* 用户 / Twin 默认头像背景色 */
+.oru-pair .face.user { background: var(--avatar-default-bg, #e8d5c4); }
+.oru-pair .face.twin { background: var(--avatar-default-bg, #e8d5c4); }
+
+/* 后位 hover 反馈：scale 1.06（叠加在 planet transform 之上） */
+.oru-pair .planet:not([data-front-self="true"]) .face:hover {
+  transform: scale(1.06);
+}
+
+/* 编辑徽章：仅 user 头像 hover 时显示（不论前后位都可点，触发 onEditUser） */
+.oru-pair .edit-badge {
+  position: absolute;
+  right: -2px; bottom: -2px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18), 0 0 0 3px var(--bg-canvas);
+  transform: scale(0.5) rotate(-15deg);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1), opacity 0.2s;
+  pointer-events: none;
+  z-index: 4;
+  border: 0;
+  cursor: pointer;
+}
+/* 编辑徽章跟随**前位**头像：仅 data-front-self="true" 的 planet 在 hover 时显示徽章；
+ * 后位的 planet hover 触发的是切换动画（mouseenter 已挂在外层），不应显示徽章 */
+.oru-pair .planet[data-front-self="false"] .edit-badge {
+  display: none;
+}
+.oru-pair .planet[data-front-self="true"]:hover .edit-badge {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  pointer-events: auto;
+}
+/* swap 期间不显示徽章（位置在飞，hover 不可靠）*/
+.oru-pair[data-swapping] .edit-badge {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 底部标签 */
+.oru-pair-labels {
+  position: absolute;
+  width: 100%;
+  top: calc(100% + 24px);
+  display: flex; justify-content: space-between;
+  pointer-events: none;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.oru-pair-labels .who {
+  font-family: 'New York', 'Source Serif Pro', Georgia, serif;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+/* prefers-reduced-motion: 关动效，瞬切 */
+@media (prefers-reduced-motion: reduce) {
+  .oru-pair .planet,
+  .oru-pair .breathe,
+  .oru-pair[data-swapping="user-to-twin"] .planet,
+  .oru-pair[data-swapping="twin-to-user"] .planet {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ResizeHandle 拖拽期间：屏蔽 webview 的鼠标事件
+   webview 是独立 guest 进程，鼠标进入它的区域时 mousemove/mouseup 被 guest 截走，
+   host 的 document listener 收不到 → onUp 永不触发 → cursor 卡死在 col-resize。
+   pointer-events: none 让事件穿透到 host document */
+body.oru-resizing webview {
+  pointer-events: none !important;
+}
+
+/* ─── 随手评点浮层（AsideOverlay）：全浮层仅两种入场动效 ─── */
+@keyframes aside-rise-in {
+  from { opacity: 0; transform: translateY(5px); }
+}
+@keyframes aside-ava-in {
+  from { opacity: 0; transform: scale(0.4); }
+}
+@keyframes aside-dot {
+  0%, 60%, 100% { opacity: 0.25; }
+  30% { opacity: 1; }
+}
+.aside-rise-in { animation: aside-rise-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+.aside-ava-in { animation: aside-ava-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+.aside-dot { animation: aside-dot 1.1s ease-in-out infinite backwards; }
+@media (prefers-reduced-motion: reduce) {
+  .aside-rise-in, .aside-ava-in, .aside-dot { animation: none !important; }
+  [data-aside-overlay] { transition: none !important; } /* 浮层换靶的 top/left 平移也瞬切 */
+}
+
+/* ─── 聚焦亮灯（夜间呼吸光晕）───
+   光晕画在伪元素上、只动 opacity：聚焦时绘制一次，逐帧仅合成层混合，不重绘不排版。
+   --lamp-halo 日间为空 → 伪元素不可见，日间视觉零变化。
+   宿主需自带定位（输入框 relative / 搜索框 absolute），本类不设 position 免得覆写宿主。 */
+.oru-lamp::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: var(--lamp-halo);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.oru-lamp:focus-within::after {
+  opacity: 1;
+  animation: oru-lamp-breathe 4s ease-in-out infinite;
+}
+@keyframes oru-lamp-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oru-lamp:focus-within::after { animation: none; }
+}
+
+/* 搜索命中跳转点亮：跳到那条消息后闪一圈赤陶环 */
+@keyframes oru-flash {
+  0%   { box-shadow: 0 0 0 3px var(--accent); }
+  18%  { box-shadow: 0 0 0 3px var(--accent-ring); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.oru-flash { animation: oru-flash 1.8s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 12px; }
+@media (prefers-reduced-motion: reduce) {
+  .oru-flash { animation: none !important; }
+}
+
+/* AgentChip 完成闪动：accent 光圈胀开再收（framer 不插值 var()，故走 CSS 动画随主题跟色） */
+@keyframes oru-chip-flash {
+  0%   { box-shadow: 0 0 0 0 transparent; }
+  50%  { box-shadow: 0 0 0 6px var(--accent-ring); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.oru-chip-flash { animation: oru-chip-flash 1s ease-in-out; }
+@media (prefers-reduced-motion: reduce) {
+  .oru-chip-flash { animation: none; }
+}
+
+/* AgentChip 角标运行晕圈（逐字取自设计稿 主界面骨架.dc.html 的 @keyframes oruHalo） */
+@keyframes oruHalo {
+  0%, 100% { transform: scale(0.77); opacity: 0.9; }
+  50%      { transform: scale(1);    opacity: 0.30; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oru-halo { animation: none !important; }
+}
+
+/* 「进行中」脉冲（同步角标光点 / 导出准备态进度）——1.2s 呼吸，表达"在忙、并非卡死" */
+@keyframes oru-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+.oru-pulse { animation: oru-pulse 1.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .oru-pulse { animation: none !important; }
+}
+
+/* PDF 文字层（pdfjs v4 TextLayer 覆盖在 canvas 上的透明可选文字）——
+   spans 由 pdfjs 用 calc(var(--scale-factor)*..px) 定位，容器须承接 --scale-factor（组件里设）。
+   文字透明、只为选字/搜索命中；高亮走 span 加类（PDF tech design §5.3，不走坐标 overlay）。 */
+.oru-pdf-textlayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  line-height: 1;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  z-index: 1;
+}
+.oru-pdf-textlayer span {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0 0;
+}
+.oru-pdf-textlayer ::selection {
+  background: var(--accent-ring);
+}
+.oru-pdf-hit {
+  background: var(--accent-soft);
+  border-radius: 2px;
+}
+.oru-pdf-hit-active {
+  background: var(--accent-ring);
+  border-radius: 2px;
+}

@@ -1,0 +1,299 @@
+{
+  "noAgent": "No agent available",
+  "noConversation": "No conversation available",
+  "toolActivity": {
+    "processing": "Processing…",
+    "edit": "Editing {{object}}",
+    "editBare": "Editing…",
+    "write": "Writing {{object}}",
+    "writeBare": "Writing…",
+    "read": "Reading {{object}}",
+    "readBare": "Reading…",
+    "readUrl": "Reading {{object}}",
+    "readUrlBare": "Reading…",
+    "search": "Searching {{object}}",
+    "searchBare": "Searching…",
+    "find": "Finding {{object}}",
+    "findBare": "Finding…",
+    "run": "Running {{object}}",
+    "runBare": "Running…"
+  },
+  "draft": {
+    "hello": "Hello",
+    "prompt": "What would you like to do today?"
+  },
+  "newConvTitle": "New conversation",
+  "sources": {
+    "toggle": "Sources · {{count}}"
+  },
+  "scrollToLatest": "Back to latest",
+  "asideRef": {
+    "label": "A reference",
+    "shotAlt": "Reference screenshot",
+    "zoom": "Click to enlarge"
+  },
+  "toolCall": {
+    "aria": "Tool call {{name}}, click to view details",
+    "input": "Input",
+    "result": "Result",
+    "resultError": "(error)",
+    "liveOutput": "Live output",
+    "candidates_one": "Candidates · viewed {{count}} image",
+    "candidates_other": "Candidates · viewed {{count}} images",
+    "candidateAlt": "Candidate {{n}}",
+    "imageAdded": "Image added",
+    "fromHost": " · from {{host}}",
+    "openInOru": "Open in Oru",
+    "bgRunning": "Running {{elapsed}}"
+  },
+  "fileChanges": {
+    "label": "File changes this turn",
+    "count_one": "{{count}} file",
+    "count_other": "{{count}} files",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "op": {
+      "create": "new",
+      "modify": "edited",
+      "delete": "deleted",
+      "move": "moved",
+      "rename": "renamed"
+    },
+    "otherProject": "In project \"{{name}}\" — switch to it to open"
+  },
+  "scheduledCard": {
+    "nextRun": "Next run {{when}}",
+    "manage": "Manage →"
+  },
+  "subagentCard": {
+    "status": {
+      "running": "Running",
+      "awaiting": "Awaiting you",
+      "done": "Done",
+      "failed": "Failed"
+    }
+  },
+  "subagentBar": {
+    "runningCount": "{{count}} in progress",
+    "awaitingCount": "· {{count}} awaiting you"
+  },
+  "compressed": {
+    "summary": "Summary",
+    "originalCount_one": "Compressed original ({{count}} message)",
+    "originalCount_other": "Compressed original ({{count}} messages)",
+    "messageGone": "[Message no longer exists: {{id}}]",
+    "noText": "(no text; contains tool calls)",
+    "rolePrefix": "{{role}}: ",
+    "roleUser": "User",
+    "roleAssistant": "{{name}}",
+    "roleSystem": "System"
+  },
+  "subagent": {
+    "sectionPrompt": "Prompt (instructions from the main agent to the subagent)",
+    "sectionInner": "Inner conversation",
+    "sectionFinal": "Final output",
+    "sectionError": "Failure reason",
+    "noInnerSteps": "(no inner steps yet)",
+    "thinking": "Thinking",
+    "awaitingApproval": "Awaiting approval",
+    "aria": "View subagent details: {{name}}",
+    "asyncTaskName": "Task",
+    "sectionPaths": "Changed files"
+  },
+  "skillModule": {
+    "opFailed": "Operation failed: {{error}}",
+    "unknownError": "Unknown error",
+    "pluginInstalled": "Installed plugin {{name}}",
+    "pluginUpdated": "Upgraded plugin {{name}}",
+    "pluginUninstalled": "Uninstalled plugin {{name}}",
+    "pluginActivated": "Activated the {{name}} plugin",
+    "skillCalled": "Used the {{name}} skill",
+    "skillCreated": "Created skill {{name}}",
+    "skillPatched": "Modified skill {{name}}",
+    "opDone": "Operation complete"
+  },
+  "loop": {
+    "status": {
+      "compiling": "Compiling acceptance criteria",
+      "running": "Loop running",
+      "round": "Round {{round}}",
+      "failed": "Failed",
+      "stoppedByUser": "Stopped",
+      "stoppedAtLimit": "Reached round limit",
+      "doneAllMet": "Loop complete · met at round {{round}}",
+      "interrupted": "Interrupted · stopped at round {{round}}",
+      "clarify": "Not started · a question awaits your reply"
+    },
+    "progress": "{{satisfied}} / {{total}} met",
+    "addItem": "Add item",
+    "addItemPlaceholder": "Add an acceptance criterion, press Enter…",
+    "addItemConfirm": "Add",
+    "interruptedHint": "This loop was interrupted. To pick it up, send another Loop message like \"continue\" — I'll re-derive the criteria from the progress shown above."
+  },
+  "memoryCard": {
+    "scope": {
+      "personal": "Personal",
+      "agent": "{{name}} relationship",
+      "project": "Project"
+    },
+    "scopePersona": "{{name}} self",
+    "type": {
+      "user-basic": "Basic info",
+      "user-trait": "Trait",
+      "self": "Self",
+      "episode": "Episode",
+      "fact": "Basic info",
+      "preference": "Basic info",
+      "persona": "Self"
+    },
+    "undoConfirm": "Undo this memory?\n\n“{{preview}}”",
+    "undoFailed": "Undo failed: {{error}}",
+    "revertFailed": "Can’t undo this one: {{error}}",
+    "undone": "Undone",
+    "recorded": "Recorded",
+    "undo": "Undo",
+    "revert": "Undo this edit",
+    "revertConfirm": "Undo this edit?\n\nThis rolls {{title}} back to how it was before this entry.",
+    "revertSuperseded": "This profile changed again afterwards — undoing would also wipe those later edits. To go back further, pick a version from the profile’s history.",
+    "sectionDeleted": "Removed this passage",
+    "wholeDocRewritten": "Rewrote {{title}} in full",
+    "sectionSep": ", ",
+    "sectionsAdded": "added “{{names}}”",
+    "sectionsChanged": "rewrote “{{names}}”",
+    "sectionsRemoved": "removed “{{names}}”",
+    "view": "View",
+    "gone": "This memory is no longer there — tidied away, replaced by a newer version, or deleted."
+  },
+  "askChoice": {
+    "multiHint": "(select multiple)",
+    "otherPlaceholder": "None of these — I'll say…",
+    "submit": "Submit",
+    "next": "Next question →",
+    "yourChoice": "Your choice",
+    "saidPrefix": "(I said) {{text}}",
+    "labelJoin": ", ",
+    "skipped": "Skipped",
+    "giveUp": "Give up this question",
+    "giveUpConfirm": "Give up this question? It will interrupt the turn — the reply so far stays as is, and you can keep chatting."
+  },
+  "circuitBreak": {
+    "title": "Auto-paused",
+    "reason": {
+      "consecutive-failures": "Repeated failures kept retrying — paused to stop a runaway loop.",
+      "high-frequency": "Tool calls got abnormally frequent — paused to stop a runaway loop."
+    },
+    "resume": "Continue",
+    "stop": "Stop"
+  },
+  "status": {
+    "aborted": "Interrupted",
+    "retry": "Retry",
+    "errored": "⚠ {{message}}",
+    "thinking": "Thinking…",
+    "callingTool": "Calling {{tool}}…",
+    "retrying": "🔁 Upstream error, retrying ({{attempt}}/{{max}})…",
+    "outputting": "Writing…",
+    "stopAria": "Stop generating",
+    "stop": "Stop"
+  },
+  "message": {
+    "steeringWithdrawing": "Withdrawing…",
+    "steeringQueued": "Will apply",
+    "withdraw": "Withdraw",
+    "scheduledTrigger": "Scheduled task",
+    "scheduledTriggerLabel": "Scheduled task · {{title}}",
+    "collapse": "Collapse",
+    "toolFold_one": "{{count}} tool",
+    "subagentFold_one": "{{count}} subagent",
+    "subagentFold_other": "{{count}} subagents",
+    "toolFold_other": "{{count}} tools",
+    "scheduledRun": "Scheduled task",
+    "scheduledRunLabel": {
+      "running": "Scheduled · {{title}} · running",
+      "ok": "Scheduled · {{title}} · done",
+      "error": "Scheduled · {{title}} · failed"
+    }
+  },
+  "backendNotReady": "Model backend not ready: {{hint}}",
+  "vision": {
+    "modelNotFound": "Can't find the model for this purpose — check Settings",
+    "needVisionFlag": "Edit this model in Settings to mark whether it supports vision",
+    "unsupported": "The current model doesn't support vision. Switch to a vision-capable model in Settings."
+  },
+  "input": {
+    "placeholder": "Say something to {{name}}…",
+    "visionUnsupported": "The current model doesn't support vision, so images can't be sent",
+    "visionDisabledShort": "Current model doesn't support vision",
+    "loopOn": "Loop mode on — click to cancel",
+    "loopOff": "Loop mode — work until the result meets the bar",
+    "loopRemove": "Turn off Loop mode",
+    "attach": "Attach image",
+    "send": "Send",
+    "removeRef": "Remove reference"
+  },
+  "pendingHandback": {
+    "heading": "These items were left unhandled — your call",
+    "readmit": "Admit",
+    "dismiss": "Dismiss",
+    "scheduled": "Scheduled task",
+    "taskCompleted": "Background task",
+    "channel": "Channel message"
+  },
+  "todo": {
+    "title": "Plan",
+    "stuckCount_one": "{{count}} stuck",
+    "stuckCount_other": "{{count}} stuck",
+    "noReason": "no reason given"
+  },
+  "dock": {
+    "pendingApproval": "Awaiting approval",
+    "prev": "Previous",
+    "next": "Next",
+    "approvalAnchor": "Awaiting approval · handle below",
+    "askAnchor": "Awaiting your answer · respond below",
+    "approvalCount_one": "{{count}} item",
+    "approvalCount_other": "{{count}} items"
+  },
+  "copy": {
+    "label": "Copy",
+    "done": "Copied"
+  },
+  "header": {
+    "live": "Active"
+  },
+  "slash": {
+    "modeReadonly": "readonly",
+    "modeWork": "work",
+    "modeDanger": "danger",
+    "modeUsage": "Usage: /mode readonly | work | danger",
+    "modeSwitched": "Switched to \"{{mode}}\".",
+    "modelTitle": "Main-chat model — switching is global (all main chats follow) and applies next turn",
+    "modelSwitchHint": "Type /model <number> to switch (e.g. /model 2)",
+    "currentMark": "current",
+    "modelSwitched": "Switched to \"{{label}}\" — global main-chat model, effective next turn (the running turn is unaffected).",
+    "modelUsage": "Usage: /model to list, /model <number> to switch (e.g. /model 2).",
+    "modelStale": "That number is stale — run /model again for the current list.",
+    "modelEmpty": "No models registered — add one in Settings.",
+    "compress": {
+      "compressed": "Compressed: earlier messages were folded into a summary, freeing up context.",
+      "fallback": "The summary model didn't respond, so earlier messages were dropped instead — context freed.",
+      "busy": "A turn is running — let it finish, then compress.",
+      "tooShort": "The conversation is still too short — nothing to compress.",
+      "nothingNew": "Nothing new to compress.",
+      "failed": "Compression failed — try again later."
+    },
+    "failed": "Command failed — try again later.",
+    "helpNew": "start a new conversation (this one stays in the list)",
+    "helpStop": "interrupt the running turn",
+    "helpMode": "set approval mode: /mode readonly | work | danger",
+    "helpModel": "list models; /model <number> to switch (global, next turn)",
+    "helpCompress": "compress this conversation's context now",
+    "helpHelp": "show this list",
+    "helpStatus": "show current status (model, mode, busy/queued)",
+    "statusLine": "{{agent}} · {{mode}} · {{model}} · {{state}}",
+    "statusIdle": "idle",
+    "statusBusy_one": "working, {{count}} queued",
+    "statusBusy_other": "working, {{count}} queued",
+    "statusDefaultModel": "default"
+  }
+}

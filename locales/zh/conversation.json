@@ -1,0 +1,32 @@
+{
+  "loading": "{{name}} 加载中…",
+  "newConv": "新对话",
+  "searchAria": "搜索",
+  "searchPlaceholder": "搜标题和聊天内容…",
+  "empty": "还没有对话",
+  "bucket": {
+    "today": "今天",
+    "week": "本周",
+    "earlier": "更早",
+    "archived": "已归档"
+  },
+  "deleteTitle": "彻底删除「{{title}}」？",
+  "deleteTitleFallback": "彻底删除？",
+  "deleteDesc": "此对话将被永久删除，无法在应用内恢复（聊天记录仍以 .bak 文件保留在磁盘）。",
+  "deletePermanent": "彻底删除",
+  "archiveTitle": "归档「{{title}}」",
+  "archiveTitleFallback": "归档对话",
+  "archive": "归档",
+  "archiveBody": "将归档此对话，若需彻底删除，请前往「已归档」区进行操作。",
+  "dontAskAgain": "不再提醒，以后直接归档",
+  "searching": "搜索中…",
+  "noResults": "没有命中「{{query}}」的对话",
+  "searchSummary": "<b>{{convs}}</b> 个对话 · <b>{{hits}}</b> 处命中",
+  "roleUser": "你",
+  "badgeTodo": "有要你处理的",
+  "badgeRunning": "进行中",
+  "badgeUnread": "有未验收的完成",
+  "renameAria": "重命名 {{title}}",
+  "deleteAria": "彻底删除 {{title}}",
+  "archiveAria": "归档 {{title}}"
+}

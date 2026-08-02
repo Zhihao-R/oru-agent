@@ -1,0 +1,47 @@
+{
+  "home": {
+    "switchFailed": "Failed to switch project: {{error}}",
+    "title": "Home",
+    "subtitle": "Current status of every project, plus a way into {{name}}'s Journal",
+    "userFallback": "You",
+    "journal": "{{name}}'s Journal",
+    "journalDesc": "{{name}}'s accumulated understanding of you — preferences, facts, recent notes",
+    "projectsHeading": "Projects overview",
+    "noProjects": "No projects added yet. Click + in the sidebar to add one.",
+    "noProgress": "(No progress written yet — {{name}} will keep it up to date the next time you chat about this project)"
+  },
+  "debug": {
+    "clearAllConfirm": "Clear all debug history? This can't be undone.",
+    "refresh": "Refresh",
+    "openDir": "Open data folder",
+    "clearAll": "Clear all history",
+    "loggingOff": "Debug logging is off — below is past history; new conversations won't be recorded. Turn it back on in Settings → Developer mode.",
+    "title": "Debug log",
+    "retentionHint": "Only the last 7 days are kept; older logs are cleaned up automatically",
+    "loadingTimeline": "Loading…",
+    "selectPrompt": "Select an action on the left to view"
+  },
+  "bench": {
+    "title": "Prompt Bench",
+    "hint": "The bench runs bare: it feeds only this system prompt plus your input — no tools, memory, or context assembly. Use it to compare prompt wording, not to gauge real conversation behavior.",
+    "category": {
+      "persona": "Persona",
+      "memory": "Memory",
+      "agent": "Agent",
+      "tasks": "Tasks",
+      "taskboard": "Taskboard"
+    },
+    "noModels": "(No models available — add one in Settings first)",
+    "systemContextLabel": "System context (temporary edits, not saved)",
+    "resetTitle": "Reset to the original text",
+    "reset": "Reset",
+    "yourInput": "Your input",
+    "inputPlaceholder": "Say something to it…",
+    "running": "Running…",
+    "run": "Run",
+    "runFailed": "Run failed: {{error}}",
+    "viewerEmpty": "Select a prompt on the left to view",
+    "loadFailed": "Failed to load: {{error}}",
+    "empty": "No prompts registered yet."
+  }
+}

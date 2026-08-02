@@ -1,0 +1,51 @@
+{
+  "title": "Notifications",
+  "allClear": "Nothing needs your attention — Oru has it all handled.",
+  "needAction": "Needs your attention",
+  "done": "Done",
+  "running": "In progress",
+  "runningFootnote_one": "{{count}} more subtask is running.",
+  "runningFootnote_other": "{{count}} more subtasks are running.",
+  "retry": "Retry",
+  "ignore": "Dismiss",
+  "missedScheduled": "Missed scheduled tasks",
+  "interrupted": "Interrupted",
+  "moreDone": "{{count}} more completed…",
+  "taskRunning": "Running…",
+  "oruReplying": "Oru is replying…",
+  "stop": "Stop",
+  "emptyNoTasks": "No task history yet. Ask Oru to change something, or schedule a task — once it runs, it'll show up here.",
+  "system": "System",
+  "desktop": {
+    "fallbackTitle": "Oru",
+    "awaiting-approval": "An action is waiting for your approval",
+    "awaiting-answer": "Oru is waiting for your answer",
+    "errored": "A conversation hit a problem — take a look",
+    "missed": "A scheduled task was missed"
+  },
+  "systemSignal": {
+    "channel-offline": "{{platform}} disconnected",
+    "credential-expired": "{{platform}} credential expired — re-authorize needed",
+    "storage-corruption": "Storage corruption detected: {{where}}",
+    "write-failed": "Disk write failed — output may not have been saved",
+    "scheduler-stalled": "The scheduler appears to have stalled",
+    "budget-warning": "Usage is nearing your budget — check Usage to see where it's going",
+    "budget-exhausted": "Usage has reached your budget limit — check Usage or adjust your budget in Settings",
+    "history-milestone-archived_one": "{{count}} history version aged out and was archived (still recoverable in history)",
+    "history-milestone-archived_other": "{{count}} history versions aged out and were archived (still recoverable in history)",
+    "history-conflict-recoverable_one": "{{count}} unsaved change from a conflict was kept in history — recoverable",
+    "history-conflict-recoverable_other": "{{count}} unsaved changes from conflicts were kept in history — recoverable",
+    "trashed-profile-found_one": "{{count}} profile document was deleted by an old bug and is still in the memory trash (recoverable within 30 days)",
+    "trashed-profile-found_other": "{{count}} profile documents were deleted by an old bug and are still in the memory trash (recoverable within 30 days)",
+    "platformName": {
+      "feishu": "Feishu",
+      "discord": "Discord"
+    }
+  },
+  "badgeExplain": "Badge {{total}} = {{need}} to handle + {{sys}} system · single source",
+  "reply": "Reply",
+  "view": "View",
+  "awaitingReply": "awaiting your reply",
+  "awaitingConfirm": "awaiting your confirmation",
+  "pendingReview": "pending review"
+}

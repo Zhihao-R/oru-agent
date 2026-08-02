@@ -1,0 +1,32 @@
+{
+  "loading": "Loading {{name}}…",
+  "newConv": "New conversation",
+  "searchAria": "Search",
+  "searchPlaceholder": "Search titles and messages…",
+  "empty": "No conversations yet",
+  "bucket": {
+    "today": "Today",
+    "week": "This week",
+    "earlier": "Earlier",
+    "archived": "Archived"
+  },
+  "deleteTitle": "Permanently delete “{{title}}”?",
+  "deleteTitleFallback": "Permanently delete?",
+  "deleteDesc": "This conversation will be permanently deleted and can't be recovered in the app (the chat log stays on disk as a .bak file).",
+  "deletePermanent": "Delete permanently",
+  "archiveTitle": "Archive “{{title}}”",
+  "archiveTitleFallback": "Archive conversation",
+  "archive": "Archive",
+  "archiveBody": "This conversation will be archived. To delete it permanently, go to the Archived section.",
+  "dontAskAgain": "Don't ask again; archive directly from now on",
+  "searching": "Searching…",
+  "noResults": "No conversations match “{{query}}”",
+  "searchSummary": "<b>{{convs}}</b> conversations · <b>{{hits}}</b> matches",
+  "roleUser": "You",
+  "badgeTodo": "Needs your attention",
+  "badgeRunning": "In progress",
+  "badgeUnread": "Completed, pending review",
+  "renameAria": "Rename {{title}}",
+  "deleteAria": "Permanently delete {{title}}",
+  "archiveAria": "Archive {{title}}"
+}

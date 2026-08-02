@@ -1,0 +1,163 @@
+{
+  "approval": {
+    "readonlyToolBlocked": "Read-only mode is on: {{tool}} would change your environment, so it was stopped. To allow it, switch {{name}} to Work mode and try again.",
+    "readonlyWriteDenied": "Read-only mode is on: {{tool}} may change your environment, so it was denied. To let it act, switch {{name}} to Work mode and try again."
+  },
+  "scheduled": {
+    "noActiveAgent": "No active Oru — can't trigger the scheduled task",
+    "runCard": {
+      "ok": "Scheduled task \"{{title}}\" finished in the background",
+      "error": "Scheduled task \"{{title}}\" failed"
+    },
+    "channelPushFailed": "The result of scheduled task \"{{title}}\" couldn't be pushed to the remote channel (network issue, or that chat is no longer valid); it's kept in this conversation only."
+  },
+  "loop": {
+    "compileFailed": "Something went wrong while preparing the acceptance criteria, so this loop didn't start. Just send it again in a moment."
+  },
+  "gitHint": "This project doesn't have git enabled, so {{name}}'s changes can't be rolled back in one click.",
+  "backend": {
+    "noUsableBackend": "No usable model backend yet — add a provider and assign a model in Settings, or sign in to Claude Code to reuse your local login."
+  },
+  "platform": {
+    "bindSuccess": "Binding successful — you can chat with me directly now.",
+    "userAuthLink": "Oru is requesting Feishu user authorization: open {{link}} to authorize (code {{code}}). The link is valid for {{minutes}} minutes.",
+    "notAuthenticated": "You're not authenticated with Oru yet. Generate a pairing code in Oru's Settings → Platforms on desktop and send it here to bind.",
+    "noRemoteDefault": "No default remote Oru is set in Oru's settings yet — pick one in settings, then chat.",
+    "approvalBlocked": "The current approval gear doesn't allow this step. Reply /mode danger to switch and I'll continue.",
+    "unsupportedMessage": "I can't read this kind of message yet — only text and images for now.",
+    "imageFailed": "I couldn't process that image (over 5MB or an unsupported format would also cause this) — please resend it.",
+    "visionUnsupported": "The current model can't view images, so I can't see what you sent — switch to a vision-capable model in Oru's settings and try again.",
+    "modeSwitched": "Switched to {{mode}} mode.",
+    "modeUsage": "Usage: /mode danger (full autonomy), /mode work (asks only on risky actions), or /mode readonly (look but don't touch).",
+    "modeNameReadonly": "Read-only",
+    "modeNameWork": "Work",
+    "modeNameDanger": "Danger",
+    "stopped": "Stopped.",
+    "newDone": "Fresh start. The previous conversation has been moved to Archived — our next message begins a new one.",
+    "newBusy": "I'm in the middle of something — send /stop first, then /new.",
+    "newNone": "There's no active conversation yet — just send a message to start one.",
+    "compressDone": "Compressed: earlier messages were folded into a summary, freeing up context.",
+    "compressDoneFallback": "Compressed: the summary model didn't respond, so earlier messages were dropped instead — context freed.",
+    "compressBusy": "I'm in the middle of a turn — let me finish, then /compress.",
+    "compressEmptyTooShort": "The conversation is still too short — nothing to compress.",
+    "compressEmptyNothingNew": "Nothing new since the last compression — nothing to compress.",
+    "compressFailed": "Compression failed (a message may be too large). The conversation is untouched — try again later.",
+    "compressNone": "No conversation yet — nothing to compress.",
+    "modelList": "Main-chat models (current: {{current}}):\n{{list}}\n\nReply /model <number> to switch (e.g. /model 2). This changes the global main-chat model — all of Oru's main chats (desktop included) follow, starting next turn.",
+    "modelCurrentMark": " (current)",
+    "modelSwitched": "Switched to \"{{label}}\", effective next turn (the running turn is unaffected). Note this is the global main-chat model: all of Oru's main chats (desktop included) follow.",
+    "modelUsage": "Usage: /model to list, /model <number> to switch (e.g. /model 2).",
+    "modelStale": "That number is stale — run /model again for the current list.",
+    "modelEmpty": "No models registered yet — add one in Oru's desktop settings.",
+    "statusBody": "Oru: {{agent}}\nApproval mode: {{mode}}\nModel: {{model}}\n{{state}}",
+    "statusIdle": "Status: idle — say anything.",
+    "statusBusy_one": "Status: working, {{count}} message queued.",
+    "statusBusy_other": "Status: working, {{count}} messages queued.",
+    "statusDefaultModel": "default (no model assigned)",
+    "help": "Commands I understand:\n/new — archive this conversation and start fresh\n/compress (or /compact) — compress context now\n/model — list models; /model <number> to switch (global, effective next turn)\n/mode readonly|work|danger — set approval mode\n/status — current status\n/stop — interrupt the running turn\n/help — this list",
+    "capabilityUnavailable": "That capability isn't wired up yet — try again later.",
+    "commandFailed": "That command failed — try again later."
+  },
+  "tableGate": {
+    "editorUnreachable": "The editor is not responding, so I cannot tell whether there are unsaved drafts — retry this operation shortly",
+    "draftUnsaved": "{{name}} still has unsaved changes in the editor, so acting now would work off the older version on disk. I stopped. Only the user can do this step — tell the user directly: this table has unsaved changes, please save it (⌘S) and I will carry on.",
+    "encodingNotUtf8": "{{path}} is not UTF-8 (GBK or with a BOM); writing UTF-8 content into it would produce a half-garbled file, so I stopped. Use convert_csv_encoding to raise a conversion proposal for it (converts in place to canonical UTF-8; it rewrites every byte of the file and the original encoding is not recoverable, so the user must confirm). Once the user confirms, re-read the file with read_file and then retry this step. If the user would rather not touch the original, ask whether to save a canonical copy instead."
+  },
+  "xlsxPreview": {
+    "noData": "No data found in this file",
+    "notFound": "File not found: {{path}}",
+    "readFailed": "Can't read this file: it may be encrypted or corrupted ({{reason}})"
+  },
+  "fileWrite": {
+    "overwriteGuardUnread": "Guard re-check rejected ({{guard}}): you haven't read {{path}} yet, so the write was cancelled to avoid a blind overwrite",
+    "editTargetGone": "Edit target no longer exists: {{path}}",
+    "editGuardChanged": "Guard re-check rejected ({{guard}}): the target section of {{path}} was changed away during approval, so the edit was cancelled",
+    "editNoChange": "The edit produced no change (the target snippet may have changed during approval): {{path}}",
+    "overwriteBaselineMoved": "In-lock baseline check rejected: {{path}} was modified (or removed) after it was read, so the overwrite was cancelled to avoid losing changes. Re-read the current content before writing",
+    "createPathOccupied": "In-lock check rejected: the target path {{path}} is already taken (it may have been created during approval), so the creation was cancelled. Read the existing content first",
+    "editTargetNotUnique": "In-lock re-check rejected: the text to replace now appears {{count}} times in {{path}}, so the edit was cancelled because the target is ambiguous. Re-read the current content and retry with more context",
+    "conflictDeferred": "{{path}} has an open conflict card: you and the user edited the same section and the user is deciding. I held this write — once the user decides, the system will hand you the outcome so you can re-decide against the new content. Feel free to do other things or wrap up this turn.",
+    "mutateTargetGone": "Move/rename target no longer exists: {{path}}",
+    "mutateNotInProject": "Move/rename only supports files inside a project; {{path}} is not under any registered project",
+    "moveCrossProject": "The move destination directory must be in the same project as the source: {{path}} (cross-project moves are not supported)",
+    "moveDestNotDir": "The move destination is not an existing directory — cancelled: {{path}}",
+    "mutate_conflict": "Target already exists — cancelled (never overwrites a name clash): {{path}}",
+    "mutate_invalid": "Illegal path (out of bounds / moving into its own subdirectory / illegal characters in name) — cancelled: {{path}}",
+    "mutate_not-found": "Source no longer exists (possibly deleted concurrently) — cancelled: {{path}}",
+    "mutate_incomplete": "Operation partially completed and could not finish cleanly — please check the state: {{path}}"
+  },
+  "mcp": {
+    "startFailed": "Server failed to start",
+    "updateFailedGoSettings": "{{error}} (config saved but the server failed to start — adjust it in Settings ▸ Extensions)",
+    "unknownReason": "unknown reason",
+    "probeFailed": "The downstream probe for MCP service \"{{label}}\" did not pass ({{reason}}). Tell the user: \"This MCP service can't reach its downstream — maybe Chrome doesn't have chrome://inspect/#remote-debugging enabled, or a similar dependency isn't ready. Want to check Settings ▸ External MCP services?\"",
+    "notReady": "MCP service \"{{label}}\" isn't ready yet (current status: {{status}}). Tell the user: \"{{label}} is still getting ready — try again shortly, or use web_search for now.\"",
+    "callFailed": "MCP tool call failed ({{tool}}): {{error}}",
+    "callCancelled": "MCP tool call cancelled ({{tool}})",
+    "reconnectFailed": "MCP service \"{{label}}\" didn't connect this time; it'll retry later — don't rely on it for now.",
+    "circuitOpen": "MCP service \"{{label}}\" failed to reconnect repeatedly and auto-retry is paused. Do not call this tool again, and tell the user to reconnect manually in Settings ▸ External MCP services."
+  },
+  "artifact": {
+    "updateBusyWhileRunning": "Oru is busy with the current task — wait for this turn to finish, then click \"Update from narrative\" again."
+  },
+  "chat": {
+    "emptyCompletion": "The model returned no content",
+    "emptyCompletionAfterReasoning": "The model reasoned for a while but gave no answer"
+  },
+  "memoryRevert": {
+    "changed-since": "This profile changed again after that entry — undoing now would also wipe those later edits. To go back further, pick a version from the profile’s history.",
+    "history-gone": "The version from before that entry is no longer in the history. Check the profile’s history for what remains.",
+    "ambiguous": "This profile has gone back and forth, so it is no longer clear which version to return to. Pick one from the profile’s history instead.",
+    "no-earlier-version": "There is no earlier version to go back to."
+  },
+  "proposalChip": {
+    "skillInstallOk": "Installed skill {{name}}",
+    "skillInstallFailed": "Failed to install skill: {{error}}",
+    "skillCreateOk": "Created skill {{name}}",
+    "skillCreateFailed": "Failed to create skill: {{error}}",
+    "skillPatchOk": "Updated skill {{name}}",
+    "skillPatchFailed": "Failed to update skill: {{error}}",
+    "pluginInstallOk": "Installed plugin {{name}}",
+    "pluginInstallFailed": "Failed to install plugin: {{error}}",
+    "pluginUninstallOk": "Uninstalled plugin {{name}}",
+    "pluginUninstallFailed": "Failed to uninstall plugin: {{error}}",
+    "pluginUpdateOk": "Updated plugin {{name}}",
+    "pluginUpdateFailed": "Failed to update plugin: {{error}}",
+    "warningSuffix": " (note: {{warnings}})",
+    "mcpConflictSkipped_one": "{{count}} bundled MCP server name clash (kept the existing one): {{names}}",
+    "mcpConflictSkipped_other": "{{count}} bundled MCP server name clashes (kept the existing ones): {{names}}",
+    "mcpStartFailed_one": "{{count}} bundled MCP server failed to start (check stderr on the Extensions page)",
+    "mcpStartFailed_other": "{{count}} bundled MCP servers failed to start (check stderr on the Extensions page)"
+  },
+  "proposalFailure": {
+    "skillInstallInFlight": "Skill {{id}} is already being installed — don't trigger it again",
+    "skillAlreadyInstalled": "Skill {{id}} is already installed",
+    "skillDestExists": "Target directory already exists: ~/.oru/skills/{{id}}",
+    "skillStatFailed": "Could not check the target directory: {{error}}",
+    "skillCloneFailed": "Could not fetch from the repository: {{error}}",
+    "skillMdNotFound": "No SKILL.md in the repository (neither at the root nor under skills/<x>/)",
+    "skillSourceGone": "Source directory is missing or has no SKILL.md: {{path}}",
+    "skillCopyFailed": "Could not copy into ~/.oru/skills/: {{error}}",
+    "skillRegisterFailed": "Could not register the skill: {{error}}",
+    "skillNameTaken": "Skill {{name}} already exists",
+    "skillWriteFailed": "Could not write to disk: {{error}}",
+    "skillNotFound": "No such skill: {{name}}",
+    "skillInPluginNotPatchable": "Skills inside a plugin can't be edited directly — edit the plugin's activation description instead",
+    "patchTargetReadFailed": "Could not read the target file: {{error}}",
+    "patchOldStringMissing": "The text to replace was not found (it may already have been changed)",
+    "patchOldStringAmbiguous": "The text to replace appears {{count}} times — not unique enough to locate",
+    "pluginAlreadyInstalled": "Plugin {{id}} is already installed in ~/.oru/plugins/",
+    "pluginStatFailed": "Could not check the target directory: {{error}}",
+    "pluginCloneFailed": "Could not fetch from the repository: {{error}}",
+    "pluginManifestWriteFailed": "Could not write .oru-plugin.json: {{error}}",
+    "pluginRegisterFailed": "Could not register the plugin: {{error}}",
+    "pluginNotFound": "No such plugin: {{id}}",
+    "pluginHasDependents": "Other things still depend on it — uninstall these first: {{dependents}}",
+    "pluginRemoveDirFailed": "Could not remove the directory: {{error}}",
+    "pluginGitFailed": "Could not fetch or check out that version: {{error}}",
+    "pluginReloadFailed": "Could not reload after the upgrade: {{error}}",
+    "mcpServerNotFound": "No such MCP server: {{serverId}}",
+    "mcpStartFailed": "The MCP server failed to start: {{error}}",
+    "mcpUpdateStartFailed": "{{error}} (config was updated but the server failed to start — adjust it under Settings ▸ Capabilities ▸ MCP)"
+  }
+}

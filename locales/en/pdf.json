@@ -1,0 +1,26 @@
+{
+  "loading": "Loading PDF…",
+  "page": {
+    "indicator": "Page {{current}} / {{total}}",
+    "jumpAria": "Jump to page"
+  },
+  "zoom": {
+    "out": "Zoom out",
+    "in": "Zoom in",
+    "fitWidth": "Fit width"
+  },
+  "search": {
+    "open": "Search",
+    "placeholder": "Search document",
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close search",
+    "count_one": "{{current}} of {{count}} match",
+    "count_other": "{{current}} of {{count}} matches",
+    "none": "No matches"
+  },
+  "error": {
+    "corrupt": "This file is damaged and cannot be opened",
+    "encrypted": "Password-protected PDFs are not supported yet"
+  }
+}

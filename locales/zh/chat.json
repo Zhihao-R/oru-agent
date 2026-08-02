@@ -1,0 +1,292 @@
+{
+  "noAgent": "没有可用的 agent",
+  "noConversation": "没有可用的 conversation",
+  "toolActivity": {
+    "processing": "正在处理…",
+    "edit": "改 {{object}}",
+    "editBare": "正在改…",
+    "write": "写 {{object}}",
+    "writeBare": "正在写…",
+    "read": "读取 {{object}}",
+    "readBare": "正在读取…",
+    "readUrl": "读 {{object}}",
+    "readUrlBare": "正在读…",
+    "search": "搜 {{object}}",
+    "searchBare": "正在搜…",
+    "find": "找 {{object}}",
+    "findBare": "正在找…",
+    "run": "跑 {{object}}",
+    "runBare": "正在跑…"
+  },
+  "draft": {
+    "hello": "你好",
+    "prompt": "今天想做点什么？"
+  },
+  "newConvTitle": "新对话",
+  "sources": {
+    "toggle": "来源 · {{count}}"
+  },
+  "scrollToLatest": "回到最新消息",
+  "asideRef": {
+    "label": "一次指认",
+    "shotAlt": "指认截图",
+    "zoom": "点击放大"
+  },
+  "toolCall": {
+    "aria": "工具调用 {{name}}，点击查看详情",
+    "input": "输入",
+    "result": "结果",
+    "resultError": "（错误）",
+    "liveOutput": "实时输出",
+    "candidates": "候选 · 看了 {{count}} 张",
+    "candidateAlt": "候选 {{n}}",
+    "imageAdded": "已配图",
+    "fromHost": " · 来源 {{host}}",
+    "openInOru": "在 Oru 中打开",
+    "bgRunning": "运行中 {{elapsed}}"
+  },
+  "fileChanges": {
+    "label": "本轮文件变更",
+    "count": "{{count}} 个文件",
+    "expand": "展开",
+    "collapse": "收起",
+    "op": {
+      "create": "新建",
+      "modify": "修改",
+      "delete": "删除",
+      "move": "移动",
+      "rename": "改名"
+    },
+    "otherProject": "属于项目「{{name}}」，切到该项目后可打开"
+  },
+  "scheduledCard": {
+    "nextRun": "下次运行 {{when}}",
+    "manage": "管理 →"
+  },
+  "subagentCard": {
+    "status": {
+      "running": "运行中",
+      "awaiting": "等你确认",
+      "done": "完成",
+      "failed": "失败"
+    }
+  },
+  "subagentBar": {
+    "runningCount": "{{count}} 个进行中",
+    "awaitingCount": "· {{count}} 个等你确认"
+  },
+  "compressed": {
+    "summary": "摘要",
+    "originalCount": "被压缩的原文（{{count}} 条）",
+    "messageGone": "[消息已不存在：{{id}}]",
+    "noText": "（无文本，含工具调用）",
+    "rolePrefix": "{{role}}：",
+    "roleUser": "用户",
+    "roleAssistant": "{{name}}",
+    "roleSystem": "系统"
+  },
+  "subagent": {
+    "sectionPrompt": "Prompt（主 agent 给 subagent 的指令）",
+    "sectionInner": "内部对话",
+    "sectionFinal": "最终输出",
+    "sectionError": "失败原因",
+    "noInnerSteps": "（暂无内部步骤）",
+    "thinking": "思考中",
+    "awaitingApproval": "等待审批",
+    "aria": "查看 subagent 详情：{{name}}",
+    "asyncTaskName": "任务",
+    "sectionPaths": "改动文件"
+  },
+  "skillModule": {
+    "opFailed": "操作失败：{{error}}",
+    "unknownError": "未知错误",
+    "pluginInstalled": "已安装 plugin {{name}}",
+    "pluginUpdated": "已升级 plugin {{name}}",
+    "pluginUninstalled": "已卸载 plugin {{name}}",
+    "pluginActivated": "激活了 {{name}} plugin",
+    "skillCalled": "用了 {{name}} skill",
+    "skillCreated": "已新建 skill {{name}}",
+    "skillPatched": "已修改 skill {{name}}",
+    "opDone": "操作完成"
+  },
+  "loop": {
+    "status": {
+      "compiling": "拆解验收标准中",
+      "running": "循环进行中",
+      "round": "第 {{round}} 轮",
+      "failed": "失败",
+      "stoppedByUser": "已停止",
+      "stoppedAtLimit": "已到轮数上限",
+      "doneAllMet": "循环完成 · 第 {{round}} 轮达标",
+      "interrupted": "被打断 · 停在第 {{round}} 轮",
+      "clarify": "没开跑 · 有个问题等你补充"
+    },
+    "progress": "{{satisfied}} / {{total}} 项达标",
+    "addItem": "加一项",
+    "addItemPlaceholder": "补一条验收标准，回车加入…",
+    "addItemConfirm": "加入",
+    "interruptedHint": "上次这个 Loop 被打断了。想接着做，就再发一条带 Loop 标记的「继续」——我会带着上面这些进度重新拆标准。"
+  },
+  "memoryCard": {
+    "scope": {
+      "personal": "个人",
+      "agent": "{{name}} 关系",
+      "project": "项目"
+    },
+    "scopePersona": "{{name}} 自我",
+    "type": {
+      "user-basic": "基本情况",
+      "user-trait": "特质叙述",
+      "self": "自我",
+      "episode": "事件",
+      "fact": "基本情况",
+      "preference": "基本情况",
+      "persona": "自我"
+    },
+    "undoConfirm": "撤销这条记忆？\n\n\"{{preview}}\"",
+    "undoFailed": "撤销失败：{{error}}",
+    "revertFailed": "这次撤不了：{{error}}",
+    "undone": "已撤销",
+    "recorded": "已记下",
+    "undo": "撤销",
+    "revert": "撤回这次修改",
+    "revertConfirm": "撤回这次修改？\n\n这会把《{{title}}》退回到这次记录之前。",
+    "revertSuperseded": "这份档案之后又改过了——撤回会连带抹掉后来的改动。要回到更早的版本，在档案里翻「历史版本」自己挑。",
+    "sectionDeleted": "删掉了这段",
+    "wholeDocRewritten": "整篇重写了《{{title}}》",
+    "sectionSep": "，",
+    "sectionsAdded": "新增「{{names}}」",
+    "sectionsChanged": "改写「{{names}}」",
+    "sectionsRemoved": "删除「{{names}}」",
+    "view": "查看",
+    "gone": "这条记忆已经不在了——被整理掉、被更新的版本取代，或是已删除。"
+  },
+  "askChoice": {
+    "multiHint": "（可多选）",
+    "otherPlaceholder": "都不是，我自己说…",
+    "submit": "提交",
+    "next": "下一问 →",
+    "yourChoice": "你的选择",
+    "saidPrefix": "（我说）{{text}}",
+    "labelJoin": "，",
+    "skipped": "跳过",
+    "giveUp": "放弃这题",
+    "giveUpConfirm": "放弃这道题？中断后对话可继续，刚才这场回复会停在半截。"
+  },
+  "circuitBreak": {
+    "title": "已自动暂停",
+    "reason": {
+      "consecutive-failures": "连续多次失败仍在重试，为防失控循环已停下。",
+      "high-frequency": "短时间内工具调用异常频繁，为防失控循环已停下。"
+    },
+    "resume": "继续放行",
+    "stop": "停止"
+  },
+  "status": {
+    "aborted": "已中断",
+    "retry": "重试",
+    "errored": "⚠ {{message}}",
+    "thinking": "正在思考…",
+    "callingTool": "正在调用 {{tool}}…",
+    "retrying": "🔁 上游错误，正在重试 ({{attempt}}/{{max}})…",
+    "outputting": "正在输出…",
+    "stopAria": "停止生成",
+    "stop": "停止"
+  },
+  "message": {
+    "steeringWithdrawing": "撤回中…",
+    "steeringQueued": "将生效",
+    "withdraw": "撤回",
+    "scheduledTrigger": "定时任务",
+    "scheduledTriggerLabel": "定时任务 · {{title}}",
+    "collapse": "收起",
+    "toolFold": "{{count}} 个工具",
+    "subagentFold": "{{count}} 个 subagent",
+    "scheduledRun": "定时任务",
+    "scheduledRunLabel": {
+      "running": "定时任务 · {{title}} · 执行中",
+      "ok": "定时任务 · {{title}} · 已完成",
+      "error": "定时任务 · {{title}} · 执行失败"
+    }
+  },
+  "backendNotReady": "模型未就绪：{{hint}}",
+  "vision": {
+    "modelNotFound": "找不到当前用途模型，请去 设置 › 模型 检查",
+    "needVisionFlag": "请去 设置 › 模型 编辑此模型，标明是否支持视觉",
+    "unsupported": "当前模型不支持视觉。在 设置 › 模型 切到支持视觉的模型即可。"
+  },
+  "input": {
+    "placeholder": "跟{{name}}说点什么…",
+    "visionUnsupported": "当前模型不支持视觉，无法发送图片",
+    "visionDisabledShort": "当前模型不支持视觉",
+    "loopOn": "Loop 模式已开启 —— 点击取消",
+    "loopOff": "Loop 模式 —— 对照标准把活干到达标",
+    "loopRemove": "取消 Loop 模式",
+    "attach": "附加图片",
+    "send": "发送",
+    "removeRef": "移除引用"
+  },
+  "pendingHandback": {
+    "heading": "以下几项在中断时未处理，交你发落",
+    "readmit": "放行",
+    "dismiss": "清掉",
+    "scheduled": "定时任务",
+    "taskCompleted": "后台任务",
+    "channel": "渠道消息"
+  },
+  "todo": {
+    "title": "计划清单",
+    "stuckCount": "{{count}} 项卡住",
+    "noReason": "未说明原因"
+  },
+  "dock": {
+    "pendingApproval": "待审批",
+    "prev": "上一条",
+    "next": "下一条",
+    "approvalAnchor": "待审批 · 请于下方处理",
+    "askAnchor": "等你回答 · 请于下方处理",
+    "approvalCount": "{{count}} 项"
+  },
+  "copy": {
+    "label": "复制",
+    "done": "已复制"
+  },
+  "header": {
+    "live": "进行中"
+  },
+  "slash": {
+    "modeReadonly": "只读挡",
+    "modeWork": "工作挡",
+    "modeDanger": "危险挡",
+    "modeUsage": "用法：/mode readonly（只读）、work（工作）、danger（危险）",
+    "modeSwitched": "已切到「{{mode}}」。",
+    "modelTitle": "主对话模型——切换是全局的（所有主对话一起换），下一轮生效",
+    "modelSwitchHint": "输入 /model 编号 切换（如 /model 2）",
+    "currentMark": "当前",
+    "modelSwitched": "已切到「{{label}}」——全局主对话模型，下一轮生效（正在跑的这轮不受影响）。",
+    "modelUsage": "用法：/model 看清单，/model 编号 切换（如 /model 2）。",
+    "modelStale": "这个编号已失效，重新 /model 看最新清单。",
+    "modelEmpty": "还没注册模型——去设置里添加。",
+    "compress": {
+      "compressed": "已压缩：早期内容整理成了摘要，上下文已腾出。",
+      "fallback": "摘要模型没调通，改为直接丢弃了早期内容，上下文已腾出。",
+      "busy": "正在跑活，等这轮说完再压。",
+      "tooShort": "对话还太短，没什么可压的。",
+      "nothingNew": "没有新内容可压。",
+      "failed": "压缩失败，请稍后再试。"
+    },
+    "failed": "命令执行失败，请稍后再试。",
+    "helpNew": "开新对话（当前这段保留在列表里）",
+    "helpStop": "打断正在跑的活",
+    "helpMode": "切审批挡位：/mode readonly | work | danger",
+    "helpModel": "看模型清单；/model 编号 切换（全局，下一轮生效）",
+    "helpCompress": "立刻压缩当前对话上下文",
+    "helpHelp": "看这份清单",
+    "helpStatus": "看当前状态（模型、挡位、忙闲与排队）",
+    "statusLine": "{{agent}} · {{mode}} · {{model}} · {{state}}",
+    "statusIdle": "空闲",
+    "statusBusy_one": "正在跑活，{{count}} 条排队",
+    "statusBusy_other": "正在跑活，{{count}} 条排队",
+    "statusDefaultModel": "默认档"
+  }
+}

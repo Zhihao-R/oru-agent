@@ -1,0 +1,279 @@
+{
+  "launcher": {
+    "welcomeFallback": "你好。今天想从哪儿开始？",
+    "inputPlaceholder": "跟 {{name}} 说点什么…",
+    "recentLabel": "最近",
+    "loopTooltip": "连续模式",
+    "attachTooltip": "附件",
+    "sendAria": "发送",
+    "scrollHint": "向下看手账",
+    "greetings": {
+      "earlyMorning": [
+        {
+          "heading": "这么早就醒了。"
+        },
+        {
+          "heading": "清晨好。",
+          "sub": "天刚亮，不急着做什么，先醒一醒。"
+        },
+        {
+          "heading": "早，天还凉着。"
+        },
+        {
+          "heading": "天刚蒙蒙亮。"
+        },
+        {
+          "heading": "早。",
+          "sub": "醒了也先别急着看消息。"
+        },
+        {
+          "heading": "这么早，四下还很安静。"
+        }
+      ],
+      "morning": [
+        {
+          "heading": "早上好。今天想从哪儿开始？"
+        },
+        {
+          "heading": "早上好。",
+          "sub": "吃过早饭了吗？"
+        },
+        {
+          "heading": "新的一天。"
+        },
+        {
+          "heading": "早。",
+          "sub": "不用急，慢慢开始就好。"
+        },
+        {
+          "heading": "早上好。",
+          "sub": "睡得还好吗？"
+        },
+        {
+          "heading": "又是一天。",
+          "sub": "想过成什么样，你说了算。"
+        },
+        {
+          "heading": "上午好。"
+        },
+        {
+          "heading": "新的一天，从容一点。"
+        }
+      ],
+      "noon": [
+        {
+          "heading": "中午了，先吃点东西？"
+        },
+        {
+          "heading": "晌午好。",
+          "sub": "吃了饭歇一会儿，不着急。"
+        },
+        {
+          "heading": "到饭点了。"
+        },
+        {
+          "heading": "忙了一上午，停下来喘口气。"
+        }
+      ],
+      "afternoon": [
+        {
+          "heading": "下午好。想聊点什么？"
+        },
+        {
+          "heading": "午后了，有点困也正常。",
+          "sub": "不急，慢慢来。"
+        },
+        {
+          "heading": "午后，做点轻松的也不错。"
+        },
+        {
+          "heading": "下午好。",
+          "sub": "犯困的话，眯一会儿也行。"
+        }
+      ],
+      "lateAfternoon": [
+        {
+          "heading": "下午好。要不要给自己倒杯茶？"
+        },
+        {
+          "heading": "下午过半了。",
+          "sub": "今天还顺利吗？"
+        },
+        {
+          "heading": "太阳偏西了。"
+        },
+        {
+          "heading": "一天快过去大半了。"
+        },
+        {
+          "heading": "下午好。",
+          "sub": "累了就歇会儿，别硬撑。"
+        },
+        {
+          "heading": "快到傍晚了。"
+        }
+      ],
+      "evening": [
+        {
+          "heading": "傍晚了。今天辛苦了。"
+        },
+        {
+          "heading": "天快黑了。",
+          "sub": "忙了一天，先松口气。"
+        },
+        {
+          "heading": "傍晚好。",
+          "sub": "今天过得还行吗？"
+        },
+        {
+          "heading": "到点了。今天先到这儿吧。"
+        }
+      ],
+      "night": [
+        {
+          "heading": "晚上好。今天过得怎么样？"
+        },
+        {
+          "heading": "晚上好。",
+          "sub": "不着急，想到什么就说。"
+        },
+        {
+          "heading": "夜里安静下来了。"
+        },
+        {
+          "heading": "忙完了吗？",
+          "sub": "今天到这儿，也差不多了。"
+        },
+        {
+          "heading": "晚上好。",
+          "sub": "忙的累的，先放一放。"
+        },
+        {
+          "heading": "入夜了。"
+        }
+      ],
+      "lateNight": [
+        {
+          "heading": "这么晚还没睡？"
+        },
+        {
+          "heading": "夜深了。",
+          "sub": "有什么放不下的，说给我听。"
+        },
+        {
+          "heading": "凌晨了。",
+          "sub": "别熬太久，早点休息。"
+        },
+        {
+          "heading": "还没休息呀。"
+        },
+        {
+          "heading": "这个点还醒着，是睡不着吗？"
+        },
+        {
+          "heading": "夜很深了。",
+          "sub": "明天的事，明天再说。"
+        }
+      ]
+    }
+  },
+  "night": {
+    "heading": "昨夜",
+    "detailsLabel": "明细（{{count}} 笔）›",
+    "detailsCollapse": "收起明细",
+    "evidence": "依据 ›",
+    "olderNights": "往期 {{count}} 篇 ›",
+    "forecast": "今晚我会把这几天的记录翻一翻，写下第一篇夜记。",
+    "zeroData": "还没有值得写下的夜记——我们多聊几次，我会在某个夜里开始动笔。",
+    "runNow": "现在就整理一次 ›",
+    "running": "整理中…",
+    "runFailed": "整理没跑成，再试一次 ›"
+  },
+  "about": {
+    "you": "关于你",
+    "self": "关于 {{name}}",
+    "revision": "修订 {{date}}",
+    "expand": "展开 ›",
+    "moreSections_one": "另有 {{count}} 则小节",
+    "moreSections_other": "另有 {{count}} 则小节",
+    "editTooltip": "编辑资料（改名 / 换头像）"
+  },
+  "projects": {
+    "heading": "正在做的",
+    "emptyAdd": "+ 添加项目"
+  },
+  "notes": {
+    "heading": "笔记",
+    "countSummary": "最近 {{shown}} / 共 {{total}}",
+    "filterAll": "全部类型",
+    "moreNotes": "翻旧账 · 收起了 {{count}} 条",
+    "retired": "已整理掉 {{count}} 条",
+    "deleteTitle": "删除这条笔记"
+  },
+  "toc": {
+    "night": "昨夜",
+    "about": "关于",
+    "projects": "正在做的",
+    "notes": "笔记",
+    "top": "开始"
+  },
+  "editProfile": {
+    "title": "编辑资料",
+    "yourName": "你的称呼",
+    "oruName": "Oru 的名字",
+    "hint": "点头像可更换、裁剪。",
+    "cancel": "取消",
+    "save": "保存",
+    "counter": "{{n}} / 20"
+  },
+  "noteDetail": {
+    "source": "来源",
+    "evolution": "演化",
+    "viewOriginal": "查看原文 ›",
+    "deleteTitle": "删除这条笔记",
+    "close": "关闭",
+    "evidenceLabel": "校对依据",
+    "predecessorLabel": "前一版"
+  },
+  "aboutFull": {
+    "eyebrow": "手账 · 档案",
+    "eyebrowEditing": "手账 · 档案 · 编辑中",
+    "lastRevised": "{{name}} 最后修订于 {{date}}",
+    "edit": "编辑",
+    "done": "完成",
+    "cancel": "取消",
+    "history": "历史版本",
+    "close": "关闭",
+    "discardConfirm": "放弃本次修改？此次改动和版本都不保留。",
+    "hist": {
+      "title": "修改历史",
+      "empty": "还没有历史版本。改动一会儿后会自动保存。",
+      "restore": "恢复",
+      "byYou": "你修订了档案",
+      "byOru": "Oru 补充",
+      "byOther": "留了一版",
+      "today": "今天 {{hm}}",
+      "date": "{{month}} 月 {{day}} 日 {{hm}}"
+    }
+  },
+  "projectDetail": {
+    "eyebrow": "手账 · 项目",
+    "start": "开工 →",
+    "eyebrowEditing": "「手账 · 项目 · 编辑中」"
+  },
+  "nights": {
+    "title": "往期夜记",
+    "weekCount": "本周 {{count}} 篇",
+    "perNight": "{{count}} 笔",
+    "archiveNote": "更早的夜记按月归档，滚动加载。"
+  },
+  "filter": {
+    "title": "筛选笔记",
+    "typeLabel": "类型",
+    "tagLabel": "标签",
+    "all": "全部",
+    "clear": "清空",
+    "apply": "应用"
+  },
+  "revisionDate": "{{month}}·{{day}}"
+}

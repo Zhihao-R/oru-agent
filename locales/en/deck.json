@@ -1,0 +1,113 @@
+{
+  "adoptFailed": "Couldn't add to deck",
+  "history": {
+    "kind": {
+      "initial": "Initial version",
+      "inline": "Inline edit",
+      "ai": "Oru's edit",
+      "protective": "Snapshot",
+      "reorder": "Page reorder",
+      "batch": "Batch edit"
+    },
+    "today": "Today {{hm}}",
+    "date": "{{month}}/{{day}} {{hm}}",
+    "firstGen": "First generated",
+    "changedPages": "Changed pages {{pages}}",
+    "title": "Version history",
+    "description": "Pick an earlier point in time to restore the whole slide deck. Auto-saved versions survive even if the app is closed or crashes.",
+    "alreadyThis": "Already this version",
+    "restore": "Restore this version",
+    "empty": "No versions yet.",
+    "current": "Current",
+    "pickPrompt": "Pick a point in time on the left to see what that version looked like.",
+    "thisOldVersion": "This old version · {{time}}",
+    "rendering": "Rendering this version…",
+    "thumbAlt": "Version thumbnail {{n}}",
+    "noPages": "This version has no pages to render.",
+    "missingImages": "Images referenced by this old version are gone; these spots will be empty after restoring:",
+    "restoreAnyway": "Restore anyway (leave these images empty)"
+  },
+  "controls": {
+    "switchDeck": "Switch deck",
+    "historyTitle": "Version history (recover old slides)",
+    "history": "History",
+    "immersiveTitle": "Immersive (or press F; press F again for OS fullscreen)",
+    "immersive": "Immersive",
+    "fullscreenTitle": "OS fullscreen (takes over the whole screen)",
+    "fullscreen": "Fullscreen",
+    "closeTabTitle": "Close deck tab (the deck file won't be deleted)",
+    "noDeck": "No deck yet",
+    "export": {
+      "menuTitle": "Export HTML / PDF / PPT",
+      "export": "Export",
+      "exporting": "Exporting",
+      "disabledCompare": "Can't export in compare mode — save or discard changes first",
+      "disabledEmpty": "Generate the deck before exporting",
+      "failed": "Export failed",
+      "failedWith": "Export failed: {{message}}",
+      "pickScale": "{{format}} · choose resolution",
+      "htmlInline": { "label": "HTML · single file", "hint": "Images and fonts inlined; double-click to open, easy to share" },
+      "htmlZip": { "label": "HTML · zip bundle", "hint": "Keeps the asset structure; unzip and open in a browser" },
+      "pdf": { "label": "PDF", "hint": "For final delivery and printing; opens anywhere" },
+      "pptx": { "label": "PPT", "hint": "Image-based; crisp for presenting, text not editable" }
+    },
+    "scale": {
+      "standard": { "label": "Standard", "hint": "For on-screen viewing; smallest file" },
+      "hd": { "label": "HD", "hint": "Crisp for projection, printing, or zooming in (recommended)" },
+      "uhd": { "label": "Ultra HD", "hint": "Maximum sharpness; larger file" }
+    }
+  },
+  "preview": {
+    "exitFullscreen": "Exit fullscreen (back to immersive)",
+    "exitImmersive": "Exit immersive (back to editing)"
+  },
+  "updateAnnots": {
+    "title_one": "{{count}} annotation on this deck is still unhandled",
+    "title_other": "{{count}} annotations on this deck are still unhandled",
+    "description": "Updating changes pages to match the narrative, which may misplace or invalidate these annotations.",
+    "narrativeOnly": "Update from narrative only",
+    "withAnnots": "Apply annotations too",
+    "body": "Apply these annotations in this update too? “Apply annotations too” folds them into the same submission."
+  },
+  "exportProgress": {
+    "title": "Exporting {{format}}",
+    "description": "The interface will be slower while exporting — please wait, or cancel.",
+    "cancel": "Cancel export",
+    "rendering": "Rendering page by page…",
+    "preparing": "Preparing…",
+    "pageCount": "{{done}} / {{total}} pages"
+  },
+  "center": {
+    "tabPreview": "Preview",
+    "tabNarrative": "Narrative",
+    "narrativeHistoryTitle": "Narrative version history",
+    "history": "History",
+    "submissionBusy": "An edit is in progress — try again once it's done",
+    "generate": "Generate deck from narrative",
+    "generating": "Generating…",
+    "generateQueued": "Queued…",
+    "update": "Update deck"
+  },
+  "outline": {
+    "pageTitle": "Page {{n}}",
+    "prevPage": "Previous page (←)",
+    "nextPage": "Next page (→)"
+  },
+  "list": {
+    "heading": "Decks",
+    "empty": "No decks yet. Create one in a conversation.",
+    "closeTitle": "Close preview (file kept)"
+  },
+  "emptyState": {
+    "nothing": "Nothing here yet",
+    "generate": "Generate deck from narrative",
+    "generating": "Generating…",
+    "generateQueued": "Queued…"
+  },
+  "generate": {
+    "noConversation": "No conversation is selected — open one before generating"
+  },
+  "narrative": {
+    "loading": "Loading…"
+  }
+}

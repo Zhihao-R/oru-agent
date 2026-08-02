@@ -1,0 +1,78 @@
+{
+  "episodeType": {
+    "user": "Fact",
+    "feedback": "Convention",
+    "project": "Project",
+    "reference": "Lead",
+    "agent": "Reflection"
+  },
+  "events": {
+    "heading": "Notes",
+    "noMatch": "(no matching notes)",
+    "collapse": "Collapse",
+    "retiredCount_one": "{{count}} entry tidied away",
+    "retiredCount_other": "{{count}} entries tidied away",
+    "filter": "Filter",
+    "all": "All",
+    "category": "Category",
+    "tags": "Tags",
+    "clear": "Clear",
+    "noTitle": "(untitled)",
+    "userMemo": "Memo",
+    "deleteThis": "Delete this",
+    "predecessor": "What you thought before",
+    "correctionEvidence": "Correction basis",
+    "correctedNote": "dream revised this on {{date}}; see “Tidying log” below for details."
+  },
+  "nightlog": {
+    "heading": "Tidying log",
+    "subtitle": "dream — Oru's nightly tidying. A short entry each night, with every change it made collected under “Details”.",
+    "dateLabel": "{{month}}/{{day}}, pre-dawn",
+    "details_one": "Details ({{count}} change)",
+    "details_other": "Details ({{count}} changes)"
+  },
+  "bullet": {
+    "editAria": "Edit this",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "facts": {
+    "heading": "Basic info",
+    "addPlaceholder": "Add a detail"
+  },
+  "doc": {
+    "impressionEditAria": "Edit impression",
+    "impressionEmpty": "(No overall impression written yet — it'll appear with use)",
+    "sectionEditAria": "Edit the \"{{title}}\" section",
+    "deleteSection": "Delete this section",
+    "addSection": "New section",
+    "newSectionTitle": "Section title",
+    "create": "Create",
+    "sectionEmpty": "(This section is empty)"
+  },
+  "portrait": {
+    "heading": "Traits",
+    "editAria": "Edit traits",
+    "empty": "({{name}} hasn't written your traits yet — they'll appear after a few more chats)"
+  },
+  "self": {
+    "editAria": "Edit {{name}}'s self",
+    "empty": "({{name}} hasn't written down what it's like yet — click ✎ to write one)"
+  },
+  "projects": {
+    "heading": "Active projects",
+    "basic": "Basics",
+    "addBasic": "Add a basic detail",
+    "conventions": "Conventions",
+    "addConvention": "Add a convention",
+    "progress": "Current progress",
+    "noProgress": "(dream hasn't tidied this project's progress yet)"
+  },
+  "journalTitle": "{{name}}'s Journal",
+  "lastTidied": "Last tidied · {{date}}",
+  "aboutYou": "About you",
+  "userChar": "You",
+  "aboutSelf": "About {{name}}",
+  "colophon": "Written by {{name}} on {{date}}",
+  "colophonDate": "{{month}}/{{day}}"
+}

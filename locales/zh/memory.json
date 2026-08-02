@@ -1,0 +1,76 @@
+{
+  "episodeType": {
+    "user": "事实",
+    "feedback": "约定",
+    "project": "项目",
+    "reference": "线索",
+    "agent": "反思"
+  },
+  "events": {
+    "heading": "笔记",
+    "noMatch": "（没有匹配的笔记）",
+    "collapse": "收起",
+    "retiredCount": "已整理掉 {{count}} 条",
+    "filter": "筛选",
+    "all": "全部",
+    "category": "类别",
+    "tags": "标签",
+    "clear": "清空",
+    "noTitle": "（无标题）",
+    "userMemo": "嘱记",
+    "deleteThis": "删除这条",
+    "predecessor": "之前你是这么想的",
+    "correctionEvidence": "校对依据",
+    "correctedNote": "{{date}} dream 校对过这条；明细见下方「整理记录」。"
+  },
+  "nightlog": {
+    "heading": "整理记录",
+    "subtitle": "dream——Oru 的夜间整理。每晚写一段，动过的每一笔收在「明细」里。",
+    "dateLabel": "{{month}} 月 {{day}} 日凌晨",
+    "details": "明细（{{count}} 笔）"
+  },
+  "bullet": {
+    "editAria": "编辑这条",
+    "edit": "改这条",
+    "delete": "删这条"
+  },
+  "facts": {
+    "heading": "基本情况",
+    "addPlaceholder": "加一条基本情况"
+  },
+  "doc": {
+    "impressionEditAria": "改印象",
+    "impressionEmpty": "（还没写下整体印象——多用几次后会自然出现）",
+    "sectionEditAria": "改「{{title}}」这一节",
+    "deleteSection": "删除这一节",
+    "addSection": "新开一节",
+    "newSectionTitle": "小节标题",
+    "create": "建好",
+    "sectionEmpty": "（这一节还没有内容）"
+  },
+  "portrait": {
+    "heading": "特质叙述",
+    "editAria": "改特质叙述",
+    "empty": "（{{name}} 还没写你的特质叙述——多聊几次后会出现）"
+  },
+  "self": {
+    "editAria": "改 {{name}} 的自我",
+    "empty": "（{{name}} 还没写下自己是什么样——可以点 ✎ 写一份）"
+  },
+  "projects": {
+    "heading": "正在做的项目",
+    "basic": "基本信息",
+    "addBasic": "加一条基本信息",
+    "conventions": "约定",
+    "addConvention": "加一条约定",
+    "progress": "当前进度",
+    "noProgress": "（dream 还没整理这个项目的进度）"
+  },
+  "journalTitle": "{{name}} 手账",
+  "lastTidied": "最后整理 · {{date}}",
+  "aboutYou": "关于你",
+  "userChar": "你",
+  "aboutSelf": "关于 {{name}} 自己",
+  "colophon": "{{name}} 写于 {{date}}",
+  "colophonDate": "{{month}} 月 {{day}} 日"
+}

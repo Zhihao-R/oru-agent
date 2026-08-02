@@ -1,0 +1,279 @@
+{
+  "launcher": {
+    "welcomeFallback": "Hello. Where would you like to start today?",
+    "inputPlaceholder": "Say something to {{name}}…",
+    "recentLabel": "Recent",
+    "loopTooltip": "Continuous mode",
+    "attachTooltip": "Attachment",
+    "sendAria": "Send",
+    "scrollHint": "Scroll down to the journal",
+    "greetings": {
+      "earlyMorning": [
+        {
+          "heading": "Up early today."
+        },
+        {
+          "heading": "Early morning.",
+          "sub": "Sky's barely light — no rush, just wake up slowly."
+        },
+        {
+          "heading": "Morning — still cool out."
+        },
+        {
+          "heading": "First light out there."
+        },
+        {
+          "heading": "Morning.",
+          "sub": "Awake already — no need to reach for your phone yet."
+        },
+        {
+          "heading": "This early, everything's still quiet."
+        }
+      ],
+      "morning": [
+        {
+          "heading": "Good morning. Where would you like to start today?"
+        },
+        {
+          "heading": "Good morning.",
+          "sub": "Had breakfast yet?"
+        },
+        {
+          "heading": "A new day."
+        },
+        {
+          "heading": "Morning.",
+          "sub": "No rush — ease into it."
+        },
+        {
+          "heading": "Good morning.",
+          "sub": "Sleep alright?"
+        },
+        {
+          "heading": "Another day.",
+          "sub": "How it goes is up to you."
+        },
+        {
+          "heading": "Good morning."
+        },
+        {
+          "heading": "A new day — take it easy."
+        }
+      ],
+      "noon": [
+        {
+          "heading": "Midday already — grab something to eat?"
+        },
+        {
+          "heading": "Midday.",
+          "sub": "Eat, rest a bit — no hurry."
+        },
+        {
+          "heading": "Lunchtime."
+        },
+        {
+          "heading": "You've been at it all morning — pause and breathe."
+        }
+      ],
+      "afternoon": [
+        {
+          "heading": "Good afternoon. Anything you feel like talking about?"
+        },
+        {
+          "heading": "Afternoon — a little drowsy is normal.",
+          "sub": "No rush, take it easy."
+        },
+        {
+          "heading": "Afternoon — something light to do isn't a bad idea."
+        },
+        {
+          "heading": "Good afternoon.",
+          "sub": "If you're sleepy, a short nap is fine."
+        }
+      ],
+      "lateAfternoon": [
+        {
+          "heading": "Good afternoon. Maybe pour yourself a cup of tea?"
+        },
+        {
+          "heading": "Afternoon's half gone.",
+          "sub": "Has today been going okay?"
+        },
+        {
+          "heading": "Sun's getting low."
+        },
+        {
+          "heading": "Most of the day's behind you now."
+        },
+        {
+          "heading": "Good afternoon.",
+          "sub": "Rest if you're tired — don't push through it."
+        },
+        {
+          "heading": "Almost evening now."
+        }
+      ],
+      "evening": [
+        {
+          "heading": "Evening now. You've worked hard today."
+        },
+        {
+          "heading": "Getting dark out.",
+          "sub": "Long day — take a breath first."
+        },
+        {
+          "heading": "Good evening.",
+          "sub": "Has today been alright?"
+        },
+        {
+          "heading": "That's about time — let's leave it here for today."
+        }
+      ],
+      "night": [
+        {
+          "heading": "Good evening. How did today go?"
+        },
+        {
+          "heading": "Good evening.",
+          "sub": "No hurry — say whatever comes to mind."
+        },
+        {
+          "heading": "The night's gone quiet."
+        },
+        {
+          "heading": "Done for the day?",
+          "sub": "This is about far enough for today."
+        },
+        {
+          "heading": "Good evening.",
+          "sub": "Whatever's busy or tiring, set it down for now."
+        },
+        {
+          "heading": "Night's settled in."
+        }
+      ],
+      "lateNight": [
+        {
+          "heading": "Still up this late?"
+        },
+        {
+          "heading": "It's late.",
+          "sub": "Whatever's weighing on you, tell me."
+        },
+        {
+          "heading": "The small hours.",
+          "sub": "Don't push it too long — get some rest."
+        },
+        {
+          "heading": "Still not resting?"
+        },
+        {
+          "heading": "Awake at this hour — can't sleep?"
+        },
+        {
+          "heading": "It's deep in the night.",
+          "sub": "Tomorrow's things can wait for tomorrow."
+        }
+      ]
+    }
+  },
+  "night": {
+    "heading": "Last night",
+    "detailsLabel": "Details ({{count}}) ›",
+    "detailsCollapse": "Collapse details",
+    "evidence": "Basis ›",
+    "olderNights": "{{count}} earlier ›",
+    "forecast": "Tonight I'll look back over the past few days and write the first night's note.",
+    "zeroData": "No night's note worth writing yet — talk with me a few more times and I'll start one some evening.",
+    "runNow": "Tidy up now ›",
+    "running": "Tidying…",
+    "runFailed": "Tidying didn't run, try again ›"
+  },
+  "about": {
+    "you": "About you",
+    "self": "About {{name}}",
+    "revision": "Revised {{date}}",
+    "expand": "Expand ›",
+    "moreSections_one": "{{count}} more section",
+    "moreSections_other": "{{count}} more sections",
+    "editTooltip": "Edit profile (rename / change avatar)"
+  },
+  "projects": {
+    "heading": "In progress",
+    "emptyAdd": "+ Add project"
+  },
+  "notes": {
+    "heading": "Notes",
+    "countSummary": "Recent {{shown}} / {{total}} total",
+    "filterAll": "All types",
+    "moreNotes": "Older notes · {{count}} collapsed",
+    "retired": "{{count}} tidied away",
+    "deleteTitle": "Delete this note"
+  },
+  "toc": {
+    "night": "Last night",
+    "about": "About",
+    "projects": "In progress",
+    "notes": "Notes",
+    "top": "Start"
+  },
+  "editProfile": {
+    "title": "Edit profile",
+    "yourName": "Your name",
+    "oruName": "Oru's name",
+    "hint": "Click an avatar to replace and crop it.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "counter": "{{n}} / 20"
+  },
+  "noteDetail": {
+    "source": "Source",
+    "evolution": "Evolution",
+    "viewOriginal": "View source ›",
+    "deleteTitle": "Delete this note",
+    "close": "Close",
+    "evidenceLabel": "Correction basis",
+    "predecessorLabel": "Previous version"
+  },
+  "aboutFull": {
+    "eyebrow": "Journal · Profile",
+    "eyebrowEditing": "Journal · Profile · Editing",
+    "lastRevised": "Last revised by {{name}} on {{date}}",
+    "edit": "Edit",
+    "done": "Done",
+    "cancel": "Cancel",
+    "history": "History",
+    "close": "Close",
+    "discardConfirm": "Discard changes? This edit and any new version will not be saved.",
+    "hist": {
+      "title": "Revision history",
+      "empty": "No versions yet. Changes are saved automatically after a moment.",
+      "restore": "Restore",
+      "byYou": "You revised the profile",
+      "byOru": "Oru added to it",
+      "byOther": "A version was saved",
+      "today": "Today {{hm}}",
+      "date": "{{month}}/{{day}} {{hm}}"
+    }
+  },
+  "projectDetail": {
+    "eyebrow": "Journal · Project",
+    "start": "Start →",
+    "eyebrowEditing": "Journal · Project · Editing"
+  },
+  "nights": {
+    "title": "Past nights",
+    "weekCount": "{{count}} this week",
+    "perNight": "{{count}} notes",
+    "archiveNote": "Earlier nights are archived by month and load as you scroll."
+  },
+  "filter": {
+    "title": "Filter notes",
+    "typeLabel": "Type",
+    "tagLabel": "Tag",
+    "all": "All",
+    "clear": "Clear",
+    "apply": "Apply"
+  },
+  "revisionDate": "{{month}}·{{day}}"
+}

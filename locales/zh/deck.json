@@ -1,0 +1,112 @@
+{
+  "adoptFailed": "加入演示稿失败",
+  "history": {
+    "kind": {
+      "initial": "初始版本",
+      "inline": "行内编辑",
+      "ai": "Oru 改动",
+      "protective": "暂存",
+      "reorder": "页面重排",
+      "batch": "批量改"
+    },
+    "today": "今天 {{hm}}",
+    "date": "{{month}}月{{day}}日 {{hm}}",
+    "firstGen": "首次生成",
+    "changedPages": "改动了第 {{pages}} 页",
+    "title": "历史版本",
+    "description": "挑一个更早的时间点，把整套幻灯片恢复回来。自动保存的旧版软件关了、崩了也还在。",
+    "alreadyThis": "已是这一版",
+    "restore": "恢复此版本",
+    "empty": "还没有历史版本。",
+    "current": "当前",
+    "pickPrompt": "选左边一个时间点，看那一版长什么样。",
+    "thisOldVersion": "这个旧版 · {{time}}",
+    "rendering": "正在渲染这一版…",
+    "thumbAlt": "版本缩略图 {{n}}",
+    "noPages": "这一版没有可渲染的页。",
+    "missingImages": "这个旧版引用的图片已经不在了，恢复后这些位置会空着：",
+    "restoreAnyway": "仍然恢复（空着这些图）"
+  },
+  "controls": {
+    "switchDeck": "切换 deck",
+    "historyTitle": "历史版本（找回旧版幻灯片）",
+    "history": "历史",
+    "immersiveTitle": "沉浸态（按 F 也行；再按 F 进 OS 全屏）",
+    "immersive": "沉浸",
+    "fullscreenTitle": "OS 全屏（独占整个屏幕）",
+    "fullscreen": "全屏",
+    "closeTabTitle": "关闭 deck 标签（deck 文件不会被删）",
+    "noDeck": "还没有 deck",
+    "export": {
+      "menuTitle": "导出 HTML / PDF / PPT",
+      "export": "导出",
+      "exporting": "导出中",
+      "disabledCompare": "对比模式下不可导出，先保存或取消改动",
+      "disabledEmpty": "先生成演示设计再导出",
+      "failed": "导出失败",
+      "failedWith": "导出失败：{{message}}",
+      "pickScale": "{{format}} · 选择清晰度",
+      "htmlInline": { "label": "HTML · 单文件", "hint": "图片字体内联，双击即开、可分享" },
+      "htmlZip": { "label": "HTML · 打包 zip", "hint": "保留素材结构，解压用浏览器开" },
+      "pdf": { "label": "PDF", "hint": "定稿交付与打印，到处能开" },
+      "pptx": { "label": "PPT", "hint": "图片版，清晰可播，文字不可编辑" }
+    },
+    "scale": {
+      "standard": { "label": "标准", "hint": "屏幕查看，文件最小" },
+      "hd": { "label": "高清", "hint": "投影 / 打印 / 放大都清晰（推荐）" },
+      "uhd": { "label": "超清", "hint": "极致清晰，文件较大" }
+    }
+  },
+  "preview": {
+    "exitFullscreen": "退出全屏（回沉浸）",
+    "exitImmersive": "退出沉浸（回工作态）"
+  },
+  "updateAnnots": {
+    "title": "这份 deck 上还有 {{count}} 处标注没处理",
+    "description": "更新会按文稿改页面，可能让这些标注错位或失效。",
+    "narrativeOnly": "仅按文稿改",
+    "withAnnots": "连标注一并改",
+    "body": "要不要这次把这些标注也一并改掉？「连标注一并改」会把它们并进同一次提交。"
+  },
+  "exportProgress": {
+    "title": "正在导出 {{format}}",
+    "description": "导出期间界面会变慢，请稍候；也可取消。",
+    "cancel": "取消导出",
+    "rendering": "正在逐页渲染…",
+    "preparing": "准备中…",
+    "pageCount": "{{done}} / {{total}} 页"
+  },
+  "center": {
+    "tabPreview": "预览",
+    "tabNarrative": "文稿",
+    "narrativeHistoryTitle": "文稿历史版本",
+    "history": "历史",
+    "submissionBusy": "有进行中的修改，完成后再操作",
+    "generate": "从文稿生成演示设计",
+    "generating": "生成中…",
+    "generateQueued": "排队中…",
+    "update": "更新演示设计"
+  },
+  "outline": {
+    "pageTitle": "第 {{n}} 页",
+    "prevPage": "上一页 (←)",
+    "nextPage": "下一页 (→)"
+  },
+  "list": {
+    "heading": "演示稿",
+    "empty": "还没有演示稿。在对话中创建。",
+    "closeTitle": "关闭预览(文件保留)"
+  },
+  "emptyState": {
+    "nothing": "这里还什么都没有",
+    "generate": "从文稿生成演示设计",
+    "generating": "生成中…",
+    "generateQueued": "排队中…"
+  },
+  "generate": {
+    "noConversation": "没有选中的对话，派不出去——先打开一条对话再点生成"
+  },
+  "narrative": {
+    "loading": "载入中…"
+  }
+}

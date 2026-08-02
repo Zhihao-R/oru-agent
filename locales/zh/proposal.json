@@ -1,0 +1,252 @@
+{
+  "accept": "让他去做",
+  "reject": "我自己来",
+  "nevermind": "算了",
+  "decline": "拒绝",
+  "autoExecuting": "自动执行中…",
+  "executing": "执行中…",
+  "processing": "处理中…",
+  "dispatching": "派工中…",
+  "youChose": "你选择自己来",
+  "addNote": "附言",
+  "notePlaceholder": "可选：说明为什么不批，Oru 下一轮会看到",
+  "cancelled": "已取消",
+  "failedWith": "失败：{{error}}",
+  "unknownError": "未知错误",
+  "skill": {
+    "kvSource": "来源",
+    "kvContainedSkill": "内含 skill",
+    "kvContainedMcp": "内含 MCP",
+    "kvLicense": "协议",
+    "execScriptsWarn": "⚠ 含可执行脚本（plugin 内 scripts/ 目录），运行时跟 agent bash 同边界",
+    "ignored": "已忽略：{{sections}}（Oru 没有对应概念）",
+    "mcpConflicts": "发现 {{count}} 个同名 MCP 冲突（第 2 期接入\"覆盖 / 跳过 / 并存\"选项）",
+    "upgrade": "升级",
+    "keyFilesChanged": "{{count}} 个 key 文件变化",
+    "otherFiles": "另有 {{count}} 个其他文件改动",
+    "noOther": "无其他改动",
+    "uninstall": "卸载",
+    "blockingDependents": "⛔ 被以下对象依赖，请先卸：{{list}}",
+    "activatedInConv": "已在当前 conversation 激活——卸了之后本轮的引用会失效",
+    "dependentSkills": "{{list}} 依赖此 plugin 内的 MCP，卸了会失败",
+    "createSkill": "新建 skill",
+    "descEditable": "description（可改）",
+    "skillMdFull": "SKILL.md 全文（{{count}} 字符）",
+    "scriptsCount": "含 {{count}} 个 scripts/* 文件",
+    "modify": "修改",
+    "pluginActivationDesc": "plugin 激活描述",
+    "diffPreview": "diff 预览",
+    "execFailed": "执行失败",
+    "executed": "已执行"
+  },
+  "mcp": {
+    "enable": "启用",
+    "disable": "停用",
+    "modify": "修改",
+    "configColon": " 的配置：",
+    "delete": "删除",
+    "deleteStatus": "当前 {{status}} · 暴露 {{count}} 个工具",
+    "tokenWarn": "env 中的 token 删除后不可恢复。",
+    "installed": "✓ 已装好",
+    "deleted": "✓ 已删除",
+    "enabledDone": "✓ 已启用",
+    "disabledDone": "✓ 已停用",
+    "configModified": "✓ 已修改配置",
+    "executedCheck": "✓ 已执行",
+    "execFailedX": "✗ 执行失败"
+  },
+  "bash": {
+    "title": "Agent 行为审批",
+    "dangerCommand": "危险命令",
+    "catastrophic": "绝对灾难命令（删根 / 抹盘 / 格式化级）——即便危险模式也强制停下，批准前务必再三核对。",
+    "willOverwrite": "将覆盖已存在的 {{targets}}",
+    "blockedDraft": "{{file}} 有未保存草稿——先在编辑器里 ⌘S 保存，这张卡会自动恢复可批准",
+    "bgStarted": "已在后台启动",
+    "executedSeeChat": "已执行——结果见聊天",
+    "approveDestructive": "确认执行",
+    "allow": "允许",
+    "prevProposal": "上一条",
+    "nextProposal": "下一条",
+    "delivery": "将向外部送出内容：{{targets}}——发出后收不回，批准前确认目标可信。"
+  },
+  "scheduledTask": {
+    "action": {
+      "create": "创建定时任务",
+      "update": "修改定时任务",
+      "delete": "删除定时任务",
+      "pause": "暂停定时任务",
+      "resume": "启用定时任务"
+    },
+    "pending": "待确认",
+    "kvExecContent": "执行内容",
+    "kvTrigger": "触发频率",
+    "kvLocation": "运行位置",
+    "kvStop": "停止条件",
+    "locNewConv": "每次新建对话",
+    "locSpecified": "指定对话",
+    "locChannel": "推送到{{platform}}",
+    "platformFeishu": "飞书",
+    "stopAfter": "重复 {{count}} 次后停",
+    "stopNever": "无（长期有效，可随时停用）",
+    "effective": "已生效",
+    "confirm": "确认"
+  },
+  "file": {
+    "createVerb": "新建文件",
+    "createApprove": "写入",
+    "overwriteVerb": "覆盖文件",
+    "overwriteApprove": "覆盖",
+    "editVerb": "编辑文件",
+    "editApprove": "应用修改",
+    "appendVerb": "追加内容",
+    "appendApprove": "追加",
+    "deleteVerb": "删除文件",
+    "deleteApprove": "删除",
+    "moveVerb": "移动文件",
+    "moveApprove": "移动",
+    "renameVerb": "重命名文件",
+    "renameApprove": "重命名",
+    "deleteHint": "将移入系统回收站，可恢复。",
+    "blockedDraft": "{{file}} 有未保存草稿——先 ⌘S 保存，这张卡会自动恢复可批准",
+    "deletedToTrash": "已移入回收站",
+    "written": "已写入",
+    "truncated": "\n…[预览截断，共 {{count}} 字符]",
+    "caution": {
+      "encoding-conversion": "这是一次不可逆转换：整个文件的字节会按 UTF-8 重写，原来的 GBK/BOM 编码回不来。不放心就让 Oru 改用「另存规范副本」。"
+    }
+  },
+  "deck": {
+    "startedGenerating": "已开始生成——subagent 正在跑，preview 会自动刷新",
+    "startGenerate": "⇡ 开始生成"
+  },
+  "code": {
+    "riskHigh": "高风险",
+    "riskMedium": "中风险",
+    "riskLow": "低风险",
+    "noAutoRollback": "不可自动回滚（项目未启用 git）",
+    "canRollback": "可一键回滚",
+    "haveThoughts": "我有想法补充",
+    "autoDispatched": "已自动派工"
+  },
+  "webFetch": {
+    "pending": "网页抓取待确认",
+    "hint": "Oru 想抓取一个自己找到的外部地址（不是你给的链接）。抓取请求会把地址和参数发往该站点，发出后收不回。",
+    "confirm": "允许抓取",
+    "fetched": "已抓取——内容见聊天"
+  },
+  "browserNavigate": {
+    "pending": "打开网页待确认",
+    "hint": "Oru 想用内置浏览器打开一个自己找到的外部地址（不是你给的链接），并在页面上操作。访问请求会把地址发往该站点，发出后收不回。",
+    "confirm": "允许打开"
+  },
+  "source": {
+    "fromScheduledTask": "来自定时任务「{{title}}」",
+    "fromSubagent": "来自 subagent：{{desc}}"
+  },
+  "grant": {
+    "deliveryTo": "向 {{target}} 外发"
+  },
+  "remote": {
+    "allow": "允许",
+    "always": "始终允许",
+    "reject": "拒绝",
+    "approved": "已批准",
+    "rejected": "已拒绝"
+  },
+  "record": {
+    "byYou": "本人",
+    "byChannel": "来自 {{platform}}",
+    "grantPersistFailed": "始终允许未能保存，下次仍会询问",
+    "platform": {
+      "feishu": "飞书",
+      "discord": "Discord"
+    }
+  },
+  "trace": {
+    "done": "已完成",
+    "failed": "没成："
+  },
+  "behaviors": {
+    "read": {
+      "title": "读取内容",
+      "desc": "读文件、只读命令、抓取你逐字提供的网址。"
+    },
+    "webAccess": {
+      "title": "访问网站",
+      "desc": "抓取或打开 Oru 自己找到的网址——请求会把地址与参数发往该站点。"
+    },
+    "create": {
+      "title": "新建内容",
+      "desc": "新建文件、创建 deck、新建或修改 Skill。"
+    },
+    "modify": {
+      "title": "修改既有内容",
+      "desc": "编辑、追加、移动、重命名文件（实时保存与修改历史兜底）。"
+    },
+    "overwrite": {
+      "title": "覆盖既有内容",
+      "desc": "整篇覆盖已存在的文件（含编码转换，卡面另有不可逆警示）。"
+    },
+    "fileDelete": {
+      "title": "删除内容",
+      "desc": "删除整个文件（移入系统回收站，可恢复）。"
+    },
+    "sendExternal": {
+      "title": "发送内容到外部",
+      "desc": "经命令把内容发给他人或外部服务。拨开 = 所有外发不再问（谨慎）；拨回 = 按收件人逐一确认。",
+      "tip": "为什么默认按收件人确认：发出去的内容收不回，后果取决于发给谁——搜索引擎拿到的是搜索词，陌生地址可能拿到你的文件。你确认过的收件人列在下方，可单独撤销；总开关拨开后连没见过的收件人也不再问。"
+    },
+    "mcp": {
+      "title": "变更系统环境 · MCP",
+      "desc": "安装、升级、删除 MCP server。"
+    },
+    "plugin": {
+      "title": "变更系统环境 · 插件",
+      "desc": "安装、升级、卸载插件。"
+    },
+    "skillInstall": {
+      "title": "变更系统环境 · Skill",
+      "desc": "安装 Skill（新建或修改 Skill 属内容创作，不问）。"
+    },
+    "scheduledTask": {
+      "title": "创建自动化任务",
+      "desc": "定时任务的新建、修改、删除、暂停、启用。"
+    },
+    "destructiveCommand": {
+      "title": "破坏性命令",
+      "desc": "rm / mv / cp / sudo / kill / 装卸包 / git 丢数据等命中破坏性清单的命令。"
+    },
+    "dispatchSubagent": {
+      "title": "派工子代理",
+      "desc": "子代理继承当前挡位，它自己的操作各自过闸。"
+    },
+    "catastrophic": {
+      "title": "灾难级命令",
+      "desc": "rm -rf /、抹盘、格式化——每次都问，不能授权跳过。",
+      "tip": "这类命令可能瞬间毁掉整台电脑的数据，所以不进任何「始终允许」——每一次都必须你亲自确认。"
+    },
+    "unknown": {
+      "title": "看不透的命令",
+      "desc": "命令里套了命令（$(…)、eval 等），Oru 判不出它到底要做什么。",
+      "tip": "技术上叫「无法静态分析」：命令的内容要等运行起来才知道，事先判不出。判不出就按最坏情况对待——默认每次都问，拨开则连看不透的也不再问。"
+    },
+    "noStructureGuarantee": {
+      "title": "经命令行删改文件",
+      "desc": "命令行删改文件没有回收站、也不防撞名覆盖，所以一律按破坏性命令问。",
+      "tip": "同样删一个文件：用文件工具删会进系统回收站、可恢复；用命令行（bash）删就直接没了。命令行给不了这些保障，所以经它执行的文件删改会升一级，按破坏性命令问。这是说明行，跟随「破坏性命令」的设置走。"
+    },
+    "aiOwned": {
+      "title": "覆盖 Oru 自己的产出",
+      "desc": "整篇覆盖 Oru 生成、你还没改过的文件时，不问。",
+      "tip": "判定方式：文件当前内容与 Oru 上次写出的版本逐字一致，即视为你还没动过。你改过一个字，再覆盖就要问。拨关 = 连 Oru 自己的产出被覆盖也要问你。"
+    },
+    "alwaysWhole": "始终允许：{{name}}（整类）",
+    "alwaysTo": "始终允许：向 {{target}} 发送",
+    "alwaysMultiple": "始终允许：{{count}} 类后果",
+    "alwaysMultipleHint": "将一并始终允许：{{list}}",
+    "alwaysAsk": "始终询问",
+    "askEveryTime": "每次询问",
+    "noAsk": "直接执行",
+    "sendTo": "向 {{target}} 发送"
+  }
+}

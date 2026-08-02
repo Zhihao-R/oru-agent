@@ -1,0 +1,38 @@
+{
+  "cancel": "取消",
+  "save": "保存",
+  "delete": "删除",
+  "close": "关闭",
+  "remove": "移除",
+  "refresh": "刷新",
+  "listSeparator": "、",
+  "compare": {
+    "before": "改前",
+    "after": "改后",
+    "toggle": "对比",
+    "unavailable": "Oru 改动后可对比改前/改后"
+  },
+  "sync": {
+    "syncing": "正在同步…",
+    "updated": "已更新"
+  },
+  "loading": "加载中…",
+  "saving": "保存中…",
+  "deleteConfirm": {
+    "title": "确认删除？",
+    "confirmLabel": "确认删除",
+    "busyLabel": "删除中…"
+  },
+  "attachment": {
+    "zoomHint": "（点击放大）",
+    "rejectFormat": "不支持的格式：{{name}}（仅 PNG / JPEG / GIF / WEBP）",
+    "rejectSize": "{{name}} {{size}} MB 超过单张 5 MB 上限",
+    "countLimit": "单条最多 {{max}} 张图（已有 {{prev}}，本次 {{cur}}）"
+  },
+  "relativeTime": {
+    "justNow": "刚刚",
+    "minutesAgo": "{{count}} 分钟前",
+    "hoursAgo": "{{count}} 小时前",
+    "daysAgo": "{{count}} 天前"
+  }
+}

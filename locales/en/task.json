@@ -1,0 +1,37 @@
+{
+  "branch": "Branch: {{branch}}",
+  "taskFallback": "Task",
+  "cancelConfirm": "Cancel this task? The worktree will roll back to its state before the task started.",
+  "cancelFailedWith": "Cancel failed: {{error}}",
+  "qaHistory": "Q&A history",
+  "cancelTask": "Cancel task",
+  "awaitingUser": "Awaiting your answer",
+  "awaitingTwin": "Waiting for {{name}}…",
+  "escalation": {
+    "oneAsking": "Task “{{title}}” needs your answer",
+    "manyAsking_one": "{{count}} task needs your answer",
+    "manyAsking_other": "{{count}} tasks need your answer",
+    "jumpHint": "Click to jump"
+  },
+  "queued": "Preparing…",
+  "terminalPlaceholder": "Task {{title}} is {{status}}",
+  "rollbackConfirmCommits_one": "Roll back task “{{title}}”?\n\nThis will create {{count}} revert commit (git history preserved).",
+  "rollbackConfirmCommits_other": "Roll back task “{{title}}”?\n\nThis will create {{count}} revert commits (git history preserved).",
+  "rollbackConfirmBaseline": "Roll back task “{{title}}”?\n\nThis will reverse-apply the task's changes against the baseline.",
+  "rollbackFailedWith": "Rollback failed: {{error}}",
+  "inProject": "Running in project {{project}}",
+  "committed": "Committed ({{count}})",
+  "rollback": "Roll back",
+  "answerFailedWith": "Answer failed: {{error}}",
+  "userOriginalQuote": "(Your words: “{{answer}}”; {{name}} will refine them for the subagent)",
+  "answerPlaceholder": "Answer the question {{name}} forwarded to you (Cmd+Enter to submit)",
+  "submit": "Submit",
+  "submitting": "Submitting…",
+  "twinProcessHint": "{{name}} will turn your answer into clear instructions before sending it to the subagent",
+  "roleSubagent": "Subagent",
+  "roleUser": "You",
+  "report": {
+    "expand": "Show full report",
+    "collapse": "Collapse"
+  }
+}

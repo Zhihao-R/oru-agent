@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "journal": "手账",
+    "chat": "对话",
+    "memory": "{{name}} 手账",
+    "taskboard": "任务",
+    "scheduled": "定时",
+    "debug": "调试",
+    "debugOff": "调试（已关）",
+    "promptbench": "Prompt 工作台"
+  },
+  "settings": "设置",
+  "themeTooltip": "主题：{{label}}（点击切换）",
+  "theme": {
+    "dark": "暗色",
+    "light": "明亮",
+    "system": "跟随系统"
+  },
+  "ws": {
+    "open": "已连接",
+    "connecting": "连接中",
+    "closed": "未连接"
+  },
+  "auth": {
+    "notReady": "未就绪",
+    "checking": "正在检测模型后端…"
+  },
+  "tab": {
+    "chat": "对话",
+    "project": "文件"
+  },
+  "noProjectSelected": "未选择项目",
+  "newProject": "新建项目",
+  "projectListEmpty": "还没有项目。点下方\"新建项目\"添加。",
+  "collapseSidebar": "收起左栏",
+  "expandSidebar": "展开左栏",
+  "expandSidebarHover": "悬停展开左栏",
+  "expandAnnot": "展开批注栏",
+  "annotLabel": "批注",
+  "loading": "载入中…",
+  "closeTab": "关闭 {{title}}",
+  "tabOverflow": "另有 {{count}} 个标签",
+  "addProject": {
+    "title": "添加项目",
+    "description": "把文件夹从 Finder 拖进来，或点击下面浏览选择。",
+    "dropError": "未识别到文件夹路径，请改用浏览选择",
+    "adding": "添加中…",
+    "releaseToAdd": "松手添加",
+    "dropHint": "拖文件夹到这里，或点击浏览",
+    "fromFinder": "来自 Finder · 自动取绝对路径"
+  },
+  "chip": {
+    "todoTooltip": "{{count}} 件事需要你处理",
+    "working": "{{name}} 还在跑活",
+    "identity": "{{name}}（家：{{home}}）",
+    "fallback": "Oru"
+  }
+}

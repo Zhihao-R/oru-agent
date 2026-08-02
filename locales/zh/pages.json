@@ -1,0 +1,47 @@
+{
+  "home": {
+    "switchFailed": "切换项目失败：{{error}}",
+    "title": "主页",
+    "subtitle": "所有项目当前状态 + {{name}} 手账入口",
+    "userFallback": "你",
+    "journal": "{{name}} 手账",
+    "journalDesc": "{{name}} 关于你的累积理解、偏好、事实、最近记录",
+    "projectsHeading": "项目盘点",
+    "noProjects": "还没添加任何项目。在左侧栏点 + 添加项目。",
+    "noProgress": "(还没写过 progress——下次跟 {{name}} 聊到这个项目时它会自动维护)"
+  },
+  "debug": {
+    "clearAllConfirm": "确认清空全部调试历史？此操作不可撤销。",
+    "refresh": "刷新",
+    "openDir": "打开数据目录",
+    "clearAll": "清空全部历史",
+    "loggingOff": "调试日志已关闭——以下为历史记录，新对话不会被记录。前往「设置 → 开发者模式」可重新开启。",
+    "title": "调试日志",
+    "retentionHint": "仅保留最近 7 天，更早的自动清理",
+    "loadingTimeline": "载入中…",
+    "selectPrompt": "在左栏选一次行为查看"
+  },
+  "bench": {
+    "title": "Prompt 工作台",
+    "hint": "调试台是裸跑：只喂这段 system + 你的输入，不含工具、记忆、上下文拼装；用于比 prompt 措辞，不等于真实对话效果。",
+    "category": {
+      "persona": "人格",
+      "memory": "记忆",
+      "agent": "Agent",
+      "tasks": "任务",
+      "taskboard": "任务面板"
+    },
+    "noModels": "（暂无可用模型，先去设置添加）",
+    "systemContextLabel": "System 上下文（临时改，不落盘）",
+    "resetTitle": "重置为该段原文",
+    "reset": "重置原文",
+    "yourInput": "你的输入",
+    "inputPlaceholder": "给它说一句话…",
+    "running": "运行中…",
+    "run": "运行",
+    "runFailed": "运行失败：{{error}}",
+    "viewerEmpty": "在左栏选一段 prompt 查看",
+    "loadFailed": "加载失败：{{error}}",
+    "empty": "暂无登记的 prompt。"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "title": "编辑 {{name}}",
+  "editAria": "编辑 {{name}}",
+  "user": "你",
+  "changeImage": "更换图片",
+  "userNamePlaceholder": "你的名字",
+  "twinNamePlaceholder": "{{name}} 的名字",
+  "nameEmpty": "名字不能为空",
+  "nameTooLong": "名字最多 {{max}} 字",
+  "avatarBadFormat": "不支持的格式：{{type}}。请上传 jpg / png / webp",
+  "avatarTooLarge": "图片太大了，建议小于 5MB",
+  "avatarUploadFailed": "上传失败：unexpected response {{type}}",
+  "pickFileFailed": "选择文件失败",
+  "saveFailed": "保存失败",
+  "crop": {
+    "title": "调整头像",
+    "zoom": "缩放",
+    "confirm": "确认"
+  }
+}

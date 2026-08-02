@@ -1,0 +1,16 @@
+{
+  "msgLabel": "消息",
+  "aMessage": "一条消息",
+  "controlLabel": "控件",
+  "uiControl": "界面控件",
+  "chatArea": "对话区",
+  "uiBlank": "界面空白处",
+  "screen": "屏幕",
+  "pageLabel": "第 {{n}} 页",
+  "narrativePreview": "文稿预览",
+  "placeholder": "接着聊…",
+  "promoteTitle": "去对话深聊",
+  "errReply": "没能回上话：{{error}}",
+  "errBegin": "没能开始对话：{{error}}",
+  "errPromote": "没能去对话：{{error}}"
+}

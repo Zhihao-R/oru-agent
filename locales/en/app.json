@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "journal": "Journal",
+    "chat": "Chat",
+    "memory": "{{name}}'s Journal",
+    "taskboard": "Tasks",
+    "scheduled": "Scheduled",
+    "debug": "Debug",
+    "debugOff": "Debug (off)",
+    "promptbench": "Prompt Bench"
+  },
+  "settings": "Settings",
+  "themeTooltip": "Theme: {{label}} (click to switch)",
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  },
+  "ws": {
+    "open": "Connected",
+    "connecting": "Connecting",
+    "closed": "Disconnected"
+  },
+  "auth": {
+    "notReady": "Not ready",
+    "checking": "Checking model backend…"
+  },
+  "tab": {
+    "chat": "Chat",
+    "project": "Files"
+  },
+  "noProjectSelected": "No project selected",
+  "newProject": "New project",
+  "projectListEmpty": "No projects yet. Click “New project” below to add one.",
+  "collapseSidebar": "Collapse sidebar",
+  "expandSidebar": "Expand sidebar",
+  "expandSidebarHover": "Hover to expand sidebar",
+  "expandAnnot": "Expand annotations",
+  "annotLabel": "Annotations",
+  "loading": "Loading…",
+  "closeTab": "Close {{title}}",
+  "tabOverflow_one": "{{count}} more tab",
+  "tabOverflow_other": "{{count}} more tabs",
+  "addProject": {
+    "title": "Add project",
+    "description": "Drag a folder in from Finder, or click Browse below to choose one.",
+    "dropError": "Couldn't read the folder path — please use Browse instead",
+    "adding": "Adding…",
+    "releaseToAdd": "Release to add",
+    "dropHint": "Drop a folder here, or click Browse",
+    "fromFinder": "From Finder · absolute path detected automatically"
+  },
+  "chip": {
+    "todoTooltip_one": "{{count}} thing needs your attention",
+    "todoTooltip_other": "{{count}} things need your attention",
+    "working": "{{name}} is still working",
+    "identity": "{{name}} (home: {{home}})",
+    "fallback": "Oru"
+  }
+}

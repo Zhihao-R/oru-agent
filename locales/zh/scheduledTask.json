@@ -1,0 +1,192 @@
+{
+  "pageTitle": "定时任务",
+  "newTask": "新建定时任务",
+  "fmt": {
+    "once": "一次性",
+    "daily": "每天 {{time}}",
+    "weekly": "每{{days}} {{time}}",
+    "intervalMinute_one": "每隔 {{count}} 分钟",
+    "intervalMinute_other": "每隔 {{count}} 分钟",
+    "intervalHour_one": "每隔 {{count}} 小时",
+    "intervalHour_other": "每隔 {{count}} 小时",
+    "weekday": [
+      "周日",
+      "周一",
+      "周二",
+      "周三",
+      "周四",
+      "周五",
+      "周六"
+    ],
+    "withRuns_one": "{{base}}，共 {{count}} 次",
+    "withRuns_other": "{{base}}，共 {{count}} 次",
+    "unparseable": "无法解析"
+  },
+  "filterLabel": "筛选：",
+  "filter": {
+    "active": "进行中",
+    "ended": "已结束"
+  },
+  "ended": {
+    "triggered": "已触发",
+    "notTriggered": "未能触发",
+    "expired": "设定时间已过，未执行",
+    "dismissed": "你已忽略"
+  },
+  "missed": {
+    "header": "⚠ 错过待处理 · {{total}} 项",
+    "original": "原定 {{when}}",
+    "run": "执行",
+    "dismiss": "忽略",
+    "collapse": "收起",
+    "expandAll": "展开查看全部 {{total}} 项 ▾"
+  },
+  "agentBadge": "Oru 建",
+  "next": "下次",
+  "format": {
+    "today": "今天",
+    "tomorrow": "明天",
+    "afterTomorrow": "后天",
+    "yesterday": "昨天",
+    "dateMD": "{{month}}月{{day}}日",
+    "lastRunNever": "上次：尚未执行",
+    "lastRun": "上次：{{when}} {{result}}",
+    "lastRunLate": "上次：补执行 {{when}} {{result}}",
+    "resultOk": "✓ 成功",
+    "resultFailed": "✗ 失败",
+    "resultFailedWith": "✗ 失败（{{error}}）",
+    "resultAborted": "⏹ 已中止"
+  },
+  "status": {
+    "ended": "已结束",
+    "paused": "已暂停",
+    "running": "执行中"
+  },
+  "toggle": {
+    "pause": "暂停",
+    "enable": "启用"
+  },
+  "menu": {
+    "edit": "编辑",
+    "runNow": "立即执行",
+    "history": "运行记录"
+  },
+  "runLoc": {
+    "newConversation": "每次新建对话",
+    "inConversation": "运行于「{{title}}」",
+    "deletedConv": "已删除对话",
+    "toChannel": "推送到{{platform}}"
+  },
+  "empty": {
+    "endedNone": "还没有已结束的定时任务。",
+    "none": "还没有定时任务。到点自动替你做一件事，从这里开始。",
+    "custom": "或自定义新建"
+  },
+  "samples": {
+    "daily": {
+      "title": "每日简报",
+      "desc": "每天 08:00",
+      "prompt": "汇总我昨天的笔记和今天日历上的安排，生成一份今日简报"
+    },
+    "once": {
+      "title": "一次性提醒",
+      "desc": "45 分钟后",
+      "prompt": "提醒我把刚才说的事办了"
+    },
+    "weekly": {
+      "title": "每周项目周报",
+      "desc": "每周五 16:00",
+      "prompt": "扫一遍这个项目这周的改动，写一段周报草稿"
+    }
+  },
+  "compose": {
+    "editTitle": "编辑定时任务",
+    "newTitle": "新建定时任务",
+    "content": "执行内容",
+    "contentPlaceholder": "用你对 Oru 说话的口吻写，比如「汇总我昨天的笔记，生成一份今日简报」",
+    "name": "名称（可选）",
+    "namePlaceholder": "留空则自动命名",
+    "triggers": "触发时间",
+    "runLocation": "运行位置",
+    "locNewDesc": "每次触发都开一条独立的新对话",
+    "locPick": "在指定对话中运行",
+    "locPickDesc": "承接某条对话的上下文",
+    "repeat": "重复",
+    "timesThenStop": "次后停",
+    "create": "创建",
+    "confirmIncomplete": "请完善触发频率",
+    "confirmOnce": "将于 {{first}} 触发一次，执行后从清单移除。",
+    "confirmRecurring": "将于 {{first}} 首次触发，频率：{{frequency}}。",
+    "locChannel": "推送到渠道",
+    "locChannelDesc": "到点把结果推给某个认证的人",
+    "noChannelPeople": "还没有可推送的认证用户——先在飞书 / Discord 私聊 Oru 完成绑定",
+    "channelSingle": "推送给：{{name}}",
+    "channelPickPerson": "选择推送给谁",
+    "channelTargetGone": "原推送对象已不在认证名单，请重新选择"
+  },
+  "mode": {
+    "timer": "计时器",
+    "alarm": "闹钟"
+  },
+  "rule": {
+    "addTrigger": "添加触发时间",
+    "remove": "删除此触发时间",
+    "addTitle": "添加触发时间",
+    "editTitle": "编辑触发时间",
+    "add": "添加",
+    "everyDayHint": "未选 = 每天",
+    "weekLabel": "星期",
+    "repeatLabel": "重复次数",
+    "stopForever": "一直重复",
+    "timerCountLabel": "执行次数",
+    "timerRun": "执行",
+    "timerCount": "共",
+    "timerTimes": "次",
+    "timerOnceHint": "1 次即不重复",
+    "timerNeedDuration": "请先设置时长",
+    "onceFrozen": "已定在 {{when}} 触发一次",
+    "durHour": "{{count}} 小时",
+    "durMinute": "{{count}} 分钟",
+    "timerSummaryOnce": "{{dur}}后执行一次",
+    "timerSummaryN": "{{dur}}后执行，共 {{count}} 次",
+    "dailyAt": "每天 {{at}}",
+    "weeklyAt": "每周{{days}} {{at}}",
+    "alarmSummary": "{{when}} 触发，{{stop}}",
+    "stopForeverText": "一直重复",
+    "stopCountN": "共 {{count}} 次",
+    "nextAt": "下次 {{when}}"
+  },
+  "wheel": {
+    "hour": "时",
+    "minute": "分",
+    "hint": "滚动 · 拖动 · 输入"
+  },
+  "weekdaysShort": [
+    "日",
+    "一",
+    "二",
+    "三",
+    "四",
+    "五",
+    "六"
+  ],
+  "detail": {
+    "unitMinute": "分钟",
+    "unitHour": "小时"
+  },
+  "picker": {
+    "select": "选择对话…",
+    "search": "搜索对话标题…",
+    "noMatch": "无匹配对话"
+  },
+  "platform": {
+    "feishu": "飞书",
+    "discord": "Discord"
+  },
+  "history": {
+    "title": "运行记录",
+    "empty": "还没有运行记录",
+    "viewOutput": "查看产出",
+    "deletedConv": "对话已删除"
+  }
+}

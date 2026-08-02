@@ -1,0 +1,86 @@
+{
+  "history": {
+    "kind": {
+      "periodic": "Autosave",
+      "manual": "Manual save",
+      "ai": "Oru's edit",
+      "pre-restore": "Before restore",
+      "initial": "Initial version",
+      "handoff": "Before overwrite"
+    },
+    "kindFallback": "Version",
+    "archived": "Archived",
+    "today": "Today {{hm}}",
+    "date": "{{month}}/{{day}} {{hm}}",
+    "title": "Version history",
+    "description": "Pick an earlier point in time to restore the whole document. Auto-saved versions survive even if the app is closed or crashes.",
+    "clear": "Clear history",
+    "restore": "Restore this version",
+    "empty": "No versions yet. Your changes will be auto-saved after a moment.",
+    "pickPrompt": "Pick a point in time on the left to see how it differs from now.",
+    "oldVersion": "this old version",
+    "now": "now",
+    "compareWith": "Compare with:",
+    "currentContent": "Current",
+    "kindMemory": {
+      "manual": "You edited",
+      "ai": "Added by Oru"
+    }
+  },
+  "exportFailed": "Export failed",
+  "exportFailedWith": "Export failed: {{error}}",
+  "exportMissing_one": "Exported, but {{count}} local image wasn't found",
+  "exportMissing_other": "Exported, but {{count}} local images weren't found",
+  "cancelExport": "Cancel export",
+  "export": "Export",
+  "historyTitle": "Version history",
+  "crop": {
+    "title": "Crop image",
+    "confirm": "Crop"
+  },
+  "exportMenu": {
+    "html": "HTML (single file)",
+    "pdf": "PDF",
+    "paperMode": "Paper (A4)"
+  },
+  "addToChat": "Add to conversation",
+  "statusBar": {
+    "realtimeSave": "Real-time save · no save indicator",
+    "count_one": "{{count}} char · UTF-8",
+    "count_other": "{{count}} chars · UTF-8"
+  },
+  "conflict": {
+    "title": "Edit conflict",
+    "freezeNote": "This block was edited in parallel · the range is frozen; everything else stays editable",
+    "freezeHint": "Frozen until you choose",
+    "mineLabel": "Your changes",
+    "theirsLabel": "Oru's changes",
+    "useMine": "Use mine",
+    "useTheirs": "Use Oru's",
+    "keepBoth": "Keep both"
+  },
+  "img": {
+    "missing": "Image missing",
+    "alignLeft": "Left",
+    "alignLeftTitle": "Align left",
+    "alignCenter": "Center",
+    "alignCenterTitle": "Align center",
+    "alignRight": "Right",
+    "alignRightTitle": "Align right",
+    "sizeSmallTitle": "Small",
+    "sizeMediumTitle": "Medium",
+    "sizeLargeTitle": "Large",
+    "sizeOrig": "Orig",
+    "sizeOrigTitle": "Original size",
+    "crop": "Crop",
+    "cropTitle": "Crop"
+  },
+  "table": {
+    "insertColLeft": "Insert column left",
+    "deleteCol": "Delete column",
+    "insertColRight": "Insert column right",
+    "insertRowAbove": "Insert row above",
+    "deleteRow": "Delete row",
+    "insertRowBelow": "Insert row below"
+  }
+}

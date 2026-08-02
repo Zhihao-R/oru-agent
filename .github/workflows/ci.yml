@@ -1,0 +1,23 @@
+# CI：typecheck + 单测 + 约定 lint。
+# smoke（tests/smoke/）依赖 Electron 窗口与本机环境，暂不进 CI——本地 npm run test:all 跑。
+name: ci
+on:
+  push:
+    branches: [main, 'dev/**']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          # 对齐 .nvmrc：≥24 才有 V8 13.6（deck 切页正则的 (?-i:) 修饰符，Electron 41 运行时同样支持）
+          # 且自带 npm 11（lock 由本地 npm 11 维护，npm 10 会误报 lock 失同步）
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:conventions
+      - run: npm run typecheck
+      - run: npm run test

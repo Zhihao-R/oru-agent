@@ -1,0 +1,84 @@
+{
+  "history": {
+    "kind": {
+      "periodic": "自动保存",
+      "manual": "手动保存",
+      "ai": "Oru 改动",
+      "pre-restore": "恢复前保存",
+      "initial": "初始版本",
+      "handoff": "覆盖前留底"
+    },
+    "kindFallback": "版本",
+    "archived": "已归档",
+    "today": "今天 {{hm}}",
+    "date": "{{month}}月{{day}}日 {{hm}}",
+    "title": "历史版本",
+    "description": "挑一个更早的时间点，把整篇恢复回来。自动保存的旧版软件关了、崩了也还在。",
+    "clear": "清空历史",
+    "restore": "恢复此版本",
+    "empty": "还没有历史版本。改动一会儿后会自动保存。",
+    "pickPrompt": "选左边一个时间点，看它和现在的差异。",
+    "oldVersion": "这个旧版",
+    "now": "现在",
+    "compareWith": "对比：",
+    "currentContent": "当前内容",
+    "kindMemory": {
+      "manual": "你修订",
+      "ai": "Oru 补充"
+    }
+  },
+  "exportFailed": "导出失败",
+  "exportFailedWith": "导出失败：{{error}}",
+  "exportMissing": "已导出，但 {{count}} 张本地图片未找到",
+  "cancelExport": "取消导出",
+  "export": "导出",
+  "historyTitle": "历史版本",
+  "crop": {
+    "title": "裁剪图片",
+    "confirm": "裁剪"
+  },
+  "exportMenu": {
+    "html": "HTML（单文件）",
+    "pdf": "PDF",
+    "paperMode": "纸张版（A4）"
+  },
+  "addToChat": "加入对话",
+  "statusBar": {
+    "realtimeSave": "实时保存 · 无保存指示",
+    "count": "{{count}} 字 · UTF-8"
+  },
+  "conflict": {
+    "title": "编辑冲突",
+    "freezeNote": "本段存在并行修改 · 区间已冻结，其余内容可正常编辑",
+    "freezeHint": "未做选择前保持冻结",
+    "mineLabel": "你的改动",
+    "theirsLabel": "Oru 的改动",
+    "useMine": "用我的",
+    "useTheirs": "用 Oru 的",
+    "keepBoth": "两个都留"
+  },
+  "img": {
+    "missing": "图片缺失",
+    "alignLeft": "左",
+    "alignLeftTitle": "左对齐",
+    "alignCenter": "中",
+    "alignCenterTitle": "居中",
+    "alignRight": "右",
+    "alignRightTitle": "右对齐",
+    "sizeSmallTitle": "小",
+    "sizeMediumTitle": "中",
+    "sizeLargeTitle": "大",
+    "sizeOrig": "原",
+    "sizeOrigTitle": "原始大小",
+    "crop": "裁剪",
+    "cropTitle": "裁剪"
+  },
+  "table": {
+    "insertColLeft": "在左侧插入列",
+    "deleteCol": "删除本列",
+    "insertColRight": "在右侧插入列",
+    "insertRowAbove": "在上方插入行",
+    "deleteRow": "删除本行",
+    "insertRowBelow": "在下方插入行"
+  }
+}

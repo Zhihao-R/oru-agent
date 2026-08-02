@@ -1,0 +1,65 @@
+node_modules/
+dist/
+out/
+.cache/
+.DS_Store
+*.log
+.env
+.env.*
+.vscode/
+.idea/
+.turbo/
+
+# Oru runtime data lives in ~/.oru, never in repo
+.superpowers/
+
+# Claude Code 本地缓存 + AI 临时截图
+.claude/
+.demo-screenshots/
+
+# Playwright MCP 页面快照产物
+.playwright-mcp/
+
+# node-gyp 编译产物（buildNative.mjs 输出，非源码）
+electron/native/desktop/build/
+
+# playtest 多工作树：per-worktree 端口环境变量（launchSandbox.ts init 生成，各工作树本地各异，不入库）
+.envrc
+
+# tsc 增量编译缓存（typecheck 为 --noEmit，产物永久 stale）
+*.tsbuildinfo
+
+### .annotations 运行时产物（循环演示稿的批注/裁剪文件，不入库）
+.loop-mode-v3.html.annotations.json
+*.annotations/
+
+# 剥离的私有/内部材料（不应出现在公开仓库，防止日后混回）
+docs/
+UIUX重构参考/
+mockups/
+.playtest-evidence/
+scripts/playtest/
+scripts/seed-home-playtest.mjs
+ideal-gaps.md
+tests/idealArch/
+# 根目录理想架构页与内部设计文档
+approval.html
+attention.html
+capabilities.html
+channels.html
+context-memory.html
+conversation-flow.html
+data-durability.html
+error-retry.html
+index.html
+initiative.html
+long-task.html
+long-task-v2.html
+loop-mode-v3.html
+model-backend.html
+queue.html
+subagent.html
+todo.html
+workspace.html
+oru-landing.html
+CLAUDE.md

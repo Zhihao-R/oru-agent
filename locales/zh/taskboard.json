@@ -1,0 +1,110 @@
+{
+  "status": {
+    "todo": "待办",
+    "inProgress": "进行中",
+    "review": "待验收",
+    "done": "已完成"
+  },
+  "assignee": {
+    "you": "你",
+    "oru": "Oru"
+  },
+  "statusBadge": {
+    "tooltip": "状态：{{label}}",
+    "tooltipClickable": "状态：{{label}}（点击切换）"
+  },
+  "group": {
+    "all": "全部",
+    "mine": "我的",
+    "oru": "Oru 的",
+    "completed": "已完成",
+    "tag": "# {{tag}}"
+  },
+  "list": {
+    "taskCount": "{{count}} 个任务",
+    "showCompleted": "显示已完成",
+    "hiddenCompleted": "({{count}} 条历史已完成已隐藏)",
+    "empty": "这里还没有任务。点左上角 + 新建，或在主聊天里让 Oru 帮你建。",
+    "filteredEmpty": "当前筛选下没有可显示的任务。"
+  },
+  "oruThinking": "Oru 思考中…",
+  "sidebar": {
+    "title": "任务",
+    "newTask": "新建任务",
+    "projects": "项目",
+    "recycleBin": "回收站"
+  },
+  "newTask": {
+    "saveEnter": "保存 ⏎",
+    "title": "标题",
+    "titlePlaceholder": "一句话说清楚要做什么",
+    "desc": "描述（可选）",
+    "descPlaceholder": "展开细节，留空也可以",
+    "assignee": "归属",
+    "project": "项目",
+    "projectPlaceholder": "输入或选择",
+    "discardTitle": "放弃未保存的描述？",
+    "discardBody": "写好的描述还没保存，关闭会丢失。",
+    "discardConfirm": "放弃"
+  },
+  "comment": {
+    "placeholder": "写一条评论…（输入 @oru 召唤 Oru；回车发送，Shift+Enter 换行）",
+    "attach": "附加图片",
+    "send": "发送",
+    "sendHint": "回车发送，Shift+Enter 换行",
+    "delete": "删除评论",
+    "deleteConfirmTitle": "删除这条评论？",
+    "deleteConfirmBody": "评论删除后无法恢复。",
+    "heading": "评论",
+    "contextCompressed": "📦 上下文已压缩",
+    "turnInterrupted": "— 上一轮被中断 —"
+  },
+  "reply": {
+    "fieldAdjust": "字段调整",
+    "created": "已新建任务「{{title}}」",
+    "updated": "已修改任务 #{{id}}：{{patch}}",
+    "deleted": "已删除任务 #{{id}}（进回收站）",
+    "restored": "已恢复任务 #{{id}}",
+    "processNote": "── 过程中：{{note}}",
+    "retryHint": "（可在主聊天侧重发；MVP 评论暂不接重试按钮）",
+    "aborted": "已中断",
+    "retrying": "🔁 上游错误，重试中…",
+    "collapseProcess": "收起完整过程 ▴",
+    "viewProcess": "查看完整过程 ▾"
+  },
+  "detail": {
+    "loadFailed": "加载失败",
+    "loadFailedMsg": "加载失败：{{message}}",
+    "notFound": "任务不存在或已被永久移除。",
+    "toTrash": "移到回收站",
+    "close": "关闭 (Esc)",
+    "deleteConfirm": "任务进入回收站，可随时恢复。",
+    "propStatus": "状态",
+    "propAssignee": "归属",
+    "propProject": "项目",
+    "propCreated": "创建",
+    "propUpdated": "更新",
+    "dateFormat": "{{month}}月{{day}}日 {{time}}",
+    "editHint": "点击编辑",
+    "descPlaceholder": "展开细节…",
+    "descSaveHint": "⌘/Ctrl+Enter 保存 · Esc 撤销",
+    "addDesc": "添加描述…",
+    "addProject": "添加项目",
+    "addImage": "添加图片"
+  },
+  "recycle": {
+    "back": "返回任务",
+    "count": "{{count}} 条",
+    "subtitle": "永久保留作存档，不自动清理",
+    "empty": "回收站为空。已删除的任务会留在这里，永久保留作存档。",
+    "origStatus": "原状态",
+    "origProject": "原项目 #{{tag}}",
+    "deletedBy": "删除人 {{actor}}",
+    "restore": "恢复"
+  },
+  "toast": {
+    "updateFailed": "更新失败，请重试",
+    "statusFailed": "切换状态失败，请重试",
+    "restoreFailed": "恢复失败，请重试"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "status": {
+    "todo": "To do",
+    "inProgress": "In progress",
+    "review": "Review",
+    "done": "Done"
+  },
+  "assignee": {
+    "you": "You",
+    "oru": "Oru"
+  },
+  "statusBadge": {
+    "tooltip": "Status: {{label}}",
+    "tooltipClickable": "Status: {{label}} (click to switch)"
+  },
+  "group": {
+    "all": "All",
+    "mine": "Mine",
+    "oru": "Oru's",
+    "completed": "Completed",
+    "tag": "# {{tag}}"
+  },
+  "list": {
+    "taskCount_one": "{{count}} task",
+    "taskCount_other": "{{count}} tasks",
+    "showCompleted": "Show completed",
+    "hiddenCompleted_one": "({{count}} completed task hidden)",
+    "hiddenCompleted_other": "({{count}} completed tasks hidden)",
+    "empty": "No tasks here yet. Click + at the top left to create one, or ask Oru in the main chat.",
+    "filteredEmpty": "No tasks match the current filter."
+  },
+  "oruThinking": "Oru is thinking…",
+  "sidebar": {
+    "title": "Tasks",
+    "newTask": "New task",
+    "projects": "Projects",
+    "recycleBin": "Trash"
+  },
+  "newTask": {
+    "saveEnter": "Save ⏎",
+    "title": "Title",
+    "titlePlaceholder": "Sum up what needs doing in one line",
+    "desc": "Description (optional)",
+    "descPlaceholder": "Add details, or leave blank",
+    "assignee": "Assignee",
+    "project": "Project",
+    "projectPlaceholder": "Type or select",
+    "discardTitle": "Discard unsaved description?",
+    "discardBody": "Your description isn't saved yet and will be lost if you close.",
+    "discardConfirm": "Discard"
+  },
+  "comment": {
+    "placeholder": "Write a comment… (type @oru to summon Oru; Enter to send, Shift+Enter for a new line)",
+    "attach": "Attach image",
+    "send": "Send",
+    "sendHint": "Enter to send · Shift+Enter for new line",
+    "delete": "Delete comment",
+    "deleteConfirmTitle": "Delete this comment?",
+    "deleteConfirmBody": "This comment can't be recovered once deleted.",
+    "heading": "Comments",
+    "contextCompressed": "📦 Context compressed",
+    "turnInterrupted": "— Previous turn interrupted —"
+  },
+  "reply": {
+    "fieldAdjust": "Field update",
+    "created": "Created task “{{title}}”",
+    "updated": "Updated task #{{id}}: {{patch}}",
+    "deleted": "Deleted task #{{id}} (moved to Trash)",
+    "restored": "Restored task #{{id}}",
+    "processNote": "── While working: {{note}}",
+    "retryHint": "(Resend from the main chat; the comment box has no retry button yet)",
+    "aborted": "Interrupted",
+    "retrying": "🔁 Upstream error, retrying…",
+    "collapseProcess": "Collapse full process ▴",
+    "viewProcess": "View full process ▾"
+  },
+  "detail": {
+    "loadFailed": "Failed to load",
+    "loadFailedMsg": "Failed to load: {{message}}",
+    "notFound": "This task doesn't exist or has been permanently removed.",
+    "toTrash": "Move to Trash",
+    "close": "Close (Esc)",
+    "deleteConfirm": "The task will go to Trash and can be restored anytime.",
+    "propStatus": "Status",
+    "propAssignee": "Assignee",
+    "propProject": "Project",
+    "propCreated": "Created",
+    "propUpdated": "Updated",
+    "dateFormat": "{{month}}/{{day}} {{time}}",
+    "editHint": "Click to edit",
+    "descPlaceholder": "Add details…",
+    "descSaveHint": "⌘/Ctrl+Enter to save · Esc to cancel",
+    "addDesc": "Add a description…",
+    "addProject": "Add project",
+    "addImage": "Add image"
+  },
+  "recycle": {
+    "back": "Back to tasks",
+    "count_one": "{{count}} item",
+    "count_other": "{{count}} items",
+    "subtitle": "Kept permanently as an archive; never auto-cleared",
+    "empty": "Trash is empty. Deleted tasks stay here, kept permanently as an archive.",
+    "origStatus": "Original status",
+    "origProject": "Original project #{{tag}}",
+    "deletedBy": "Deleted by {{actor}}",
+    "restore": "Restore"
+  },
+  "toast": {
+    "updateFailed": "Update failed, please retry",
+    "statusFailed": "Failed to change status, please retry",
+    "restoreFailed": "Restore failed, please retry"
+  }
+}

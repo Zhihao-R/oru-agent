@@ -1,0 +1,16 @@
+{
+  "msgLabel": "Message",
+  "aMessage": "A message",
+  "controlLabel": "Control",
+  "uiControl": "UI control",
+  "chatArea": "Chat area",
+  "uiBlank": "Empty area",
+  "screen": "Screen",
+  "pageLabel": "Page {{n}}",
+  "narrativePreview": "Narrative preview",
+  "placeholder": "Keep chatting…",
+  "promoteTitle": "Continue in conversation",
+  "errReply": "Couldn't reply: {{error}}",
+  "errBegin": "Couldn't start conversation: {{error}}",
+  "errPromote": "Couldn't open conversation: {{error}}"
+}

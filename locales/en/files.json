@@ -1,0 +1,43 @@
+{
+  "heading": "Files",
+  "newTitle": "New",
+  "refreshTitle": "Refresh",
+  "noProject": "Select a project from the top bar",
+  "loading": "Loading…",
+  "loadFailed": "Failed to load — click refresh at top right",
+  "emptyFolder": "Empty folder",
+  "moreItems_one": "… {{count}} more item hidden",
+  "moreItems_other": "… {{count}} more items hidden",
+  "adoptRootHtmlError": "HTML in the project root can't be added to a deck directly — move it into a subfolder",
+  "adoptFailed": "Couldn't add to deck — please try again",
+  "trashConfirm": "Move “{{name}}” to Trash?",
+  "trashDirConfirm": "Move “{{name}}” to Trash? (including all its contents)",
+  "trashMultiConfirm_one": "Move {{count}} item to Trash?",
+  "trashMultiConfirm_other": "Move {{count}} items to Trash?",
+  "newMenuCsv": "New CSV",
+  "duplicateSuffix": "copy",
+  "fsError": {
+    "conflict": "A file with that name already exists at the destination",
+    "invalid": "Can't move there (the destination is inside the item itself)",
+    "notFound": "The original file no longer exists",
+    "incomplete": "Operation incomplete: the document was renamed but its .assets may not have followed — please check the folder",
+    "failed": "Operation failed",
+    "illegalChars": "Name can't contain / or :",
+    "emptyOrIllegal": "Name can't be empty or contain / :",
+    "createFailed": "Creation failed",
+    "exists": "Already exists",
+    "illegalName": "Invalid name"
+  },
+  "menu": {
+    "newMd": "New Markdown",
+    "newCsv": "New CSV",
+    "newFolder": "New folder",
+    "adoptDeck": "Add to deck",
+    "reference": "Reference in conversation",
+    "rename": "Rename",
+    "duplicate": "Duplicate",
+    "copyPath": "Copy path",
+    "reveal": "Reveal in Finder",
+    "trash": "Move to Trash"
+  }
+}
