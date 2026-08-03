@@ -46,9 +46,16 @@ describe('rendererQuery', () => {
     expect(await p).toEqual({ paths: ['a.csv'] });
   });
 
-  it('超时 reject（出口闸门据此保守拦截）', async () => {
+  it('dirtySet 超时降级「按无脏放行」（方案 B：不再 reject 拖挂闸门）', async () => {
     vi.useFakeTimers();
-    const p = rendererQuery('dirtySet', {}, 50);
+    const p = rendererQuery<{ paths: string[] }>('dirtySet', {}, 50);
+    await vi.advanceTimersByTimeAsync(60);
+    await expect(p).resolves.toEqual({ paths: [] });
+  });
+
+  it('非 dirtySet kind 超时仍 reject（读路径由调用方自行降级）', async () => {
+    vi.useFakeTimers();
+    const p = rendererQuery('draft', { path: 'a.md' }, 50);
     const assertion = expect(p).rejects.toThrow(/超时/);
     await vi.advanceTimersByTimeAsync(60);
     await assertion;

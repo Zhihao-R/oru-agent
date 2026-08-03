@@ -24,6 +24,7 @@ vi.mock('../../electron/main/agent/store/agents', () => ({
 
 vi.mock('../../electron/main/agent/backends', () => ({
   getBackendFor: vi.fn<() => Promise<AgentBackend>>(),
+  resolveThinkingDisable: vi.fn(() => undefined),
 }));
 
 // appendTaskEvent 供真实 tasks/stream 落盘事件用（这里桩掉，不打真实 store）
@@ -45,6 +46,7 @@ vi.mock('../../electron/main/git/workflow', () => ({
 
 vi.mock('../../electron/main/projects/store', () => ({
   getProject: vi.fn(),
+  getSettings: vi.fn(),
 }));
 
 vi.mock('../../electron/main/agent/auth', () => ({

@@ -62,7 +62,78 @@ describe('projects/store - config 损坏隔离保留（§Deg）', () => {
   });
 });
 
-// ─── S06 · G128：config 格式版本号 ───────────────────────────────────────────
+// ─── removeProject：删 profile/list-entry → 回收站，episodes 保留 ─────────────
+describe('projects/store — removeProject 的记忆清理（删档案留事件）', () => {
+  const memoryProjects = join(userDir, 'memory', 'projects');
+  const P1 = 'prj_testRemove1';
+
+  it('删除项目：config 列表剔除 + profile/list-entry 进回收站 + episodes 保留', async () => {
+    const { removeProject, listProjects, __clearCacheForTest } = await import(
+      '../../electron/main/projects/store'
+    );
+    const memoryRoot = join(userDir, 'memory');
+    const projDir = join(memoryProjects, P1);
+    await fs.mkdir(join(projDir, 'episodes'), { recursive: true });
+    await fs.writeFile(join(projDir, 'profile.md'), '# profile', 'utf-8');
+    await fs.writeFile(join(projDir, 'list-entry.md'), 'intro', 'utf-8');
+    await fs.writeFile(join(projDir, 'episodes', '2026-08-03-foo.md'), '# ep', 'utf-8');
+
+    // 常规项目添加，随后直接走 removeProject（用内存里的项目 id 语义）
+    // config 需要存在该项目，先构造并清缓存
+    await fs.writeFile(
+      configFile,
+      JSON.stringify({
+        projects: [
+          {
+            id: P1,
+            ownerId: OWNER,
+            name: 't',
+            path: '/tmp/t',
+            addedAt: 0,
+            lastOpenedAt: 0,
+            hasClaudeMd: false,
+          },
+        ],
+        activeId: P1,
+        settings: {},
+      }),
+      'utf-8',
+    );
+    __clearCacheForTest();
+
+    await removeProject(P1);
+
+    // config 列表已剔除
+    expect((await listProjects()).projects.map((p) => p.id)).not.toContain(P1);
+    // profile/list-entry 不再在原位（被移走，未物理删除）
+    expect(await fs.stat(join(projDir, 'profile.md')).catch(() => null)).toBeNull();
+    expect(await fs.stat(join(projDir, 'list-entry.md')).catch(() => null)).toBeNull();
+    // 回收站里能找到（可恢复），相对路径保留 projects/<id>/profile.md
+    const trashRoot = join(memoryRoot, 'trash');
+    const trashFiles = await __walk(trashRoot);
+    expect(trashFiles.some((f) => f.endsWith(`projects/${P1}/profile.md`))).toBe(true);
+    expect(trashFiles.some((f) => f.endsWith(`projects/${P1}/list-entry.md`))).toBe(true);
+    // episodes 原样保留
+    expect(await fs.readFile(join(projDir, 'episodes', '2026-08-03-foo.md'), 'utf-8')).toBe('# ep');
+
+    // 清掉项目目录残留（episodes 保留），恢复现场
+    await fs.rm(join(userDir, 'memory'), { recursive: true, force: true });
+    await fs.unlink(configFile);
+    __clearCacheForTest();
+  });
+});
+
+async function __walk(dir: string): Promise<string[]> {
+  const out: string[] = [];
+  const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => [] as import('node:fs').Dirent[]);
+  for (const e of entries) {
+    const full = join(dir, e.name);
+    if (e.isDirectory()) out.push(...(await __walk(full)));
+    else out.push(full);
+  }
+  return out;
+}
+
 describe('projects/store — 格式版本号（S06）', () => {
   it('写盘带 version 字段；无 version 的老文件（当前基线）照常读', async () => {
     const { getSettings, updateSettings, __clearCacheForTest } = await import(

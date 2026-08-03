@@ -24,7 +24,8 @@ import { performDeckCreate } from '../../electron/main/proposals/performDeckCrea
 import { addProject } from '../../electron/main/projects/store';
 import { ensureDefaultAgent } from '../../electron/main/agent/store/agents';
 import { getActiveDeckId, listDecks, setActiveDeckId } from '../../electron/main/deck/store';
-import { __setRunFnForTest, __resetQueuesForTest } from '../../electron/main/tasks/queue';
+import { __setRunFnForTest } from '../../electron/main/tasks/queue';
+import { __resetActiveTasksForTest } from '../../electron/main/tasks/subagentRunner';
 import { upsertSkill } from '../../electron/main/skills/registry';
 
 /** 注册一个假的已装 deck skill——proposeDeck 现在会先查注册表，缺则改走引导安装卡。 */
@@ -159,7 +160,7 @@ async function main() {
   }
 
   // ─── case 2: performDeckCreate 完整链路 ───
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
   setActiveDeckId(null);
 
   // mock queue runner：捕获派工的 CodeActionProposal，不真跑
@@ -250,7 +251,7 @@ async function main() {
   }
 
   restoreRun();
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
 
   const failed = RESULTS.filter((r) => !r.ok);
   console.log('');

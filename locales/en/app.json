@@ -32,6 +32,12 @@
   "noProjectSelected": "No project selected",
   "newProject": "New project",
   "projectListEmpty": "No projects yet. Click “New project” below to add one.",
+  "projectMenu": "Project actions",
+  "deleteProject": "Delete project",
+  "deleteProjectConfirm": {
+    "title": "Delete project",
+    "description": "Delete “{{name}}”? Project files are untouched; it is only removed from Oru's records, and its memory profile is cleared (recoverable)."
+  },
   "collapseSidebar": "Collapse sidebar",
   "expandSidebar": "Expand sidebar",
   "expandSidebarHover": "Hover to expand sidebar",

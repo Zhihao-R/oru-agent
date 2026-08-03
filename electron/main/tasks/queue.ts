@@ -1,12 +1,20 @@
 /**
- * 任务队列：同项目串行 / 跨项目并行
+ * 任务派工：去串行 + 并行起跑（2026-08-03，方案 review-rev 2 定稿）
  *
- * 同项目串行避免：
- * - git baseline / branch 状态互相覆盖
- * - 两个子 agent 同时改同文件冲突
- * - rollback 起点错乱
+ * 按项目串行已按 channels.html「项目」一节（2026-07-10 PM 终审）裁决删除：同项目并行工作能踩到的
+ * 共享资源已在文件写锁 + 记忆追加事件上兜住，不该在调度层按项目一刀切排队；语义冲突的正确防线是
+ * 派工方对具体资源的判断，不是项目级串行。原实现是裁决未落实的漂移。
  *
- * projectKey = proposal.targetProjectId ?? 'twin-home'（家目录任务也算一个独立 key）
+ * 本模块从「按 projectKey 串行队列」改为「去重 + 直接并行起跑」：
+ * - enqueue 立即起跑（无 pending 排队链），同一项目多个派工可同时执行。
+ * - 幂等 / 守卫：status 非 pending 不入队；起跑即迁 executing（同步、无 await 间隙）——双击 execute、
+ *   信任模式叠加的二次入队被非 pending 挡下（至多执行一次，拒绝=不执行）。
+ * - 取消收敛：去串行后无排队项可撤，刹车 / 撤卡统一走 subagentRunner 的 per-task abort
+ *   （activeTasks 单一路径，见 subagentRunner 防逃逸登记）。本模块不再持取消/队列登记。
+ *
+ * ⚠ 去串行后同项目并行 subagent 共享同一 git 工作树 / baseline / rollback，**确定性互踩**——这是设计
+ * 理由（不是过时注释），并行后风险真实存在。隔离（per-task worktree）见
+ * TODO: 2026-08-03-undone-git-worktree-isolation，不属本模块范畴，后续独立议题承接。
  */
 import type { CodeActionProposal } from '@shared/types';
 import type { ServerEventPayload } from '@shared/protocol';
@@ -18,56 +26,41 @@ type Emit = (ev: ServerEventPayload) => void;
 type QueueItem = { proposal: CodeActionProposal; agentId: string; emit: Emit };
 type RunFn = (item: QueueItem) => Promise<void>;
 
-const queues = new Map<string, { running: QueueItem | null; pending: QueueItem[] }>();
 let activeRunFn: RunFn = (item) => runTask(item);
 
-function projectKey(proposal: CodeActionProposal): string {
-  return proposal.targetProjectId ?? 'twin-home';
-}
-
 /**
- * 入队。同 key 已有 running 时排队，否则立刻起；不阻塞调用方。
+ * 派工。起跑守卫 + 幂等后立即并行起跑，不排队、不阻塞调用方。
  *
- * 幂等去重（拒绝=不执行 / 至多执行一次）：
- * - 非 pending 的提案不入队——起跑即迁 executing（见 runWithDequeue），双击派工 /
- *   信任模式自动派工与手点叠加时，第二次入队看到的 status 已非 pending，静默幂等；
- *   已 rejected 的迟到入队同样被挡（提案实例经 proposals Map 单例共享，状态即真相）。
- * - 同提案还在排队（双方都 pending）时按 proposalId 扫队列去重。
+ * 幂等（拒绝=不执行 / 至多一次）：
+ * - status 非 pending 不入队（首行守卫）。起跑即迁 executing（runTaskItem 同步段），「双击 execute /
+ *   信任模式叠加」的第二次入队在 status 已非 pending 时被挡；已 rejected 的迟到入队同样被挡（提案
+ *   实例经 proposals Map 单例共享，状态即真相）。
+ * - 去串行后无 pending 排队，无需按 proposalId 扫队列去重——第一个 enqueue 在同一同步栈内就迁
+ *   executing，不存在两个 pending 的同一提案（方案 review-rev 2 定稿）。
  */
 export function enqueue(item: QueueItem): void {
   if (item.proposal.status !== 'pending') return;
-  const key = projectKey(item.proposal);
-  const q = queues.get(key) ?? { running: null, pending: [] };
-  queues.set(key, q);
-  if (q.pending.some((it) => it.proposal.id === item.proposal.id)) return;
-  if (q.running) {
-    q.pending.push(item);
-    return;
-  }
-  q.running = item;
-  void runWithDequeue(key, item);
+  void runTaskItem(item);
 }
 
-async function runWithDequeue(key: string, item: QueueItem): Promise<void> {
+async function runTaskItem(item: QueueItem): Promise<void> {
   try {
-    // 起跑守卫：入队时还 pending，排队期间可能已被不走 cancelInQueue 的路径置成非
-    // pending（如 turn 中止撤卡）——非 pending 一律不执行（拒绝=不执行），直接走
-    // finally 推进队列。读进局部快照再判：避免 TS 属性收窄波及 await 后的重读判断。
+    // 起跑守卫：入队后到起跑前可能被旁路置非 pending（如 turn 中止撤卡）——非 pending 不执行（拒绝=
+    // 不执行）。读局部快照再判，避免 TS 属性收窄波及 await 后的重读判断。
     const statusAtStart: typeof item.proposal.status = item.proposal.status;
     if (statusAtStart !== 'pending') return;
-    // 起跑才迁 executing（排队中保持 pending，reject 仍可经 cancelInQueue 撤下）；
-    // 迁移后拒绝再无撤回路径（executing → rejected 非法），「至多执行一次」由此成立。
-    // dequeue（shift）到这里无 await 间隙，不存在「已出队但还没迁状态」的可拒窗口。
+    // 起跑才迁 executing（同步、无 await 间隙，不存在「已入队未迁态」可拒窗口；迁移后拒绝再无撤回
+    // 路径，executing→rejected 非法，「至多执行一次」由此成立）。
     transitionProposal(item.proposal, 'executing', item.emit);
     await activeRunFn(item);
-    // await 后重读再判：executed 仅表示「这次派工已跑完」，任务本身成败由 task.* 事件呈现，
-    // 审批卡不复述结果（PM 定稿：卡片已决即静态）。
+    // await 后重读再判：executed 仅表示「这次派工已跑完」，任务本身成败由 task.* 事件呈现，审批卡
+    // 不复述结果（PM 定稿：卡片已决即静态）。
     if (item.proposal.status === 'executing') {
       transitionProposal(item.proposal, 'executed', item.emit);
     }
   } catch (e) {
-    // runTask 正常不外抛（内部已 catch 落 task failed）；这里兜住 runFn 异常，
-    // 让提案落终态、也避免 void 调用变成 unhandled rejection
+    // runTask 正常不外抛（内部已 catch 落 task failed）；这里兜住 runFn 异常，让提案落终态、
+    // 也避免 void 调用变成 unhandled rejection。
     if (item.proposal.status === 'executing') {
       transitionProposal(item.proposal, 'failed', item.emit, {
         failureMessage: (e as Error).message,
@@ -75,19 +68,9 @@ async function runWithDequeue(key: string, item: QueueItem): Promise<void> {
     }
     console.error('[queue] 任务执行异常:', e);
   } finally {
-    // task 到终态：即时触发该对话的主动播报（去抖 / 忙退避 / 去重都在 announcer 内消化）
+    // task 到终态：即时触发该对话的主动播报（去抖 / 忙退避 / 去重都在 announcer 内消化）。
+    // 去串行后触发点从「队列推进」变「每任务 finally」——每个任务各自播报，语义不变。
     notifyTaskTerminal(item.agentId, item.proposal.conversationId);
-    const q = queues.get(key);
-    if (!q) return;
-    if (q.pending.length > 0) {
-      const next = q.pending.shift();
-      if (next) {
-        q.running = next;
-        void runWithDequeue(key, next);
-        return;
-      }
-    }
-    q.running = null;
   }
 }
 
@@ -98,60 +81,4 @@ export function __setRunFnForTest(fn: RunFn): () => void {
   return () => {
     activeRunFn = prev;
   };
-}
-
-/** 仅 smoke 测试用：清空所有队列 */
-export function __resetQueuesForTest(): void {
-  queues.clear();
-}
-
-/** 取消队列中的某个 proposal（尚未起跑），按 proposalId 匹配。已起跑的请用 cancelTask */
-export function cancelInQueue(proposalId: string): boolean {
-  for (const q of queues.values()) {
-    const idx = q.pending.findIndex((it) => it.proposal.id === proposalId);
-    if (idx >= 0) {
-      q.pending.splice(idx, 1);
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * 对话级刹车（理想架构 subagent.html#PFail）：把该对话「排队未起跑」的派工从所有
- * project 队列撤下（队列按 project 组织，但每个排队项的 proposal 都带 conversationId，
- * 据此跨队列反查）。返回被撤项的 proposal——状态流转（transitionProposal）是调用方的事，
- * 本函数只管队列；已起跑的用 cancelTasksForConversation。
- */
-export function cancelQueuedForConversation(conversationId: string): CodeActionProposal[] {
-  const removed: CodeActionProposal[] = [];
-  for (const q of queues.values()) {
-    for (let i = q.pending.length - 1; i >= 0; i--) {
-      if (q.pending[i].proposal.conversationId === conversationId) {
-        removed.push(...q.pending.splice(i, 1).map((it) => it.proposal));
-      }
-    }
-  }
-  return removed;
-}
-
-/** 暴露给监控用：每个 projectKey 当前排队长度 */
-export function getQueueDepth(): Record<string, { running: boolean; pendingCount: number }> {
-  const result: Record<string, { running: boolean; pendingCount: number }> = {};
-  for (const [k, q] of queues.entries()) {
-    result[k] = { running: q.running !== null, pendingCount: q.pending.length };
-  }
-  return result;
-}
-
-/**
- * 某 deck 是否已有生成任务在跑 / 在排（走查二批该修 4 的同 deck 去重判据）——队列是 running +
- * pending 的唯一真源（内存态、崩溃即清，与派工生命周期同界限），不另立登记表防双源漂移。
- */
-export function deckTaskState(artifactId: string): 'running' | 'queued' | null {
-  for (const q of queues.values()) {
-    if (q.running?.proposal.deckContext?.artifactId === artifactId) return 'running';
-    if (q.pending.some((it) => it.proposal.deckContext?.artifactId === artifactId)) return 'queued';
-  }
-  return null;
 }

@@ -48,6 +48,29 @@ import { retryStreamStart, DEFAULT_RETRY } from '../util/retry';
 
 const DEFAULT_MAX_TOKENS = 8192;
 
+/** extended thinking 预算下界——Anthropic API 硬约束：budget_tokens ≥ 1024 且 < max_tokens */
+const THINKING_MIN_BUDGET = 1024;
+/** 思考预算软上限（克制的单回合推理深度：够复杂分析用，不过度烧 token） */
+const THINKING_SOFT_BUDGET = 4000;
+
+/**
+ * 直连 Anthropic 的 thinking 参数构造（Track B）。
+ * 思考开（disableReasoning === false）且 max_tokens 塞得下合规预算时返回
+ * `{ type:'enabled', budget_tokens }`（budget 恒 ∈ [1024, max_tokens)）；否则返回 undefined——
+ * 思考关 / 缺省（claude-code 缺省即压掉）/ max_tokens 太小都干脆不发，免触发 API 400。
+ */
+function thinkingParamFor(
+  maxTokens: number,
+  disableReasoning: boolean | undefined,
+): { type: 'enabled'; budget_tokens: number } | undefined {
+  if (disableReasoning !== false) return undefined;
+  if (maxTokens - THINKING_MIN_BUDGET < THINKING_MIN_BUDGET) return undefined;
+  return {
+    type: 'enabled',
+    budget_tokens: Math.min(THINKING_SOFT_BUDGET, maxTokens - THINKING_MIN_BUDGET),
+  };
+}
+
 /**
  * 直连 Anthropic 的「首事件前可重试」判定（S25 G09）——网络层错误、408/409/429、5xx。
  * 与 openaiCompatible 的 shouldRetry 同一口径，只是作用在 SDK 抛出的异常类型上（SDK 已抽掉 Response）。
@@ -232,6 +255,7 @@ export class AnthropicBackend implements AgentBackend {
       model,
       systemField,
       maxTokens,
+      disableReasoning: input.disableReasoning,
       toolDefs,
       messages,
       buildSeed: async (h) => (await buildSeed(h)).coalesced,
@@ -281,10 +305,14 @@ export class AnthropicBackend implements AgentBackend {
     // 防搜索摘要循环：runOneShot **永不**带 tools——任何时候 messages.create 不传 tools 字段。
     // 这是 web_fetch 长摘要 summarizer 的安全前提：summarizer 调 runOneShot 时模型看不到任何工具，
     // 不可能再次触发 web_fetch。详见 docs/tech/2026-05-07-web-search-tech-design.md §8.2。
+    const maxTokens = this.maxOutputTokens ?? DEFAULT_MAX_TOKENS;
     const resp = await client.messages.create(
       {
         model,
-        max_tokens: this.maxOutputTokens ?? DEFAULT_MAX_TOKENS,
+        max_tokens: maxTokens,
+        // 思考（Track B）：开思考才带 thinking（预算 < max_tokens）；关/缺省时 undefined、SDK 省略该键，
+        // 行为不变。one-shot 回复里 thinking 块已在下方 .filter(type==='text') 天然丢弃，不落 text。
+        thinking: thinkingParamFor(maxTokens, input.disableReasoning),
         // cacheSystem：把整段 system 标记 ephemeral（召回挑选器等「systemContext 短时复用」场景，
         // 让稳定前缀命中 cache、每轮只重算对话尾部）。否则纯字符串、不缓存。
         system: append?.trim()
@@ -465,6 +493,8 @@ class AnthropicRoundTripAdapter implements ProtocolAdapter {
       model: string;
       systemField: ReturnType<typeof buildSystemField>;
       maxTokens: number;
+      /** 思路三态（Track B）：false 才开思考；其余关/缺省不发 thinking 参数 */
+      disableReasoning?: boolean;
       toolDefs: Array<{ name: string; description: string; input_schema: Anthropic.Messages.Tool.InputSchema }>;
       messages: AnthMessageParam[];
       /** 用整理后的 history 重译 seed 段（复用 runConversation 的 buildSeed，coalesce 后返回）。 */
@@ -499,7 +529,13 @@ class AnthropicRoundTripAdapter implements ProtocolAdapter {
     // 累积本轮的 assistant content blocks（要回传给 messages 数组用 ContentBlockParam 形态，不带 caller）
     const assistantContent: AnthContentBlockParam[] = [];
     // 累积每个 block 的临时状态
-    const builders: Array<{ type: 'text'; text: string } | { type: 'tool_use'; id: string; name: string; jsonBuf: string }> = [];
+    // thinking 块（Track B）：只需 signature——它是下轮工具 round-trip 续链必需（Anthropic 要求
+    // thinking 块带签名回传，否则挤掉签名下轮 tool_result 400）；CoT 文本不落、不展示。
+    const builders: Array<
+      | { type: 'text'; text: string }
+      | { type: 'tool_use'; id: string; name: string; jsonBuf: string }
+      | { type: 'thinking'; signature: string }
+    > = [];
     let stopReason: string | null = null;
 
     // 本次 stream（即本次 LLM 调用）的 usage——结束时 yield llm_usage 给 debug
@@ -521,6 +557,10 @@ class AnthropicRoundTripAdapter implements ProtocolAdapter {
         {
           model: this.d.model,
           max_tokens: this.d.maxTokens,
+          // 思考（Track B）：开思考才带 thinking（预算 < max_tokens）。thinking 块在下方流解析里
+          // 只做「带签名回传、不吐 assistant_text / finalText」，CoT 不外泄；工具 round-trip 靠
+          // 回传带 signature 的 thinking 块续链（否则挤掉 signature 下轮 tool_result 400）。
+          thinking: thinkingParamFor(this.d.maxTokens, this.d.disableReasoning),
           system: this.d.systemField,
           messages: this.d.messages,
           tools: this.d.toolDefs.length > 0 ? this.d.toolDefs : undefined,
@@ -541,8 +581,11 @@ class AnthropicRoundTripAdapter implements ProtocolAdapter {
             builders.push({ type: 'text', text: '' });
           } else if (blk.type === 'tool_use') {
             builders.push({ type: 'tool_use', id: blk.id, name: blk.name, jsonBuf: '' });
+          } else if (blk.type === 'thinking') {
+            // thinking 块（Track B）：只需捕获签名用于回传续链；CoT 文本不落内存、也不展示。
+            builders.push({ type: 'thinking', signature: blk.signature ?? '' });
           } else {
-            // 其他类型（thinking / server_tool_use 等）暂不处理；占位避免 builders 索引错位
+            // 其他类型（server_tool_use 等）暂不处理；占位避免 builders 索引错位
             builders.push({ type: 'text', text: '' });
           }
           break;
@@ -555,6 +598,13 @@ class AnthropicRoundTripAdapter implements ProtocolAdapter {
             yield { type: 'assistant_text', text: ev.delta.text };
           } else if (ev.delta.type === 'input_json_delta' && last.type === 'tool_use') {
             last.jsonBuf += ev.delta.partial_json;
+          } else if (
+            (ev.delta.type === 'signature_delta' || ev.delta.type === 'thinking_delta') &&
+            last.type === 'thinking'
+          ) {
+            // signature_delta 捕获签名（回传续链必需）；thinking_delta 的 CoT 文本**直接丢弃**——
+            // 不累积进内存、不展示、也不进 finalText（CoT 不外泄）。
+            if (ev.delta.type === 'signature_delta') last.signature = ev.delta.signature;
           }
           break;
         }
@@ -582,6 +632,16 @@ class AnthropicRoundTripAdapter implements ProtocolAdapter {
               input: parsedInput,
             });
             yield { type: 'tool_use', id: last.id, name: last.name, input: parsedInput };
+          } else if (last.type === 'thinking') {
+            // thinking 块（Track B）：带签名回传进 assistantContent（工具 round-trip 续链必需），
+            // 但 thinking 文本用官方 redaction 哨兵抹掉——CoT 既不吐给用户、也不落盘；签名原样
+            // 保留让续链合法（Anthropic 允许 thinking 文本 redact、只要签名在）。只在开了思考的
+            // 回合出现（thinkingParamFor 决定是否发请求参数）。
+            assistantContent.push({
+              type: 'thinking',
+              thinking: 'Redacted',
+              signature: last.signature,
+            });
           }
           break;
         }

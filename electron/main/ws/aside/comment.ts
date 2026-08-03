@@ -15,7 +15,11 @@ import type { AsideReferent } from '@shared/types';
 import { ASIDE_REGION_PHRASES, ORU_SOFTWARE_MAP } from '@shared/asideRegions';
 import { newMessageId } from '@shared/ids';
 import { getAgent } from '../../agent/store/agents';
-import { getBackendFor, OAUTH_FALLBACK_SUPPORTS_VISION } from '../../agent/backends/factory';
+import {
+  getBackendFor,
+  OAUTH_FALLBACK_SUPPORTS_VISION,
+  resolveThinkingDisable,
+} from '../../agent/backends/factory';
 import { runOneShotWithTimeout } from '../../agent/backends';
 import { instrumentOneShot } from '../../debug/instrument';
 import { buildSnapshot } from '../../memory/snapshot';
@@ -165,12 +169,13 @@ export async function runAsideComment(req: AsideCommentReq): Promise<string | nu
       () =>
         runOneShotWithTimeout(
           backend,
-          // 思考开关默认关（asideThinking 缺省 = false）：评点要的是几秒内的临场反应（二期 §3）
+          // 思考三态（Track B）：asideComment 默认关（评点要几秒内临场反应），走中央判据——
+          // 老 asideThinking 意图已由 store 迁移到 modelThinking['asideComment']，这里只读新字段。
           {
             prompt,
             systemContext,
             images,
-            disableReasoning: settings.asideThinking ? undefined : true,
+            disableReasoning: resolveThinkingDisable('asideComment', settings),
           },
           COMMENT_TIMEOUT_MS,
         ),

@@ -10,6 +10,7 @@
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Settings } from '@shared/types';
+import { defaultModelThinking } from '@shared/types';
 import type { AgentBackend, OneShotInput, OneShotResult } from '@shared/agent/backend';
 
 vi.mock('../../electron/main/agent/store/agents', () => ({
@@ -46,8 +47,10 @@ import {
 function makeSettings(p: {
   asideComment?: string | null;
   twinMain?: string | null;
-  models?: Array<{ id: string; supportsVision: boolean }>;
+  models?: Array<{ id: string; supportsVision: boolean; supportsReasoning?: boolean }>;
   asideThinking?: boolean;
+  /** 覆盖 asideComment 的思考开关（Track B：modelThinking['asideComment']） */
+  asideCommentThinking?: boolean;
 }): Settings {
   return {
     theme: 'system',
@@ -61,6 +64,7 @@ function makeSettings(p: {
       modelId: m.id,
       label: m.id,
       supportsVision: m.supportsVision,
+      supportsReasoning: m.supportsReasoning,
     })),
     modelAssignments: {
       twinMain: p.twinMain ?? null,
@@ -71,6 +75,10 @@ function makeSettings(p: {
       conversationTitle: null,
       twinSubagent: null,
       asideComment: p.asideComment ?? null,
+    },
+    modelThinking: {
+      ...defaultModelThinking(),
+      asideComment: p.asideCommentThinking ?? false,
     },
   };
 }
@@ -306,19 +314,19 @@ describe('runAsideComment', () => {
     expect(calls[0].disableReasoning).toBe(true);
   });
 
-  it('asideThinking: true → 不关思考（disableReasoning 缺席）', async () => {
+  it('modelThinking[asideComment]=true → 不关思考（显式 false，放开 claude-code 默认压制）', async () => {
     vi.mocked(getSettings).mockResolvedValue(
       makeSettings({
         asideComment: 'model-v',
-        models: [{ id: 'model-v', supportsVision: true }],
-        asideThinking: true,
+        models: [{ id: 'model-v', supportsVision: true, supportsReasoning: true }],
+        asideCommentThinking: true,
       }),
     );
     const { backend, calls } = makeBackend();
     useBackend(backend);
 
     await runAsideComment({ type: 'aside.comment', agentId: 'agent-1', referent: MESSAGE_REFERENT });
-    expect(calls[0].disableReasoning).toBeUndefined();
+    expect(calls[0].disableReasoning).toBe(false);
   });
 
   it('backend 失败 → 静默 resolves null（不抛出）', async () => {

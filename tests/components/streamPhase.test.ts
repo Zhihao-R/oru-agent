@@ -28,3 +28,37 @@ describe('derivePhase 中断态', () => {
     expect(derivePhase(msg({ abortedByUser: true }))).toBe('aborted');
   });
 });
+
+describe('derivePhase 思考→工具→输出流转（Track B 渲染回归）', () => {
+  it('思考期（文本空、无 running 工具）→ thinking', () => {
+    expect(derivePhase(msg({ text: '', toolCalls: [] }))).toBe('thinking');
+  });
+
+  it('进工具（有 running）→ tool，无论文本是否为空', () => {
+    expect(
+      derivePhase(
+        msg({
+          text: '',
+          toolCalls: [{ id: 't1', name: 'x', status: 'running', input: {} }],
+        }),
+      ),
+    ).toBe('tool');
+  });
+
+  it('工具完成后文本流入 → output', () => {
+    expect(
+      derivePhase(
+        msg({
+          text: '查到了',
+          toolCalls: [{ id: 't1', name: 'x', status: 'done', input: {} }],
+        }),
+      ),
+    ).toBe('output');
+  });
+
+  it('done 终态盖过 output/tool', () => {
+    expect(
+      derivePhase(msg({ text: '结束', done: true, toolCalls: [{ id: 't1', name: 'x', status: 'running', input: {} }] })),
+    ).toBe('done');
+  });
+});

@@ -91,9 +91,10 @@
     "noAutoName": "(no auto-naming)",
     "defaultLocalClaude": "(default · local Claude login)",
     "localClaudeGroup": "Local Claude login",
-    "asideThinkTitle": "Off by default for faster responses; when on, aside notes and quick chats think before responding",
-    "asideThinkAria": "Think during aside notes",
-    "asideThink": "Think"
+    "think": "Think",
+    "thinkTitle": "Whether this purpose thinks before responding (thinking text is never shown; only a “thinking” state appears)",
+    "thinkDisabledTitle": "The currently selected model does not support thinking",
+    "thinkAria": "Enable thinking"
   },
   "webSearch": {
     "engineLabel": {

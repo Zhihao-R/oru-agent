@@ -12,7 +12,8 @@
  * 纯函数（截断 / prompt 构建 / 响应解析）单独 TDD；LLM 调用照 compileChecklist 先例接 instrumentOneShot。
  */
 import type { ChecklistItem } from '@shared/types';
-import { getBackendFor } from '../agent/backends';
+import { getBackendFor, resolveThinkingDisable } from '../agent/backends';
+import { getSettings } from '../projects/store';
 import { instrumentOneShot } from '../debug/instrument';
 import { newMessageId } from '@shared/ids';
 import { getCurrentOwnerId } from '../identity/getCurrentOwnerId';
@@ -215,6 +216,8 @@ export function makeReviewer(opts: {
     const prompt = buildReviewPrompt(checklist, turns, compressed);
 
     const backend = await getBackendFor('loopReviewer');
+    // 思考三态（Track B）：loopReviewer 默认关（独立审查要快，独立≠贵），走中央判据——可调。
+    const disableReasoning = resolveThinkingDisable('loopReviewer', await getSettings());
     const ac = new AbortController();
     const timer = setTimeout(() => ac.abort(), REVIEW_TIMEOUT_MS);
     const onAbort = () => ac.abort();
@@ -232,7 +235,7 @@ export function makeReviewer(opts: {
           source: 'loop_reviewer',
           userText: prompt,
         },
-        () => backend.runOneShot({ prompt, systemContext: REVIEW_SYSTEM_PROMPT, outputSchema: REVIEW_OUTPUT_SCHEMA }, ac.signal),
+        () => backend.runOneShot({ prompt, systemContext: REVIEW_SYSTEM_PROMPT, outputSchema: REVIEW_OUTPUT_SCHEMA, disableReasoning }, ac.signal),
         REVIEW_SYSTEM_PROMPT,
       );
       return parseReviewOutput(result, checklist);

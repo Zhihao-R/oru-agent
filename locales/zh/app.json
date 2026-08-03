@@ -32,6 +32,12 @@
   "noProjectSelected": "未选择项目",
   "newProject": "新建项目",
   "projectListEmpty": "还没有项目。点下方\"新建项目\"添加。",
+  "projectMenu": "项目操作",
+  "deleteProject": "删除项目",
+  "deleteProjectConfirm": {
+    "title": "删除项目",
+    "description": "确定删除「{{name}}」？项目文件不会动，只从 Oru 的记录里移除，并清除该项目的记忆档案（可恢复）。"
+  },
   "collapseSidebar": "收起左栏",
   "expandSidebar": "展开左栏",
   "expandSidebarHover": "悬停展开左栏",

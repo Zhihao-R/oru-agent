@@ -11,7 +11,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 
 import type { ToolContext } from '@shared/agent/backend';
 import { getSettings } from '../projects/store';
-import { getBackendFor } from '../agent/backends/factory';
+import { getBackendFor, resolveThinkingDisable } from '../agent/backends/factory';
 import { instrumentOneShot } from '../debug/instrument';
 import { newMessageId } from '@shared/ids';
 
@@ -35,6 +35,8 @@ export async function summarizeIfNeeded(
   ctx: Pick<ToolContext, 'abortSignal' | 'conversationId' | 'agentId' | 'ownerId'>,
 ): Promise<SummarizeOutput> {
   const settings = await getSettings();
+  // 思考三态（Track B）：conversationSummary 默认关（廉价摘要器要便宜），走中央判据——可调。
+  const disableReasoning = resolveThinkingDisable('conversationSummary', settings);
   if (!settings.webSearch?.longPageSummary) return { text, summarized: false };
   if (text.length <= SUMMARY_THRESHOLD) return { text, summarized: false };
 
@@ -66,7 +68,7 @@ export async function summarizeIfNeeded(
           source: 'web_summary',
           userText: prompt,
         },
-        () => backend.runOneShot({ prompt }, ctx.abortSignal),
+        () => backend.runOneShot({ prompt, disableReasoning }, ctx.abortSignal),
       );
       return { text: summary.trim(), summarized: true };
     } catch (e) {

@@ -6,7 +6,8 @@
  *   都通过 factory 静态注册，按 usages 白名单过滤
  * - 不消费 conversation history（背景 query 是独立的）
  */
-import { getBackendFor } from './backends';
+import { getBackendFor, resolveThinkingDisable } from './backends';
+import { getSettings } from '../projects/store';
 import { instrumentConversation } from '../debug/instrument';
 import { runQueryOnce } from './stream';
 import { sessionStartHandler } from './hooks';
@@ -61,6 +62,8 @@ async function realRunTwinBackground(args: RunTwinBackgroundArgs): Promise<TwinB
   if (!ready.ok) {
     return { resultText: `[BACKGROUND_AUTH_FAIL] ${ready.hint}`, isError: true };
   }
+  // 思考三态（Track B）：twinBackground 干活默认开思考，走中央判据——可调。
+  const disableReasoning = resolveThinkingDisable('twinBackground', await getSettings());
 
   const abortController = args.abortController ?? new AbortController();
 
@@ -95,6 +98,8 @@ async function realRunTwinBackground(args: RunTwinBackgroundArgs): Promise<TwinB
       abortController,
       // 能力供给的 disallowed（联网：禁 SDK 内置 WebSearch/WebFetch，避免与 oru 工具两套并存）
       disallowedTools: provision.extraDisallowed,
+      // 思考三态（Track B）：twinBackground 干活默认开思考，可调
+      disableReasoning,
       toolContext: {
         // 能力供给的 ToolContext patch（联网：searchBudgetId=bgConversationId，与本桶一致）
         ...provision.toolContextPatch,

@@ -632,9 +632,13 @@ export type Settings = {
   /** 各 LLM 用途分配到哪个 RegisteredModel.id；null 表示未分配 */
   modelAssignments: ModelAssignment;
   /**
-   * 随手评点（aside）是否开思考——对「那句话」（短评）和原地短聊同时生效（二期 §3）。
-   * 缺省 false = 不思考：评点要的是几秒内的临场反应，思考拖慢且用不上；
-   * 想和正式对话完全一致的，模型跟随（asideComment 不分配）+ 打开本开关即可。
+   * 各 LLM 用途是否开启思考（Track B）。默认分档由 defaultModelThinking() 提供；
+   * 老用户无此字段时读取处回落默认值，不能裸读直判。
+   */
+  modelThinking: ModelThinking;
+  /**
+   * @deprecated 思考开关统一收进 modelThinking['asideComment']（Track B）。本字段保留做读兼容：
+   * 老用户落盘有此字段时，读 aside 思考按它判断；新实现一律走 modelThinking['asideComment']。
    */
   asideThinking?: boolean;
   /**
@@ -994,6 +998,37 @@ export const DEFAULT_NEW_CONV_TITLE = '新对话';
 
 /** 各用途分配到哪个 RegisteredModel.id；null 表示未分配 */
 export type ModelAssignment = Record<LlmUsage, string | null>;
+
+/**
+ * 各用途是否开启思考（默认分档见 defaultModelThinking）。true=开思考，false=关。
+ * 只对 supportsReasoning 的模型/后端生效；不支持思考的模型开关隐藏/置灰。
+ * 老用户落盘没有此字段/此 key → 读取处一律 `settings.modelThinking[usage] ?? defaultModelThinking()[usage]`，
+ * 不能裸读直判（迁移坑同 modelAssignments，见 :957 注释先例）。
+ */
+export type ModelThinking = Record<LlmUsage, boolean>;
+
+/**
+ * 思考开关默认分档（Track B 拍板）：
+ * - 干活/对话类默认开：twinMain、twinSubagent、subagentCoder、scheduledRun、twinBackground
+ * - 简单/廉价判断类默认关：conversationTitle、memoryRecall、loopReviewer、conversationSummary、
+ *   memoryDream、loopCompile、asideComment（这些用途代码里本就刻意关思考省钱，默认关保住"要快"不变量）
+ */
+export function defaultModelThinking(): ModelThinking {
+  return {
+    twinMain: true,
+    twinBackground: true,
+    memoryDream: false,
+    subagentCoder: true,
+    conversationSummary: false,
+    conversationTitle: false,
+    twinSubagent: true,
+    asideComment: false,
+    loopReviewer: false,
+    memoryRecall: false,
+    scheduledRun: true,
+    loopCompile: false,
+  };
+}
 
 // ─── Loop 模式：检查清单 ───────────────────────────────────
 //

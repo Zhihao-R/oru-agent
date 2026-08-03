@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import type { AuthStatus, Settings } from '@shared/types';
+import type { AuthStatus, LlmUsage, Settings } from '@shared/types';
+import { defaultModelThinking } from '@shared/types';
 import { wsClient } from '@/lib/ws';
 import {
   getStoredColorScheme,
@@ -33,6 +34,7 @@ const defaultSettings: Settings = {
     scheduledRun: null,
     loopCompile: null,
   },
+  modelThinking: defaultModelThinking(),
   migratedFromManualApiKey: false,
   mcpServers: [],
   webSearch: {
@@ -82,6 +84,8 @@ type SettingsStoreState = {
   refresh: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   update: (patch: Partial<Settings>) => Promise<void>;
+  /** 某个 AI 用途的思考开关（Track B）——专业协议事件，落盘后经 settings.state 回写权威值 */
+  setModelThinking: (usage: LlmUsage, thinking: boolean) => Promise<void>;
   setDevModeUnlocked: (on: boolean) => void;
 };
 
@@ -127,6 +131,20 @@ export const useSettingsStore = create<SettingsStoreState>((set) => ({
     set((prev) => ({ settings: { ...prev.settings, ...patch } }));
     try {
       const res = await wsClient.request({ type: 'settings.update', settings: patch });
+      if (res.type === 'settings.state') {
+        set({ settings: res.settings });
+      }
+    } catch {
+      // 忽略——本地已乐观更新，断连/失败时后端最终会通过 settings.state 修正
+    }
+  },
+  async setModelThinking(usage, thinking) {
+    // 乐观更新 + 后端 settings.state 回写权威值（同 update 语义；不阻塞 UI 等待往返）
+    set((prev) => ({
+      settings: { ...prev.settings, modelThinking: { ...prev.settings.modelThinking, [usage]: thinking } },
+    }));
+    try {
+      const res = await wsClient.request({ type: 'modelThinking.update', usage, thinking });
       if (res.type === 'settings.state') {
         set({ settings: res.settings });
       }

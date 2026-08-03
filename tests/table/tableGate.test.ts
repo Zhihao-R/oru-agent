@@ -76,9 +76,9 @@ describe('assertTableGate（脏文件）', () => {
     ).rejects.toThrow(/未保存|unsaved/);
   });
 
-  it('编辑器无应答（超时）→ 保守拦截，不放行', async () => {
+  it('编辑器无应答（超时）→ 降级按无脏放行（方案 B：不再保守拦截）', async () => {
     answerQueries = false;
-    await expect(assertTableGate(['ls'], { cwd: root, timeoutMs: 50 })).rejects.toThrow(/编辑器无响应|not responding/);
+    await expect(assertTableGate(['ls'], { cwd: root, timeoutMs: 50 })).resolves.toBeUndefined();
   });
 
   it('并发场景：置 dirty 后立刻执行提案——同步拉取不漏', async () => {

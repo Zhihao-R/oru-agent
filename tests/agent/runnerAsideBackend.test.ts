@@ -1,9 +1,9 @@
 /**
- * runner 的 asideMode 分支按评点设置取 backend（二期 §3）：
+ * runner 的 asideMode 分支按评点设置取 backend（二期 §3 / Track B）：
  * - asideMode:true 的回合：getBackendFor('asideComment')（短评与短聊同一个「轻 Oru」，
- *   浮层里前后两句必须是同一个脑子）；思考开关默认关 → ConversationInput.disableReasoning: true
- * - 普通回合零回归：仍走 'twinMain'，disableReasoning 缺席
- * - asideThinking: true 时 aside 回合不关思考
+ *   浮层里前后两句必须是同一个脑子）；思考开关默认关（廉价区分档）→ disableReasoning: true
+ * - 普通回合：仍走 'twinMain'，twinMain 干活类默认开思考 → disableReasoning: false
+ * - modelThinking['asideComment']=true 时 aside 回合不关思考（显式放开）
  *
  * ORU_DIR 范式 + __setBackendFactoryForTest 捕获 usage 与 runConversation 入参；
  * auth 模块 mock 掉（不依赖本机 Claude 登录态）。
@@ -115,22 +115,26 @@ describe('runner asideMode 的 backend 路由与思考开关', () => {
     expect(conversationInputs.at(-1)!.disableReasoning).toBe(true);
   });
 
-  it('普通回合零回归：走 twinMain，disableReasoning 缺席', async () => {
+  it('普通回合：走 twinMain，干活默认开思考 → disableReasoning: false', async () => {
     await runTurn({ kind: 'sub' });
     expect(usageCalls).toContain('twinMain');
     expect(usageCalls).not.toContain('asideComment');
-    expect(conversationInputs.at(-1)!.disableReasoning).toBeUndefined();
+    expect(conversationInputs.at(-1)!.disableReasoning).toBe(false);
   });
 
-  it('asideThinking: true → aside 回合不关思考（显式 false，放开 claude-code 默认压制）', async () => {
-    const { updateSettings } = await import('../../electron/main/projects/store');
-    await updateSettings({ asideThinking: true });
+  it('modelThinking[asideComment]=true → aside 回合不关思考（显式 false，放开 claude-code 默认压制）', async () => {
+    const { getSettings, updateSettings } = await import('../../electron/main/projects/store');
+    const setAsideThink = async (v: boolean) => {
+      const s = await getSettings();
+      await updateSettings({ modelThinking: { ...s.modelThinking, asideComment: v } });
+    };
+    await setAsideThink(true);
     try {
       await runTurn({ kind: 'aside', asideMode: true });
       // 三态：显式 false 才能压过 claude-code「默认压思考治慢」，让 aside 思考开关真生效。
       expect(conversationInputs.at(-1)!.disableReasoning).toBe(false);
     } finally {
-      await updateSettings({ asideThinking: false });
+      await setAsideThink(false);
     }
   });
 });

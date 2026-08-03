@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "playtest-cdp": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest", "--browserUrl", "http://127.0.0.1:${ORU_PLAYTEST_CDP_PORT:-9223}"]
+    }
+  }
+}

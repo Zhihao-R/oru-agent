@@ -10,8 +10,8 @@
  * 非 anthropic 类型的 provider 抛 not-implemented，由段 B/D 接入。
  */
 import type { AgentBackend, AgentTool } from '@shared/agent/backend';
-import type { LlmUsage, RegisteredModel, BackendProvider } from '@shared/types';
-import { ErrorCodes } from '@shared/types';
+import type { LlmUsage, RegisteredModel, BackendProvider, Settings } from '@shared/types';
+import { ErrorCodes, defaultModelThinking } from '@shared/types';
 import {
   LOCAL_CLAUDE_HEAVY,
   LOCAL_CLAUDE_LIGHT,
@@ -239,6 +239,47 @@ async function realGetBackendFor(usage: LlmUsage): Promise<AgentBackend> {
   }
 
   return injectTools(buildBackendFromModelProvider(model, provider), usage);
+}
+
+/**
+ * 中央思考三态判据（Track B）。按 usage + 该用途实际落到模型的能力，给「disableReasoning」定三态：
+ * - 该用途思考开关关（on=false）→ true（强制关）。**任何模型都安全**——强制关不需要模型支持思考，
+ *   且保住廉价用途"要快"的不变量（模型元数据不全也照关，不因 supportsReasoning 未知而放慢）。
+ * - 该用途思考开关开（on=true）→ false（强制开），仅当模型真 supportsReasoning。
+ * - 想开但模型不支持思考 → undefined（后端缺省：claude-code 即压掉、anthropic 直连不发 thinking 参数）。
+ *
+ * 模型解析与 realGetBackendFor 同一套回退规则（twinSubagent→twinMain；asideComment/scheduledRun/
+ * loopCompile 未分配回落 twinMain；本地 sentinel / OAuth fallback 都是 Claude → 支持思考）。
+ * 纯函数、无副作用——设置流 / runner / one-shot 各处复用同一个判据。
+ */
+export function resolveThinkingDisable(
+  usage: LlmUsage,
+  settings: Pick<Settings, 'modelAssignments' | 'models' | 'modelThinking'>,
+): boolean | undefined {
+  const effectiveUsage: LlmUsage = usage === 'twinSubagent' ? 'twinMain' : usage;
+  // 测试 mock 传入的 settings 可能缺整个 modelAssignments 字段——缺省视未分配（回落本地 Claude、
+  // 支持思考）。生产路径 store merge 恒有该字段，这里是防御偏置、非承重判据。
+  let assignedModelId = settings.modelAssignments?.[effectiveUsage];
+  if (
+    !assignedModelId &&
+    (effectiveUsage === 'asideComment' ||
+      effectiveUsage === 'scheduledRun' ||
+      effectiveUsage === 'loopCompile')
+  ) {
+    assignedModelId = settings.modelAssignments?.twinMain;
+  }
+  // 老数据 / 未 merge 的 settings 可能没有 modelThinking 字段（迁移坑同 modelAssignments）——
+  // 缺省回落 defaultModelThinking()[usage]，不能裸读直判抛错。
+  const on = settings.modelThinking?.[usage] ?? defaultModelThinking()[usage];
+  // 强制关：任何模型都安全，先于能力判断返回（保住廉价用途"要快"不变量）
+  if (on === false) return true;
+
+  // 想强制开：只有模型真支持思考才行（本地 sentinel / 未分配回落的都是 Claude → 支持）。
+  const supportsReasoning =
+    !assignedModelId ||
+    parseLocalClaudeAssignment(assignedModelId) !== null ||
+    settings.models.find((m) => m.id === assignedModelId)?.supportsReasoning === true;
+  return supportsReasoning ? false : undefined;
 }
 
 /**

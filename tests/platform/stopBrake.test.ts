@@ -39,14 +39,6 @@ vi.mock('../../electron/main/tasks/subagentRunner', async (importOriginal) => {
   };
 });
 
-vi.mock('../../electron/main/tasks/queue', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../electron/main/tasks/queue')>();
-  return {
-    ...actual,
-    cancelQueuedForConversation: vi.fn(() => []) satisfies typeof actual.cancelQueuedForConversation,
-  };
-});
-
 vi.mock('../../electron/main/proposals/executeBashProposal', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../electron/main/proposals/executeBashProposal')>();
   return {
@@ -57,7 +49,6 @@ vi.mock('../../electron/main/proposals/executeBashProposal', async (importOrigin
 
 import { abortConversation } from '../../electron/main/agent/runner';
 import { cancelTasksForConversation } from '../../electron/main/tasks/subagentRunner';
-import { cancelQueuedForConversation } from '../../electron/main/tasks/queue';
 import { killBashForConversation } from '../../electron/main/proposals/executeBashProposal';
 
 const src: SessionSource = {
@@ -131,9 +122,8 @@ describe('远程 /stop = 对话级刹车（G30）', () => {
 
     // 停当前轮（既有行为）
     expect(vi.mocked(abortConversation)).toHaveBeenCalledWith(agentId, convId);
-    // 三个后台撤销（此前 /stop 完全不做——修复前红）
+    // 后台撤销（取消在跑任务 + 杀 bash；去串行后无排队项可撤——此前 /stop 完全不做——修复前红）
     expect(vi.mocked(cancelTasksForConversation)).toHaveBeenCalledWith(convId);
-    expect(vi.mocked(cancelQueuedForConversation)).toHaveBeenCalledWith(convId);
     expect(vi.mocked(killBashForConversation).mock.calls).toEqual([[convId]]);
   });
 

@@ -9,7 +9,8 @@ import type { ServerEvent } from '@shared/protocol';
 import { newProposalId } from '@shared/ids';
 import { getCurrentOwnerId } from '../identity/getCurrentOwnerId';
 import { listAgents } from '../agent/store/agents';
-import { enqueue as enqueueTask, deckTaskState } from '../tasks/queue';
+import { enqueue as enqueueTask } from '../tasks/queue';
+import { deckTaskState } from '../tasks/subagentRunner';
 import { deckNarrativePath } from './pathResolver';
 
 type Broadcast = (ev: ServerEvent) => void;
@@ -104,14 +105,10 @@ export async function generateDeckForArtifact(args: {
   broadcast: Broadcast;
 }): Promise<DispatchResult> {
   const { deck } = args;
-  // 同 deck 去重（走查二批该修 4）：已有生成任务在跑/在排就不再派——现状双击会排两个背靠背。
-  const busy = deckTaskState(deck.id);
-  if (busy) {
-    return {
-      ok: false,
-      reason: 'busy',
-      message: busy === 'running' ? '这份演示设计正在生成中' : '这份演示设计已有生成任务在排队',
-    };
+  // 同 deck 去重（资源级：同 index.html 并发写是真冲突）：已有生成任务在跑就不再派——现状双击会排
+  // 两个背靠背。去串行后无排队（deckTaskState 只返回 running | null），judgment 单一化。
+  if (deckTaskState(deck.id)) {
+    return { ok: false, reason: 'busy', message: '这份演示设计正在生成中' };
   }
   const { DEFAULT_DECK_SKILL_ID } = await import('./deckSkillCatalog');
   const deckSkillId = deck.deckSkillId ?? DEFAULT_DECK_SKILL_ID;

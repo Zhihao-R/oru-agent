@@ -10,8 +10,10 @@
 import { newMessageId } from '@shared/ids';
 import type { AgentBackend } from '@shared/agent/backend';
 import type { RoundSource } from '@shared/debug/types';
+import type { LlmUsage } from '@shared/types';
 import type { RecallTurn } from '@shared/memory/recall';
-import { getBackendFor } from '../../agent/backends';
+import { getBackendFor, resolveThinkingDisable } from '../../agent/backends';
+import { getSettings } from '../../projects/store';
 import { instrumentOneShot } from '../../debug/instrument';
 import type { EpisodeBrief } from './briefs';
 
@@ -93,10 +95,14 @@ export async function runRelevancePick(
   candidates: PickCandidate[],
   window: RecallTurn[],
   cfg: { instruction: string; sectionTitle: string; source: RoundSource },
-  opts?: { backend?: PickerBackend; ownerId?: string; signal?: AbortSignal },
+  opts?: { backend?: PickerBackend; ownerId?: string; signal?: AbortSignal; usage?: LlmUsage },
 ): Promise<PickerOutput> {
   if (candidates.length === 0) return { selected: [], hints: [] };
-  const backend = opts?.backend ?? (await getBackendFor('memoryRecall'));
+  const usage = opts?.usage ?? 'memoryRecall';
+  const backend = opts?.backend ?? (await getBackendFor(usage));
+  // 思考三态（Track B）：memoryRecall 默认关（挑选是判断不是推理，省 10-20× 耗时），走中央判据——
+  // 用户想给召回开思考也能在设置里调。settings 在 callback 外取好，callback 保持同步。
+  const disableReasoning = resolveThinkingDisable(usage, await getSettings());
   const systemContext = buildPickSystemContext(cfg.instruction, cfg.sectionTitle, candidates);
   const prompt = buildPickerPrompt(window);
   // 接调试日志闸门（每次 LLM 调用都看得到，同 capture / loop reviewer 范式）
@@ -115,7 +121,7 @@ export async function runRelevancePick(
           prompt,
           systemContext,
           outputSchema: PICKER_OUTPUT_SCHEMA as object,
-          disableReasoning: true,
+          disableReasoning,
           // 简介块缓存（PRD §5.4 第二支柱）：systemContext=[指令+候选简介块] 一段对话内稳定，缓存它
           // 让每轮只重算对话尾部——延迟不随候选变多而变长。能力简介全静态、缓存命中更稳。
           cacheSystem: true,

@@ -1,14 +1,19 @@
 /**
- * 对话自动命名——首轮 assistant 落盘后调用。
+ * 对话自动命名——用户首条消息落盘后立即调用，不等回合跑完。
  *
  * 静默吞所有失败（命名是 nice-to-have，绝不能影响主对话）。
  * 两个触发各有专用闸、共用 LLM 内核（runTitleLlm：settings guard + 路由 + 清洗）：
- * - maybeAutoNameConversation（sub）：kind==='sub' + title 仍为默认 + 首条 assistant；
+ * - maybeAutoNameConversation（sub）：kind==='sub' + title 仍为默认 + 尚无 assistant
+ *   落盘（= 首条 user 消息）；
  * - maybeAutoNameAsideConversation（aside，二期 §5）：首条消息是指代卡 + title 仍是
  *   出生 label（= 卡的 asideReferent.label）——开过口的评点对话一律自动命名，
  *   标题不停在「你点了什么」的原始指代文案上。转正先后不影响：闸不看 kind，
- *   先转正后聊出首轮回复（kind 已是 sub、标题仍是出生 label）同一函数照常命名。
+ *   先转正后发了首条评点（kind 已是 sub、标题仍是出生 label）同一函数照常命名。
  * 未配置 conversationTitle 用途时两个触发都直接 return，不走兜底链。
+ *
+ * 命名只以用户首条消息为输入（aside 额外带指代卡文本），刻意不等 assistant 回复——
+ * 首条消息即反映主题，早命名比等回合收尾更即时；命名是独立 one-shot 写 title，
+ * 与主回合并发的 appendMessage 走同一 enqueue 串行，写安全。
  */
 import { DEFAULT_NEW_CONV_TITLE } from '@shared/types';
 import type { ConvStateEvent } from '@shared/protocol';
@@ -19,7 +24,7 @@ import {
   renameConversation,
 } from '../conversations/store';
 import { getSettings } from '../projects/store';
-import { getBackendFor, runOneShotWithTimeout } from './backends';
+import { getBackendFor, resolveThinkingDisable, runOneShotWithTimeout } from './backends';
 import { instrumentOneShot } from '../debug/instrument';
 import { getCurrentOwnerId } from '../identity/getCurrentOwnerId';
 import { newMessageId } from '@shared/ids';
@@ -44,7 +49,6 @@ export async function maybeAutoNameConversation(args: {
   agentId: string;
   conversationId: string;
   userText: string;
-  assistantText: string;
   broadcast: (ev: ConvStateEvent) => void;
 }): Promise<void> {
   try {
@@ -54,15 +58,15 @@ export async function maybeAutoNameConversation(args: {
     if (conv.kind !== 'sub') return;
     if (conv.title !== DEFAULT_NEW_CONV_TITLE) return;
 
-    // 数 assistant 消息数：>1 说明本钩子是第 N 轮触发的，不该命名
+    // 只命名首条 user 消息：数 assistant 消息数，>0 说明不是首条（或首轮已跑出回复），不命名
     const history = await readHistory(args.agentId, args.conversationId);
     const assistantCount = history.filter((m) => m.role === 'assistant').length;
-    if (assistantCount > 1) return;
+    if (assistantCount > 0) return;
 
     const title = await runTitleLlm({
       agentId: args.agentId,
       conversationId: args.conversationId,
-      prompt: buildPrompt(args.userText, args.assistantText),
+      prompt: buildPrompt(args.userText),
     });
     if (!title) return;
 
@@ -81,15 +85,15 @@ export async function maybeAutoNameConversation(args: {
 }
 
 /**
- * aside 评点对话的自动命名（二期 §5）——与 sub 触发同挂在「轮结束 assistant 落盘」钩子，
- * 闸完全独立：首条消息是指代卡 + title 仍是出生 label。命名失败静默，下一轮自然重试
+ * aside 评点对话的自动命名（二期 §5）——与 sub 触发同挂在 chat.send「首条 user 消息落盘后」
+ * 即时触发（aside 浮层打字发评点评走 chat.send，src/aside/overlayMachine.ts），闸完全独立：
+ * 首条消息是指代卡 + title 仍是出生 label。命名失败静默，靠 title 闸顺延到下一次打字再试
  * （title 闸保证命成一次就不再动）。
  */
 export async function maybeAutoNameAsideConversation(args: {
   agentId: string;
   conversationId: string;
   userText: string;
-  assistantText: string;
   broadcast: (ev: ConvStateEvent) => void;
 }): Promise<void> {
   try {
@@ -109,8 +113,8 @@ export async function maybeAutoNameAsideConversation(args: {
     const title = await runTitleLlm({
       agentId: args.agentId,
       conversationId: args.conversationId,
-      // 指代卡文本打头——「就着什么聊的」比只看两句对话起名准
-      prompt: buildPrompt(args.userText, args.assistantText, seed.text),
+      // 只取用户首条消息 + 指代卡文本——「就着什么聊的」比只凭首句更准
+      prompt: buildPrompt(args.userText, seed.text),
     });
     if (!title) return;
 
@@ -148,8 +152,8 @@ async function runTitleLlm(p: {
   const backend = await getBackendFor('conversationTitle').catch(() => null);
   if (!backend) return null;
 
-  // disableReasoning:true——命名只要主题信号不要思考过程。OR 上游若是 hy3-preview 等
-  // reasoning 模型，开了 thinking 单次要 20-30s（1500+ reasoning tokens），关掉就 ~3s。
+  // 思考三态（Track B）：conversationTitle 默认关（命名只要主题信号不要思考过程——开了 thinking
+  // 单次要 20-30s、关掉 ~3s），走中央判据；用户想给命名开思考也能在设置里调。
   const raw = await instrumentOneShot(
     backend,
     {
@@ -163,7 +167,7 @@ async function runTitleLlm(p: {
     () =>
       runOneShotWithTimeout(
         backend,
-        { prompt: p.prompt, disableReasoning: true },
+        { prompt: p.prompt, disableReasoning: resolveThinkingDisable('conversationTitle', settings) },
         AUTO_NAME_TIMEOUT_MS,
       ),
   ).catch((e) => {
@@ -176,11 +180,13 @@ async function runTitleLlm(p: {
 }
 
 /**
- * 命名 prompt——英文工程指令（类③，详见 D5）。长度按输出语言给：中文按字、英文按词
- * （信息密度不同，12 汉字 ≠ 12 words；D4），由模型据它正在用的语言自取，无需代码侧检测语言。
- * "Write the title in the same language the user is using" 是 D4 产出跟对话语言的具体落地。
+ * 命名 prompt——英文工程指令（类③，详见 D5）。只以用户首条消息为输入（命名在首条消息
+ * 落盘后即时触发，尚无 assistant 回复；主题信号首条已够）。
+ * 长度按输出语言给：中文按字、英文按词（信息密度不同，12 汉字 ≠ 12 words；D4），由模型据它
+ * 正在用的语言自取，无需代码侧检测语言。"Write the title in the same language the user is
+ * using" 是 D4 产出跟对话语言的具体落地。
  */
-function buildPrompt(userText: string, assistantText: string, referentText?: string): string {
+function buildPrompt(userText: string, referentText?: string): string {
   return [
     'Give this conversation a short, descriptive title.',
     '',
@@ -196,9 +202,6 @@ function buildPrompt(userText: string, assistantText: string, referentText?: str
       : []),
     'User’s first message:',
     userText.slice(0, CONTEXT_TRUNCATE_CHARS),
-    '',
-    'Assistant reply:',
-    assistantText.slice(0, CONTEXT_TRUNCATE_CHARS),
     '',
     'Title:',
   ].join('\n');

@@ -172,11 +172,11 @@ export type ConversationInput = {
   restrictToolsTo?: readonly string[];
   /**
    * 三态推理（thinking）开关，各后端用自己的手段：
-   * - OpenAICompatible（OR 路径）：true → 请求体 reasoning: { enabled: false }；false/undefined 不压
+   * - OpenAICompatible（OR 路径）：true → 请求体 reasoning: { enabled: false }；false → reasoning 开；undefined 不压
    * - ClaudeCode：**默认就压**（maxThinkingTokens: 0 治"慢"，实测默认 undefined 会非确定触发 thinking 吃延迟）。
-   *   只有显式 `false`（aside 思考开关打开）才放开思考 → undefined。即 undefined/true → 0，false → 放开。
-   * - Anthropic 直连：本来就不开 thinking，noop
-   * 取值来源（runner.ts）：aside 思考关→true、aside 思考开→false、主对话→undefined。
+   *   只有显式 `false`（思考开关打开）才放开思考 → undefined。即 undefined/true → 0，false → 放开。
+   * - Anthropic 直连：false → 请求体加 thinking:{type:'enabled',budget_tokens}；true/undefined 不发（关/缺省）。
+   * 取值来源（Track B runner.ts）：按本回合 usage 走 resolveThinkingDisable 定三态。
    */
   disableReasoning?: boolean;
   /**
@@ -417,10 +417,10 @@ export type OneShotInput = {
    * - OR 路径：透传 `reasoning: { enabled: false }`，上游强制不思考
    * - ClaudeCode：engine 入参 maxThinkingTokens: 0（实测 SDK 0.1.77 能压住自适应思考；
    *   autoName 等既有调用方在此路顺带获得关思考——有意为之，命名本就不要思考）
-   * - Anthropic 直连：noop（runOneShot 本来就不开 thinking）
+   * - Anthropic 直连：false → 请求体加 thinking；true/undefined 不发
    *
-   * 离线短调用（autoName / aside 短评）该开——命名/短评用不上 reasoning，关掉省 10-20× 耗时。
-   * 不要在主对话路径用。
+   * 离线短调用（autoName / aside 短评）默认关——命名/短评用不上 reasoning，关掉省 10-20× 耗时；
+   * 可按 usage 用户在设置里打开（Track B）。
    */
   disableReasoning?: boolean;
 };

@@ -3,8 +3,9 @@
  * - 闸：首条消息是指代卡（kind:'aside-referent'）且 conv.title === 出生 label（卡的
  *   asideReferent.label）。用户已改名 / 已命名过 → 不动；普通对话（无卡）→ 短路。
  * - 先转正后聊的边角：kind 已是 sub、标题仍是出生 label → 照常命名（同一函数判）。
- * - prompt 复用 sub 命名内核，额外带指代卡文本（「就着什么聊的」比只看两句对话起名准）；
- *   disableReasoning: true；conversationTitle 用途路由 + 未配置不命名（同 sub 口径）。
+ * - prompt 复用 sub 命名内核，额外带指代卡文本（「就着什么聊的」比只凭首句更准）；
+ *   命名只凭用户首条消息 + 指代卡，不等 assistant 回复；disableReasoning: true；
+ *   conversationTitle 用途路由 + 未配置不命名（同 sub 口径）。
  * - 命名失败静默，不向 chat 流抛。
  */
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
@@ -141,7 +142,6 @@ async function runNaming(conversationId: string): Promise<void> {
     agentId,
     conversationId,
     userText: '你觉得呢',
-    assistantText: '确实闷，亮一档会好',
     broadcast: () => {},
   });
 }

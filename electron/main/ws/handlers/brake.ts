@@ -11,10 +11,7 @@ import { drainLiveTurn } from '../../agent/liveTurnMark';
 import { clearProcessingForItems } from '../../platform/channelProcessing';
 import { steeringKey } from '../../agent/steeringQueue';
 import { cancelTasksForConversation } from '../../tasks/subagentRunner';
-import { cancelQueuedForConversation } from '../../tasks/queue';
 import { killBashForConversation } from '../../proposals/executeBashProposal';
-import { transitionProposal } from '../../proposals/lifecycle';
-import { clearProjections } from '../../platform/approvalProjection';
 import { cancelSubagentProposals } from '../../proposals/registry';
 import { markAnnounced } from '../../tasks/store';
 import { stopLoopForConversation } from '../../loop/registry';
@@ -32,14 +29,15 @@ export async function finalizeUserCancelledTask(taskId: string, broadcast: Broad
 
 /**
  * 对话级刹车（理想架构 subagent.html#PFail）——桌面按停 / 删除对话 / 远程 /stop 三入口共用的
- * 编排内核。停当前轮 + 取消该对话派出的运行中任务（brakeCancelled 静默标记）+ 撤排队未起跑的
- * 派工 + 杀对话自己的后台 bash。呈现完全静默（PM 拍板）：编排层不追加对话消息，被刹任务也不写
+ * 编排内核。停当前轮 + 取消该对话派出的运行中任务（brakeCancelled 静默标记）+ 杀对话自己的
+ * 后台 bash（去串行后无排队项可撤，见上游方案 review-rev 2）。呈现完全静默（PM 拍板）：编排层
+ * 不追加对话消息，被刹任务也不写
  * 失败报告卡（runner 按刹车打标跳过），面板终态自然反映。
  *
- * 时序不变量：两个同步撤销（cancelTasks / cancelQueued）必须背靠背、中间零 await——被 abort 的
- * 任务 settle 时 runWithDequeue 的 finally 会推进队列，任何 await 间隙都可能让同对话排队项被提升
- * 起跑、两边都抓空。killBash 与撤下项的 pending→rejected 迁移同处这段同步段内。异步收尾（撤悬
- * 命令审批卡 + markAnnounced 抑制播报轮）跨 await，必须后置到同步撤销全部完成之后。
+ * 时序不变量（去串行后简化，见 2026-08-03-async-subagent-de-serial-plan review-rev 2）：同步撤销只有
+ * cancelTasksForConversation 一步、零 await——它遍历 activeTasks（含启动段防逃逸登记）覆盖该对话全部
+ * 派工，无排队项需配对的第二撤销；被刹任务 settle 时不再触发队列推进（去串行无队列）。异步收尾
+ * （撤悬命令审批卡 + markAnnounced 抑制播报轮）跨 await，必须后置到同步撤销全部完成之后。
  *
  * UI 收尾（steering 未消费草稿交还输入框）不在此：仅桌面按停有输入框可交还，由 chat.abort
  * 自己 drain；远程无输入框、对话删除后对话已不存在，两者都无草稿可交还。
@@ -60,17 +58,12 @@ export async function brakeConversation(
   // begin 之间 / 撤起后落盘失败）时，custody 里的渠道 origin 不属于队列项、无人清——「处理中」
   // 表情会永久悬挂。刹车即对话终止，已消费未交付的表情一律清、条目销。在跑回合的收尾清理幂等。
   clearProcessingForItems(drainLiveTurn(steeringKey(agentId, conversationId)).map((origin) => ({ origin })));
-  // ── 同步撤销段（中间零 await，见上「时序不变量」）──
+  // ── 同步撤销段（单一撤销、零 await）：去串行后无排队项可撤，取消全收敛到 running 任务的 abort——
+  // cancelTasksForConversation 遍历 activeTasks（含启动段防逃逸登记）即覆盖该对话全部派工；被刹任务
+  // settle 时不触发任何队列推进（无队列），无需再配对第二撤销维持互斥——时序比「双撤销背靠背」更稳。
   const cancelledTaskIds = cancelTasksForConversation(conversationId);
-  const dequeued = cancelQueuedForConversation(conversationId);
   // 对话自己的后台 bash（task 级的已在 cancelTask 内清）
   killBashForConversation(conversationId);
-  // 撤下项走合法终态（拒绝=不执行）。pending 重检：abortConversation 的 turn 撤卡等不走队列的
-  // 旁路可能已把它置成终态，重复迁移会 throw。
-  for (const p of dequeued) {
-    if (p.status === 'pending') transitionProposal(p, 'rejected', broadcast);
-    clearProjections(p.id); // 刹车撤下的提案渠道投影一并清，防登记表泄漏
-  }
   // ── 异步收尾（后置）──
   for (const taskId of cancelledTaskIds) {
     await finalizeUserCancelledTask(taskId, broadcast);

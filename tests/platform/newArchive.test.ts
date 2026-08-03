@@ -42,13 +42,6 @@ vi.mock('../../electron/main/tasks/subagentRunner', async (importOriginal) => {
     cancelTasksForConversation: vi.fn(() => []) satisfies typeof actual.cancelTasksForConversation,
   };
 });
-vi.mock('../../electron/main/tasks/queue', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../electron/main/tasks/queue')>();
-  return {
-    ...actual,
-    cancelQueuedForConversation: vi.fn(() => []) satisfies typeof actual.cancelQueuedForConversation,
-  };
-});
 vi.mock('../../electron/main/proposals/executeBashProposal', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../electron/main/proposals/executeBashProposal')>();
   return {

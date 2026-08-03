@@ -44,6 +44,7 @@ const fakeAgent: Agent = {
 
 vi.mock('../../electron/main/agent/backends', () => ({
   getBackendFor: vi.fn(async () => fakeBackend),
+  resolveThinkingDisable: vi.fn(() => undefined),
 }));
 vi.mock('../../electron/main/agent/store/agents', () => ({
   listAgents: vi.fn(async () => ({ agents: [fakeAgent], activeId: fakeAgent.id })),

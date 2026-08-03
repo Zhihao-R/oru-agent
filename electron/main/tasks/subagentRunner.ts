@@ -23,8 +23,8 @@ import type { ActionProposal, CodeActionProposal, ChatMessage, SubagentTask } fr
 import { ErrorCodes } from '@shared/types';
 import { newMessageId, newTaskId, slugify } from '@shared/ids';
 import { getAgent } from '../agent/store/agents';
-import { getProject } from '../projects/store';
-import { getBackendFor } from '../agent/backends';
+import { getProject, getSettings } from '../projects/store';
+import { getBackendFor, resolveThinkingDisable } from '../agent/backends';
 import { singleUserTurn } from '../agent/singleUserTurn';
 import { finalizeConversationBudget } from '../search/budget';
 import {
@@ -51,7 +51,13 @@ import { acquire as keepAwakeAcquire, release as keepAwakeRelease } from '../kee
 // 运行中任务登记：taskId → 中止句柄 + 派出它的主对话 id（对话级刹车按后者反查）+ 最近活动时刻（停滞看门狗依据）
 const activeTasks = new Map<
   string,
-  { ac: AbortController; conversationId: string; lastActivityAt: number }
+  {
+    ac: AbortController;
+    conversationId: string;
+    lastActivityAt: number;
+    /** deck 任务：artifactId，供 deckTaskState 资源级去重查询（仅 deck 派工登记）。 */
+    deckArtifactId?: string;
+  }
 >();
 // 对话级刹车打标：runTask 的 catch 据此区分「刹车取消」（静默，不写对话内报告卡；PM 拍板
 // 按停后不列被中断明细）与其余失败 / 手动 task.cancel（失败卡照写）。runTask finally 清标。
@@ -86,14 +92,32 @@ export function isAnyTaskRunning(): boolean {
   return activeTasks.size > 0;
 }
 
+/**
+ * deck 生成去重（资源级：同 index.html 并发写是真冲突，不属去串行范畴）：查 activeTasks 里该 deck
+ * 是否已有生成任务在跑（含启动段——启动段任务已在 activeTasks，天然覆盖）。仅 deck 派工登记
+ * deckArtifactId，普通 code 任务查不到。去串行后无「排队」，只返回 running | null。
+ */
+export function deckTaskState(artifactId: string): 'running' | null {
+  for (const entry of activeTasks.values()) {
+    if (entry.deckArtifactId === artifactId) return 'running';
+  }
+  return null;
+}
+
+/** 仅测试用：清空 activeTasks 登记（含测试注入的假任务），防跨用例残留污染 size/keepAwake 判定。 */
+export function __resetActiveTasksForTest(): void {
+  activeTasks.clear();
+}
+
 /** 仅测试用：注入一个假的运行中任务，验停滞看门狗。返回其 AbortController。 */
 export function __injectActiveTaskForTest(
   taskId: string,
   conversationId: string,
   lastActivityAt: number,
+  deckArtifactId?: string,
 ): AbortController {
   const ac = new AbortController();
-  activeTasks.set(taskId, { ac, conversationId, lastActivityAt });
+  activeTasks.set(taskId, { ac, conversationId, lastActivityAt, deckArtifactId });
   return ac;
 }
 
@@ -205,7 +229,12 @@ export async function runTask({ agentId, proposal, emit: rawEmit }: RunArgs): Pr
   // 双撤销抓空、任务静默逃逸照常跑完。AbortController 随任务诞生即存在；启动段自身
   // 不监听信号，起跑前再重检一次 signal.aborted（见首轮 runConversationOnce 之前）。
   const ac = new AbortController();
-  activeTasks.set(taskId, { ac, conversationId: proposal.conversationId, lastActivityAt: Date.now() });
+  activeTasks.set(taskId, {
+    ac,
+    conversationId: proposal.conversationId,
+    lastActivityAt: Date.now(),
+    deckArtifactId: proposal.deckContext?.artifactId,
+  });
   // keepAwake：任务一登记即算「在干活」——顶住休眠。release 只挂在 runTask finally（每任务恰一次），
   // 不挂 activeTasks.delete 散点（cancelTask + finally 双删会双扣计数，见技术设计 §4.2 警告）。
   keepAwakeAcquire();
@@ -258,6 +287,8 @@ export async function runTask({ agentId, proposal, emit: rawEmit }: RunArgs): Pr
       err.code = ErrorCodes.AGENT_NO_AUTH;
       throw err;
     }
+    // subagentCoder 思考三态（Track B）：干活主力默认开思考；模型不支持则 undefined（后端缺省压掉）。
+    const subagentDisableReasoning = resolveThinkingDisable('subagentCoder', await getSettings());
     if (proposal.targetProjectId) {
       const p = await getProject(proposal.targetProjectId);
       cwd = p.path;
@@ -373,6 +404,8 @@ export async function runTask({ agentId, proposal, emit: rawEmit }: RunArgs): Pr
           progressEmit: (text) =>
             emit({ type: 'task.progress', progress: { taskId, text, source: 'speech' } }),
         },
+        // 思考三态（Track B）：subagentCoder 默认开思考（干活主力），走中央判据在 runTask 入口算一次。
+        disableReasoning: subagentDisableReasoning,
       });
       const events = instrumentConversation(
         backend,

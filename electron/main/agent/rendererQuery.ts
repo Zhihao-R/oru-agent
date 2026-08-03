@@ -50,7 +50,15 @@ export function rendererQuery<T>(
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => {
       pending.delete(queryId);
-      reject(new Error(`rendererQuery 超时（${timeoutMs}ms, kind=${kind}）`));
+      // 治本一（方案 B，2026-08-03 拍板）：dirtySet 超时降级「按无脏放行」——查不到就当没草稿，
+      // 不再 reject 拖挂闸门。实时落盘下草稿概念本就弱化 + FileHistory 兜底，漏拦风险低，换来
+      // bash / write / 编码转换不再被渲染端高负载时 2s 超时拦成「编辑器无响应」。
+      // 其它 kind（读路径如 draft）保留原有 reject 语义，由调用方自行降级读磁盘。
+      if (kind === 'dirtySet') {
+        resolve({ paths: [] } as T);
+      } else {
+        reject(new Error(`rendererQuery 超时（${timeoutMs}ms, kind=${kind}）`));
+      }
     }, timeoutMs);
     // 先挂 waiter 再 emit——应答先于 emit 返回也不丢
     pending.set(queryId, { resolve: (r) => resolve(r as T), reject, timer });

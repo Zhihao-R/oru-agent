@@ -22,7 +22,8 @@ import { makeGenerateDeckTool } from '../../electron/main/agent/agentTools/gener
 import { addProject } from '../../electron/main/projects/store';
 import { ensureDefaultAgent } from '../../electron/main/agent/store/agents';
 import { getActiveDeckId, listDecks, setActiveDeckId, getDeck } from '../../electron/main/deck/store';
-import { __setRunFnForTest, __resetQueuesForTest } from '../../electron/main/tasks/queue';
+import { __setRunFnForTest } from '../../electron/main/tasks/queue';
+import { __resetActiveTasksForTest } from '../../electron/main/tasks/subagentRunner';
 import { deckNarrativePath } from '../../electron/main/deck/pathResolver';
 
 const RESULTS: Array<{ name: string; ok: boolean; detail?: string }> = [];
@@ -73,7 +74,7 @@ async function main() {
   const broadcast = (ev: ServerEvent) => events.push(ev);
 
   // ─── case 1: autoGenerate=false → 写 narrative、不生成、不派 subagent ───
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
   setActiveDeckId(null);
   let queuedA: CodeActionProposal | null = null;
   let restore = __setRunFnForTest(async (item) => { queuedA = item.proposal; });
@@ -105,7 +106,7 @@ async function main() {
   restore();
 
   // ─── case 2: autoGenerate=true → 派 subagent（mock 写真内容），index.html 铺满 ───
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
   setActiveDeckId(null);
   events.length = 0;
   let queuedB: CodeActionProposal | null = null;
@@ -136,7 +137,7 @@ async function main() {
   restore();
 
   // ─── case 3: 建壳后 generate_deck 事后生成 ───
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
   events.length = 0;
   let queuedC: CodeActionProposal | null = null;
   restore = __setRunFnForTest(async (item) => {
@@ -172,7 +173,7 @@ async function main() {
     assert(html.includes('REAL CONTENT'), 'case3: 生成后 index.html 被铺满');
   }
   restore();
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
 
   const failed = RESULTS.filter((r) => !r.ok);
   console.log('');

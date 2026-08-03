@@ -1,7 +1,8 @@
 /**
- * deck 生成同 deck 去重 + deckTaskState（走查二批该修 4）：
- * 同一 artifactId 已有生成任务在跑 / 在排时，generateDeckForArtifact 不再派第二个
- * （现状双击会排两个背靠背），并以 'busy' + 可读原因拒绝，让 UI 能如实上屏。
+ * deck 生成同 deck 去重 + deckTaskState（资源级：同 index.html 并发写是真冲突）：
+ * 同一 artifactId 已有生成任务在跑时，generateDeckForArtifact 不再派第二个，以 'busy' + 可读原因拒绝。
+ * 去串行后无「排队」——deckTaskState 从 activeTasks（含启动段）查，只返回 running | null。
+ * 测试用 __injectActiveTaskForTest 注入「已有 deck 生成在跑」来观测判据与 busy 返回值。
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { ArtifactRecord } from '@shared/types';
@@ -29,10 +30,10 @@ vi.mock('../../electron/main/tasks/taskAnnouncer', async (importOriginal) => {
 import { generateDeckForArtifact } from '../../electron/main/deck/dispatchSubagent';
 import {
   deckTaskState,
-  getQueueDepth,
-  __setRunFnForTest,
-  __resetQueuesForTest,
-} from '../../electron/main/tasks/queue';
+  __injectActiveTaskForTest,
+  __resetActiveTasksForTest,
+} from '../../electron/main/tasks/subagentRunner';
+import { __setRunFnForTest } from '../../electron/main/tasks/queue';
 
 function makeDeck(id: string): ArtifactRecord {
   return {
@@ -45,7 +46,7 @@ function makeDeck(id: string): ArtifactRecord {
   } satisfies ArtifactRecord;
 }
 
-/** 可控 runFn：起跑即记录在案，卡在闸门里直到 release */
+/** 可控 runFn：起跑即记录在案，卡在闸门里直到 release——只防真打 Claude、记录派工，不进 activeTasks */
 function gatedRunFn() {
   const started: string[] = [];
   const gates: Array<() => void> = [];
@@ -60,17 +61,17 @@ const tick = () => new Promise((r) => setTimeout(r, 10));
 const broadcast = (): void => {};
 
 beforeEach(() => {
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
 });
 
-describe('deck 生成同 deck 去重（该修 4）', () => {
-  it('生成任务在跑时再次 generate → busy 拒绝、不重复派工', async () => {
+describe('deck 生成同 deck 去重（资源级）', () => {
+  it('同 deck 已有生成在跑 → busy 拒绝、不重复派工', async () => {
     const deck = makeDeck('dck_run');
     const run = gatedRunFn();
     try {
-      const r1 = await generateDeckForArtifact({ deck, conversationId: 'conv_1', broadcast });
-      expect(r1.ok).toBe(true);
-      expect(deckTaskState(deck.id)).toBe('running');
+      // 模拟「同 deck 已有生成任务在跑」（含启动段）——deck 去重判据来自 activeTasks
+      __injectActiveTaskForTest('task_deck_run', 'conv_1', Date.now(), 'dck_run');
+      expect(deckTaskState('dck_run')).toBe('running');
 
       const r2 = await generateDeckForArtifact({ deck, conversationId: 'conv_1', broadcast });
       expect(r2).toMatchObject({ ok: false, reason: 'busy' });
@@ -78,57 +79,27 @@ describe('deck 生成同 deck 去重（该修 4）', () => {
 
       run.releaseAll();
       await tick();
-      expect(run.started).toHaveLength(1); // 全程恰好派了一个
+      expect(run.started).toHaveLength(0); // 没有派第二个
     } finally {
       run.restore();
     }
   });
 
-  it('生成任务在排（同项目有别的任务在跑）→ 显示排队、再点仍 busy', async () => {
-    const deck = makeDeck('dck_queue');
-    const blocker = makeDeck('dck_blocker');
-    const run = gatedRunFn();
-    try {
-      // blocker 占住同 projectKey 的 running 位
-      const r0 = await generateDeckForArtifact({ deck: blocker, conversationId: 'c', broadcast });
-      expect(r0.ok).toBe(true);
-
-      const r1 = await generateDeckForArtifact({ deck, conversationId: 'c', broadcast });
-      expect(r1.ok).toBe(true);
-      expect(deckTaskState(deck.id)).toBe('queued');
-      expect(getQueueDepth()['prj_dedup']?.pendingCount).toBe(1);
-
-      const r2 = await generateDeckForArtifact({ deck, conversationId: 'c', broadcast });
-      expect(r2).toMatchObject({ ok: false, reason: 'busy' });
-      if (!r2.ok) expect(r2.message).toContain('排队');
-      expect(getQueueDepth()['prj_dedup']?.pendingCount).toBe(1); // 队列没堆第二份
-
-      run.releaseAll();
-      await tick();
-      run.releaseAll();
-      await tick();
-      expect(run.started).toHaveLength(2); // blocker + deck 各一次
-    } finally {
-      run.restore();
-    }
-  });
-
-  it('不同 deck 互不影响：A 在跑时 B 照常派', async () => {
+  it('不同 deck 互不影响：A 在跑时 B 照常派（去重判据是 artifactId 不是 project）', async () => {
     const a = makeDeck('dck_a');
     const b = makeDeck('dck_b');
     const run = gatedRunFn();
     try {
-      const r1 = await generateDeckForArtifact({ deck: a, conversationId: 'c', broadcast });
-      expect(r1.ok).toBe(true);
-      // 不同 projectId 也行——去重判据是 artifactId 不是 projectKey
+      __injectActiveTaskForTest('task_dck_a', 'c', Date.now(), 'dck_a');
+      expect(deckTaskState('dck_a')).toBe('running');
+      expect(deckTaskState('dck_b')).toBeNull();
+
       const r2 = await generateDeckForArtifact({ deck: b, conversationId: 'c', broadcast });
-      expect(r2.ok).toBe(true); // 同 key 排队但允许派（不是重复）
-      expect(deckTaskState(b.id)).toBe('queued');
+      expect(r2.ok).toBe(true); // 不同 deck 照常派
 
       run.releaseAll();
       await tick();
-      run.releaseAll();
-      await tick();
+      expect(run.started).toHaveLength(1); // B 恰好派了一个
     } finally {
       run.restore();
     }

@@ -6,7 +6,7 @@
  * 注册自定义 scheme，在 main 进程拦截、校验路径后从磁盘读字节返回——与 oru-avatar:// 同套路。
  *
  * URL 格式：oru-crop://local/<absolute-path-to-crop.png>
- *   例：oru-crop://local/Users/example/projects/my-deck/.annotations/crops/ann_xxx.png
+ *   例：oru-crop://local/Users/oru/projects/my-deck/.annotations/crops/ann_xxx.png
  *
  * 安全约束：路径必须落在某个制品的 `.annotations/crops/` 子目录下、且是 .png——
  * 框选截图就这一种，足够收窄，不放开任意文件读。

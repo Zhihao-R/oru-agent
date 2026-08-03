@@ -27,7 +27,7 @@ import {
   unregisterProposalFinalizer,
   hasToolAwaited,
 } from '../../proposals/pendingDecision';
-import { enqueue as enqueueTask, cancelInQueue } from '../../tasks/queue';
+import { enqueue as enqueueTask } from '../../tasks/queue';
 import { listAgents } from '../../agent/store/agents';
 import { writeRejectionSystemEvent } from '../../proposals/systemEvent';
 import { resolveEffectiveLang } from '../../i18n/effectiveLang';
@@ -87,7 +87,6 @@ async function rejectDecision(
   // 也不在唤醒工具后再插 await 让工具的 rejection 悬空。persist 内部保证 append 先于自身广播（§7）。
   recordDecision(proposal, 'rejected', by, broadcast);
   transitionProposal(proposal, 'rejected', broadcast);
-  if (proposal.kind === 'code') cancelInQueue(proposal.id);
   // 同步审批：工具拿到「拒绝」作为 tool_result，原轮自然继续——无附言则无需系统记 / 续跑。
   if (settleProposalDecision(proposal.id, 'rejected')) {
     if (trimmed) await writeRejectionSystemEvent(proposal.conversationId, proposal.id, trimmed);
@@ -159,9 +158,10 @@ async function approveDecision(
     if (activeId && proposal.status === 'pending') {
       enqueueTask({ agentId: activeId, proposal, emit: broadcast });
     }
-    // code 派工后 status 仍 pending（排队中）——释放决定认领，让用户改主意时的「拒绝」能撤下排队任务
-    // （approve→queued→reject 是既有 UX，见 queueProposalLifecycle 回归）。并发重复 approve 由 enqueue
-    // 幂等兜住；卡片批准后即被存证卡替换，UI 上无第二次点击面。
+    // 去串行后 code 派工 approve 即起跑迁 executing（无排队期），reject 已被 status!=='pending' 门挡死；
+    // approve→reject 撤队窗口不存在（async-subagent-de-serial-plan review-rev 2 取舍）。forgetDecisionClaim
+    // 在当前语义下已无实际作用（status 已终态、无可撤排队项），保留仅供极端时序兜底。并发重复 approve
+    // 由 enqueue 幂等兜住；卡片批准后即被存证卡替换，UI 上无第二次点击面。
     forgetDecisionClaim(proposal.id);
   } else {
     const convId = proposal.conversationId;

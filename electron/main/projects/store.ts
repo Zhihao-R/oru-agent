@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import { existsSync } from 'node:fs';
 import { basename, isAbsolute, join, resolve } from 'node:path';
 import type { Project, SearchEngineConfig, Settings, UnsupportedEngineConfig } from '@shared/types';
-import { ErrorCodes } from '@shared/types';
+import { ErrorCodes, defaultModelThinking } from '@shared/types';
 import { DEFAULT_BUDGET } from '@shared/budget/types';
 import { newProjectId } from '@shared/ids';
 import { getCurrentOwnerId } from '../identity/getCurrentOwnerId';
@@ -55,6 +55,8 @@ const DEFAULT_SETTINGS: Settings = {
     // Loop 拆解默认 null —— 未分配时回落 twinMain 的路由（拆解必须是"这个 Oru"）
     loopCompile: null,
   },
+  // 各用途思考开关默认分档（Track B）：干活/对话类开、简单/廉价判断类关（详见 defaultModelThinking）
+  modelThinking: defaultModelThinking(),
   migratedFromManualApiKey: false,
   webSearch: {
     enabled: false,
@@ -199,6 +201,19 @@ async function load(): Promise<ConfigShape> {
       ...DEFAULT_SETTINGS.modelAssignments,
       ...(mergedSettings.modelAssignments ?? {}),
     };
+    // modelThinking（Track B）—— 老 settings 缺字段时填默认分档（逐键补齐，防缺新 key）
+    mergedSettings.modelThinking = {
+      ...DEFAULT_SETTINGS.modelThinking,
+      ...(mergedSettings.modelThinking ?? {}),
+    };
+    // 老 users 若只开过 asideThinking（旧独立开关），把它转写到 modelThinking['asideComment']——
+    // 双源合一后以新字段为准，避免老用户"开过思考"的意图在新开关上丢失（Track B 回收 asideThinking）。
+    // 迁移后马上消费掉旧字段（置 undefined）：否则它每次 load 都重跑，会把用户后来在新 UI 里
+    // 显式关掉的 aside 思考又拉回 true——让老字段只生效一次。
+    if (mergedSettings.asideThinking === true) {
+      mergedSettings.modelThinking.asideComment = true;
+    }
+    mergedSettings.asideThinking = undefined;
     // 上网搜索（v0.3）—— 老 settings 缺字段时填默认值
     mergedSettings.webSearch = {
       ...DEFAULT_SETTINGS.webSearch!,
@@ -428,18 +443,38 @@ export async function addProject(rawPath: string): Promise<Project> {
 export async function removeProject(id: string): Promise<void> {
   return enqueue(async () => {
     const c = await load();
-    const idx = c.projects.findIndex((p) => p.id === id);
-    if (idx === -1) {
+    const p = c.projects.find((p) => p.id === id);
+    if (!p) {
       const err = new Error(`project not found: ${id}`) as Error & { code?: string };
       err.code = ErrorCodes.PROJECT_NOT_FOUND;
       throw err;
     }
-    c.projects.splice(idx, 1);
+    c.projects.splice(c.projects.indexOf(p), 1);
     if (c.activeId === id) {
       c.activeId = c.projects[0]?.id ?? null;
     }
     await persistInLock();
+
+    // 从 Oru 记忆里抹掉该项目的档案（profile / list-entry 送回收站可恢复），
+    // 保留 episodes（项目事件属历史记录，不随删除清除）。
+    await removeProjectMemory(p.ownerId, id);
   });
+}
+
+/**
+ * 删除某项目在 Oru 记忆里的档案：projects/<id>/profile.md 与 list-entry.md 送进
+ * 30 天回收站，episodes/ 目录原样保留。memory 下无该目录时静默跳过。
+ */
+async function removeProjectMemory(ownerId: string, projectId: string): Promise<void> {
+  const { projectMemoryDir } = await import('../memory/paths');
+  const { moveToTrash } = await import('../memory/trash');
+  for (const name of ['profile.md', 'list-entry.md']) {
+    try {
+      await moveToTrash(ownerId, join(projectMemoryDir(ownerId, projectId), name));
+    } catch {
+      // 文件不存在 / 目录不存在：无需删除，跳过
+    }
+  }
 }
 
 export async function switchProject(id: string): Promise<Project> {

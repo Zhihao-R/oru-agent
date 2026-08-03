@@ -11,7 +11,8 @@
  * 失败不抛——dream 是 best-effort，错了下次再来。
  */
 import { appendFileSync as __dbg } from 'node:fs';
-import { getBackendFor } from '../agent/backends';
+import { getBackendFor, resolveThinkingDisable } from '../agent/backends';
+import { getSettings } from '../projects/store';
 import { provisionAgent } from '../agent/capabilities';
 import { instrumentConversation } from '../debug/instrument';
 import { normalizeToolName } from '@shared/agent/toolName';
@@ -62,6 +63,8 @@ export async function runDream(args: {
     const backend = await getBackendFor('memoryDream');
     const ready = await backend.isReady();
     if (!ready.ok) return { kind: 'failed', error: ready.hint };
+    // 思考三态（Track B）：memoryDream 默认关（后台复盘要便宜），走中央判据——用户可在设置里调。
+    const disableReasoning = resolveThinkingDisable('memoryDream', await getSettings());
 
     // 记忆整理走统一裁剪装配（S31·G47）：memory-curation 能力一处声明整理工具 + 守则，此处经 provisionAgent
     // 取 capabilityPrompt 当 systemContext，不再手拼 DREAM_SYSTEM_PROMPT——工具与守则单源，消除对齐税。
@@ -108,6 +111,8 @@ export async function runDream(args: {
       cwd: agent.homePath || process.cwd(),
       abortController,
       disallowedTools: provision.extraDisallowed.length ? provision.extraDisallowed : undefined,
+      // 思考三态（Track B）：memoryDream 默认关（后台复盘要便宜），可调
+      disableReasoning,
       toolContext: {
         conversationId: dreamConvId,
         agentId: agent.id,

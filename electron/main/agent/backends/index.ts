@@ -10,6 +10,7 @@
 export { ClaudeCodeBackend } from './claudeCode';
 export {
   getBackendFor,
+  resolveThinkingDisable,
   subagentCoderReady,
   registerTool,
   unregisterTool,

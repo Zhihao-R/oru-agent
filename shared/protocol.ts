@@ -890,6 +890,13 @@ export type ModelAssignmentsUpdateReq = {
   modelId: string | null;
 };
 
+export type ModelThinkingUpdateReq = {
+  type: 'modelThinking.update';
+  usage: LlmUsage;
+  /** 该用途是否开启思考 */
+  thinking: boolean;
+};
+
 // taskboard
 export type TaskboardListReq = { type: 'taskboard.list'; filters?: BoardTaskFilters };
 export type TaskboardCreateReq = {
@@ -1492,6 +1499,7 @@ export type ClientRequestPayload =
   | ModelsRemoveReq
   | ModelsUpdateReq
   | ModelAssignmentsUpdateReq
+  | ModelThinkingUpdateReq
   | TaskboardListReq
   | TaskboardCreateReq
   | TaskboardUpdateReq

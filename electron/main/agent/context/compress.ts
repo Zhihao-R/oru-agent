@@ -16,7 +16,8 @@
  */
 import type { ChatMessage, ContextCompressedPayload } from '@shared/types';
 import { newMessageId } from '@shared/ids';
-import { getBackendFor, runOneShotWithTimeout } from '../backends';
+import { getBackendFor, resolveThinkingDisable, runOneShotWithTimeout } from '../backends';
+import { getSettings } from '../../projects/store';
 import { instrumentOneShot } from '../../debug/instrument';
 import { getCurrentOwnerId } from '../../identity/getCurrentOwnerId';
 import {
@@ -170,6 +171,9 @@ export async function compressIfNeeded(args: CompressArgs): Promise<CompressResu
 
   // 摘要 backend：优先 conversationSummary，缺省回退 memoryDream
   const summaryBackend = await pickSummaryBackend();
+  // 思考三态（Track B）：conversationSummary 默认关（上下文整理要便宜）。summaryBackend 罕见回退到
+  // memoryDream 时沿用此档（两者默认都关，语义一致；用户若要精调可给 conversationSummary 单独开）。
+  const disableReasoning = resolveThinkingDisable('conversationSummary', await getSettings());
   if (!summaryBackend) {
     console.warn('[compress] fallback: no summary backend available (conversationSummary / memoryDream 都没配 + 无 OAuth 兜底)');
     return buildFallback(args.conversationId, startToCompress, args.history.slice(startKeepFromIdx));
@@ -222,7 +226,7 @@ export async function compressIfNeeded(args: CompressArgs): Promise<CompressResu
           source: 'compress',
           userText: prompt,
         },
-        () => runOneShotWithTimeout(summaryBackend, { prompt }, SUMMARY_TIMEOUT_MS),
+        () => runOneShotWithTimeout(summaryBackend, { prompt, disableReasoning }, SUMMARY_TIMEOUT_MS),
       );
       if (!summaryText || summaryText.trim().length === 0) {
         console.warn(

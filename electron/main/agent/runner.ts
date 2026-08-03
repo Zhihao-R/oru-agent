@@ -5,6 +5,7 @@ import type {
   BackendType,
   ChatMessage,
   Conversation,
+  LlmUsage,
   MemoryRecordPayload,
   ToolCall,
   ToolProtocol,
@@ -21,7 +22,7 @@ import { MEMORY_B_PATH_INSTRUCTION } from '../prompts/memoryBPath';
 import { provisionAgent } from './capabilities';
 import type { ProposalEmit } from './oruMcpFactory';
 import type { InheritedToolContext, ToolContext } from '@shared/agent/backend';
-import { getBackendFor } from './backends';
+import { getBackendFor, resolveThinkingDisable } from './backends';
 import { ensureCurrentTurnInHistory } from './backends/historyContract';
 import { isContextOverflowError } from './backends/overflow';
 import { SessionPoisonError } from './backends/sessionPoison';
@@ -365,13 +366,10 @@ async function runChatLocked(
     conversation.id,
   );
 
-  // aside 思考开关（二期 §3，默认关）：评点要的是几秒内的临场反应，思考拖慢且用不上。
-  // 与短评路径（aside/comment.ts）同读一个 settings.asideThinking——两条路径一个口径。
-  // 三态（见 ConversationInput.disableReasoning）：aside 思考关→true、aside 思考开→显式 false
-  //（让 claude-code 放开思考、压过"默认压掉治慢"）、主对话→undefined（claude-code 默认压掉）。
-  const disableReasoning = args.asideMode
-    ? !(await getSettings()).asideThinking
-    : undefined;
+  // 思考三态（Track B）：按本回合 usage（aside→asideComment、否则 twinMain）走中央判据——
+  // 干活/对话类默认开思考、asideComment 默认关；模型不支持思考回落 undefined（后端缺省压掉）。
+  const turnUsage: LlmUsage = args.asideMode ? 'asideComment' : 'twinMain';
+  const disableReasoning = resolveThinkingDisable(turnUsage, await getSettings());
 
   const promptBuildStartTs = Date.now();
 

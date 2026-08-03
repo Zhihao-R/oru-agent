@@ -20,7 +20,6 @@ import type { ServerEvent } from '@shared/protocol';
 vi.mock('../../electron/main/tasks/queue', async (orig) => ({
   ...(await orig<typeof import('../../electron/main/tasks/queue')>()),
   enqueue: vi.fn(),
-  cancelInQueue: vi.fn(),
 }));
 
 const ORU_DIR = join(tmpdir(), `oru-test-settle-approval-${Date.now()}`);

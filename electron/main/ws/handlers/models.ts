@@ -126,4 +126,22 @@ export const modelHandlers = {
     broadcast({ type: 'modelAssignments.state', assignments: updated.modelAssignments });
     await broadcastMainChatStatus(broadcast);
   },
+  'modelThinking.update': async (req, { reply, broadcast }) => {
+    // 校验 usage 是已知枚举——否则脏 key 会被写进 settings.modelThinking
+    if (!LLM_USAGES.includes(req.usage as (typeof LLM_USAGES)[number])) {
+      reply(req.reqId, {
+        type: 'error',
+        code: ErrorCodes.MODEL_INVALID,
+        message: `未知的 model usage：${String(req.usage)}`,
+      });
+      return;
+    }
+    const cur = await getSettings();
+    const next = { ...cur.modelThinking, [req.usage]: req.thinking };
+    const updated = await updateSettings({ modelThinking: next });
+    // 思考与分配模型无关、不影响主对话后端可用性，不需要 broadcastMainChatStatus。
+    // 用 settings.state 回写（与 settings.update 同口径）——渲染层 syncSettings 统一消费。
+    reply(req.reqId, { type: 'settings.state', settings: updated });
+    broadcast({ type: 'settings.state', settings: updated });
+  },
 } satisfies RegistrySlice;

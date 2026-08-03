@@ -14,7 +14,7 @@ Oru以桌面端的方式运行，提供流畅的文件查看与修改体验，�
 
 目前仅支持 macOS，Alpha 阶段。
 
-![Oru 界面：左栏对话，右栏正在被修改的文档](assets/screenshot-hero.png)
+![Oru 桌面应用主界面](assets/screenshot-home.png)
 
 ## 你能用它做什么
 
@@ -27,10 +27,13 @@ Oru以桌面端的方式运行，提供流畅的文件查看与修改体验，�
 | **文档与幻灯片** | 对话中直接产出文档和演示文稿，当场预览，可导出 PDF / PPT |
 | **界面双语** | 完整中 / 英界面，所有文案走 i18n，可随时切换 |
 | **定时任务** | 设好时间自动执行任务，做完通知你 |
+| **任务看板** | 你和我共用的待办面板，按状态分组，每条任务有归属和一条评论线，可 @Oru 在任务下接着做 |
 | **扩展** | 通过标准 MCP 协议接入外部服务，可安装插件和自定义技能包 |
 | **模型接入** | 支持 Anthropic API、OpenAI 兼容接口，或复用本机已登录的 Claude Code |
 
 ![在飞书里给 Oru 派活，桌面端同步看到完整上下文](assets/screenshot-feishu.png)
+
+![任务看板上打开一条任务，在评论区和 Oru 接着聊](assets/taskboard.png)
 
 ![Oru 的记忆：关于你、关于 Oru、晚间整理，全部可见可编辑](assets/screenshot-memory.png)
 

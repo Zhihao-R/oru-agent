@@ -14,7 +14,7 @@ Oru runs as a desktop application, offering a smooth file-viewing and editing ex
 
 Currently macOS only. Pre-1.0 / Alpha stage.
 
-![Oru interface: conversation in the left panel, the document being edited on the right](assets/screenshot-hero.png)
+![The Oru desktop app](assets/screenshot-home.png)
 
 ## What you can do with it
 
@@ -27,10 +27,13 @@ Currently macOS only. Pre-1.0 / Alpha stage.
 | **Documents & slides** | Produce documents and presentations directly in conversation, preview them on the spot, and export to PDF / PPT |
 | **Bilingual interface** | Full Chinese / English UI, all copy internationalized (i18n), switchable at any time |
 | **Scheduled tasks** | Set a time and Oru executes a task automatically, notifying you when done |
+| **Task board** | A shared to-do board grouped by status, where each task has an owner and a comment thread — @Oru under any task to keep working there |
 | **Extensions** | Connect external services over the standard MCP protocol; install plugins and custom skill packs |
 | **Model backends** | Anthropic API, OpenAI-compatible endpoints, or the locally logged-in Claude Code |
 
 ![Assign work to Oru in Feishu and mirror the full context on desktop](assets/screenshot-feishu.png)
+
+![On the task board, open a task and chat with Oru in its comment thread](assets/taskboard.png)
 
 ![Oru's memory: About you, About Oru, and nightly consolidation — all visible and editable](assets/screenshot-memory.png)
 

@@ -21,10 +21,6 @@ import { realtimeApprovalModeFor } from '../../agent/agentTools/approvalGate';
 import { enqueue as enqueueTask } from '../../tasks/queue';
 import { ASIDE_CHAT_RULES } from '../aside/comment';
 import { ASIDE_TOOL_WHITELIST, buildAsideToolDenylist } from '../aside/toolWhitelist';
-import {
-  maybeAutoNameAsideConversation,
-  maybeAutoNameConversation,
-} from '../../agent/autoNameConversation';
 import { triggerScan as triggerArchiveScan } from '../../conversations/autoArchiver';
 import { surfaceProposal } from '../../proposals/registry';
 import { pushConvState } from './convState';
@@ -41,24 +37,21 @@ import { maybeResumeTurn } from './resumeTurn';
  *      （回归）。水位只在用户查看时（conv.markSeen）更新——这才是「已读」的正确语义。
  *   3. 归档判断：回合是「刚活跃」的时刻，活跃驱动催一轮归档扫描（定时器降为兜底）。本对话刚
  *      updatedAt、不被归档；扫的是其他久不互动的对话。fire-and-forget、不拖慢收尾。
- *   4. 自动命名（首轮；main / aside 两闸各自按 kind 短路）。
  *
+ * 【自动命名已不在收尾清单】命名前移到 chat.send「首条 user 消息落盘后」即时触发
+ * （electron/main/ws/handlers/chat.ts）——不等回合跑完、只凭首条消息命名。
  * 中断/故障轮走不到这里（onAssistantPersisted 只在完整回合末调）——那是刻意的：半截回合不扩散
- * 下游副作用。续跑轮 userText 为空也无妨，命名自会短路。
+ * 下游副作用。
  */
 export async function applyTurnSideEffects(p: {
   agentId: string;
   conversationId: string;
-  userText: string;
-  assistantText: string;
   broadcast: Broadcast;
 }): Promise<void> {
-  const { agentId, conversationId, userText, assistantText, broadcast } = p;
+  const { agentId, conversationId, broadcast } = p;
   resetAutoContinue(conversationId);
   await pushConvState(agentId, null, null, broadcast);
   triggerArchiveScan();
-  void maybeAutoNameConversation({ agentId, conversationId, userText, assistantText, broadcast });
-  void maybeAutoNameAsideConversation({ agentId, conversationId, userText, assistantText, broadcast });
 }
 
 /**
@@ -206,15 +199,9 @@ export function buildMainChatTurnArgs(p: {
       }, delay);
       return true;
     },
-    onAssistantPersisted: async (assistantMsg) => {
+    onAssistantPersisted: async () => {
       // 成功跑完一轮 → 回合收尾副作用清单（G27），全收在 applyTurnSideEffects 一处（清单见其注释）。
-      await applyTurnSideEffects({
-        agentId,
-        conversationId,
-        userText: userText ?? '',
-        assistantText: assistantMsg.text ?? '',
-        broadcast,
-      });
+      await applyTurnSideEffects({ agentId, conversationId, broadcast });
     },
   };
 

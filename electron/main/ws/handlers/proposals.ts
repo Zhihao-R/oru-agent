@@ -10,7 +10,6 @@ import type { RegistrySlice } from './types';
 import { getProposal, discardProposal } from '../../proposals/registry';
 import { finalizeUserCancelledTask } from './brake';
 import { settleApprovalDecision } from './settleApprovalDecision';
-import { cancelInQueue } from '../../tasks/queue';
 import { cancelTask } from '../../tasks/subagentRunner';
 import { userAnswered, cancelTwinWait } from '../../tasks/askTwinBridge';
 import { rollbackTask, redoRollback } from '../../git/rollback';
@@ -113,11 +112,10 @@ export const proposalTaskHandlers = {
     return;
   },
   'proposal.discard': async (req, { reply }) => {
-    // 排队中的 code 提案先撤队再删 Map：discard 只删 proposals Map 的话，队列项仍持有该
-    // proposal 引用、status 仍是 pending，起跑守卫放行 → 「算了」后任务照跑（丢弃≠不执行）。
-    // discard 语义是「悄悄丢弃、不告知模型、不留痕」，故不迁终态、不广播——proposal 整体被删，
-    // status 再无读取方；cancelInQueue 对非排队提案是 no-op，无需按 kind 分支。
-    cancelInQueue(req.proposalId);
+    // 去串行后无排队项可撤（2026-08-03-async-subagent-de-serial-plan review-rev 2）：approve 即起跑，
+    // discard 只作用于 pending 卡片、无法拦已起跑任务（executing 任务改由 cancelTask 语义承接）。
+    // discard 语义是「悄悄丢弃、不告知模型、不留痕」，故不迁终态、不广播——proposal 整体被删、
+    // status 再无读取方；已起跑任务照跑的取舍记录于 plan「已知限制/取舍」节。
     discardProposal(req.proposalId);
     reply(req.reqId, { type: 'ack' });
     return;

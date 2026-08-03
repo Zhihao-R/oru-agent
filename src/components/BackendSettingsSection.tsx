@@ -12,19 +12,26 @@ import { Edit3, Trash2, RefreshCw, Save, X as XIcon, Loader2, Plus, Lightbulb } 
 import { wsClient } from '@/lib/ws';
 import {
   LLM_USAGES,
+  defaultModelThinking,
   type BackendProvider,
   type BackendProviderType,
   type LlmUsage,
   type ModelAssignment,
+  type ModelThinking,
   type RegisteredModel,
 } from '@shared/types';
-import { LOCAL_CLAUDE_MODELS, localClaudeAssignment } from '@shared/agent/localClaudeModels';
+import {
+  LOCAL_CLAUDE_MODELS,
+  localClaudeAssignment,
+  parseLocalClaudeAssignment,
+} from '@shared/agent/localClaudeModels';
 import {
   CODING_PLAN_DEFAULT_ENDPOINT,
   isCodingPlanType,
 } from '@shared/agent/codingPlanEndpoints';
 import { SettingsSection } from '@/components/settings/ui/SettingsSection';
 import { hoverToolsCls } from '@/components/settings/ui/hoverTools';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { Switch } from '@/components/ui/Switch';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
@@ -92,7 +99,7 @@ export function BackendSettingsSection() {
     scheduledRun: null,
     loopCompile: null,
   });
-  const [asideThinking, setAsideThinking] = useState(false);
+  const [modelThinking, setModelThinkingState] = useState<ModelThinking>(() => defaultModelThinking());
 
   useEffect(() => {
     void (async () => {
@@ -106,7 +113,7 @@ export function BackendSettingsSection() {
         if (m.type === 'models.state') setModels(m.models);
         if (s.type === 'settings.state') {
           setAssignments(s.settings.modelAssignments);
-          setAsideThinking(s.settings.asideThinking ?? false);
+          setModelThinkingState({ ...defaultModelThinking(), ...(s.settings.modelThinking ?? {}) });
         }
       } catch {
         // 忽略 WS 未连接
@@ -121,7 +128,7 @@ export function BackendSettingsSection() {
       else if (ev.type === 'modelAssignments.state') setAssignments(ev.assignments);
       else if (ev.type === 'settings.state') {
         setAssignments(ev.settings.modelAssignments);
-        setAsideThinking(ev.settings.asideThinking ?? false);
+        setModelThinkingState({ ...defaultModelThinking(), ...(ev.settings.modelThinking ?? {}) });
       }
     });
   }, []);
@@ -134,8 +141,12 @@ export function BackendSettingsSection() {
         providers={providers}
         models={models}
         assignments={assignments}
-        asideThinking={asideThinking}
-        onAsideThinkingChange={setAsideThinking}
+        modelThinking={modelThinking}
+        onModelThinkingChange={(usage, thinking) => {
+          // 乐观翻转本地显示 + 走 store 落盘（store 自带乐观写 + settings.state 回写权威值）
+          setModelThinkingState((prev) => ({ ...prev, [usage]: thinking }));
+          void useSettingsStore.getState().setModelThinking(usage, thinking);
+        }}
       />
     </>
   );
@@ -835,14 +846,14 @@ function AssignmentsSection({
   providers,
   models,
   assignments,
-  asideThinking,
-  onAsideThinkingChange,
+  modelThinking,
+  onModelThinkingChange,
 }: {
   providers: BackendProvider[];
   models: RegisteredModel[];
   assignments: ModelAssignment;
-  asideThinking: boolean;
-  onAsideThinkingChange: (next: boolean) => void;
+  modelThinking: ModelThinking;
+  onModelThinkingChange: (usage: LlmUsage, thinking: boolean) => void;
 }) {
   const { t } = useTranslation('settings');
   const oruName = useOruName();
@@ -873,19 +884,14 @@ function AssignmentsSection({
     return model.supportsVision !== true;
   }
 
-  // 思考灯泡：点亮＝评点/短聊先思考再开口，默认灭（要的是几秒内的临场反应）。
-  // 想和正式对话完全一致的，模型跟随（不分配）+ 点亮思考即可（二期 §3）。
-  const toggleAsideThinking = () => {
-    const next = !asideThinking;
-    onAsideThinkingChange(next);
-    void wsClient
-      .request({ type: 'settings.update', settings: { asideThinking: next } })
-      .catch(() => {
-        // 保存失败回滚——灯不能停在与磁盘不符的状态
-        onAsideThinkingChange(!next);
-        alert(t('backend.saveFailed'));
-      });
-  };
+  // 当前行选到的模型是否支持思考（Track B）：未分配 / 本地 Claude = 支持；
+  // 只有显式分配了 supportsReasoning!==true 的注册模型才不支持 → 思考开关隐藏/置灰。
+  function rowSupportsReasoning(usage: LlmUsage): boolean {
+    const id = assignments[usage];
+    if (!id) return true;
+    if (parseLocalClaudeAssignment(id)) return true;
+    return models.find((m) => m.id === id)?.supportsReasoning === true;
+  }
 
   return (
     <SettingsSection title={t('backend.assignments')}>
@@ -893,6 +899,11 @@ function AssignmentsSection({
         {LLM_USAGES
           .filter((u) => u !== 'twinSubagent') // 跟随 twinMain，UI 不暴露独立选项
           .map((usage) => {
+            // 每用途思考开关（Track B）：点亮=该用途先思考再回应。默认分档（干活/对话类开、
+            // 廉价判断类关）由 defaultModelThinking 提供；思考文字不展示，过程只给「思考中」状态。
+            // 仅当前选到 supportsReasoning 的模型时可用（否则开了也没用，置灰）。
+            const supports = rowSupportsReasoning(usage);
+            const thinking = modelThinking[usage] ?? defaultModelThinking()[usage];
             return (
               <div
                 key={usage}
@@ -902,27 +913,25 @@ function AssignmentsSection({
                   {usageLabel(usage, oruName, t)}
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
-                  {usage === 'asideComment' ? (
-                    <button
-                      type="button"
-                      onClick={toggleAsideThinking}
-                      title={t('backend.asideThinkTitle')}
-                      aria-label={t('backend.asideThinkAria')}
-                      aria-pressed={asideThinking}
-                      className={cn(
-                        'group flex h-7 items-center justify-center rounded-md px-1 transition-colors',
-                        asideThinking
-                          ? 'text-accent'
-                          : 'text-text-tertiary hover:text-text-secondary',
-                      )}
-                    >
-                      <Lightbulb size={16} className={asideThinking ? 'fill-current' : undefined} />
-                      {/* 平时只留灯泡；hover 滑出「思考」二字点明它是开关，title 给完整说明 */}
-                      <span className="max-w-0 overflow-hidden whitespace-nowrap text-xs opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:max-w-[3rem] group-hover:opacity-100">
-                        {t('backend.asideThink')}
-                      </span>
-                    </button>
-                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => supports && onModelThinkingChange(usage, !thinking)}
+                    title={supports ? t('backend.thinkTitle') : t('backend.thinkDisabledTitle')}
+                    aria-label={t('backend.thinkAria')}
+                    aria-pressed={thinking}
+                    disabled={!supports}
+                    className={cn(
+                      'group flex h-7 items-center justify-center rounded-md px-1 transition-colors',
+                      thinking ? 'text-accent' : 'text-text-tertiary hover:text-text-secondary',
+                      !supports && 'cursor-not-allowed opacity-40',
+                    )}
+                  >
+                    <Lightbulb size={16} className={thinking ? 'fill-current' : undefined} />
+                    {/* 平时只留灯泡；hover 滑出「思考」二字点明它是开关，title 给完整说明 */}
+                    <span className="max-w-0 overflow-hidden whitespace-nowrap text-xs opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:max-w-[3rem] group-hover:opacity-100">
+                      {t('backend.think')}
+                    </span>
+                  </button>
                   <select
                     value={assignments[usage] ?? ''}
                     onChange={(e) => onChange(usage, e.target.value || null)}

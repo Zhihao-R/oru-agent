@@ -16,6 +16,7 @@ vi.mock('../../electron/main/agent/store/agents', () => ({
 // backends：只 mock getBackendFor；backendType 字段由各测试的 stub 自行设置
 vi.mock('../../electron/main/agent/backends', () => ({
   getBackendFor: vi.fn<() => Promise<AgentBackend>>(),
+  resolveThinkingDisable: vi.fn(() => undefined),
 }));
 
 vi.mock('../../electron/main/tasks/store', () => ({
@@ -35,6 +36,7 @@ vi.mock('../../electron/main/git/workflow', () => ({
 
 vi.mock('../../electron/main/projects/store', () => ({
   getProject: vi.fn(),
+  getSettings: vi.fn(),
 }));
 
 vi.mock('../../electron/main/agent/auth', () => ({

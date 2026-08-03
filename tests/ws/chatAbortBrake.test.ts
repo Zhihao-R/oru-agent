@@ -1,19 +1,16 @@
 /**
- * 对话级刹车（G17）——chat.abort 编排回归
+ * 对话级刹车（G17）——chat.abort 编排回归，去串行后语义（方案 review-rev 2）
  *
- * 理想架构 subagent.html#PFail：按停=对话级刹车，该对话派出的后台任务 / 排队未起跑的
- * 派工 / 后台命令一并终止。chat.abort 此前只 drain steering + 停当前轮，本测试钉住扩展后
- * 的编排与「完全静默」呈现（PM 拍板）：
+ * 理想架构 subagent.html#PFail：按停=对话级刹车，该对话派出的后台任务 / 后台命令一并终止。
+ * chat.abort 此前只 drain steering + 停当前轮，本测试钉住扩展后的编排与「完全静默」呈现（PM 拍板）：
  * 1. 停当前轮（既有 abortConversation）；
- * 2. 取消该对话运行中的 subagent 任务（复用 cancelTask 内核）＋撤它悬着的审批卡
- *    ＋markAnnounced 抑制播报轮（用户刚按停，Oru 不得转头起一轮说「任务被取消了」）；
- * 3. 撤该对话排队未起跑的派工，proposal 走 pending → rejected 合法终态；
- * 4. 杀该对话自己的后台 bash（复用对话删除路径的 killBashForConversation，不写第二份）；
- * 5. 静默：编排层全程不 appendMessage、不 notifyTaskTerminal；其他对话一概不动。
+ * 2. 取消该对话运行中的 subagent 任务（单一撤销 cancelTasksForConversation，遍历 activeTasks 含启动段）
+ *    ＋撤它悬着的审批卡 + markAnnounced 抑制播报轮（用户刚按停，Oru 不得转头起一轮说「任务被取消了」）；
+ * 3. 杀该对话自己的后台 bash（复用对话删除路径的 killBashForConversation，不写第二份）；
+ * 4. 静默：编排层全程不 appendMessage、不 notifyTaskTerminal；其他对话一概不动。
  *    「刹车取消的任务不写对话报告卡」的 runner 层真实路径断言在
- *    subagentRunnerBrake.test.ts（本文件 stub 掉了 runner，兜不住那条）；
- * 6. 双撤销背靠背零 await：被 abort 任务 settle 时 runWithDequeue finally 推进队列，
- *    同对话排队项不得在间隙被提升起跑。
+ *    subagentRunnerBrake.test.ts（本文件 stub 掉了 runner，兜不住那条）。
+ * 5. 去串行后无排队项可撤：刹车为单一同步撤销、零 await，被刹任务 settle 不触发队列推进（无队列）。
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { join } from 'node:path';
@@ -50,7 +47,6 @@ vi.mock('../../electron/main/tasks/store', async (importOriginal) => {
   return {
     ...actual,
     // 跨 macrotask：真实 markAnnounced 走文件写队列（多层 await）——mock 立即 resolve
-    // 会把「await 间隙让队列推进抢跑」的真实竞态藏掉（M2 回归依赖这个时序）
     markAnnounced: vi.fn(async () => {
       await new Promise((r) => setTimeout(r, 0));
     }) satisfies typeof actual.markAnnounced,
@@ -84,17 +80,12 @@ vi.mock('../../electron/main/conversations/store', async (importOriginal) => {
 import { chatHandlers } from '../../electron/main/ws/handlers/chat';
 import { rememberProposal } from '../../electron/main/proposals/registry';
 import { abortConversation } from '../../electron/main/agent/runner';
-import { cancelTasksForConversation } from '../../electron/main/tasks/subagentRunner';
+import { cancelTasksForConversation, __resetActiveTasksForTest } from '../../electron/main/tasks/subagentRunner';
 import { markAnnounced } from '../../electron/main/tasks/store';
 import { killBashForConversation } from '../../electron/main/proposals/executeBashProposal';
 import { notifyTaskTerminal } from '../../electron/main/tasks/taskAnnouncer';
 import { appendMessage } from '../../electron/main/conversations/store';
-import {
-  enqueue,
-  getQueueDepth,
-  __setRunFnForTest,
-  __resetQueuesForTest,
-} from '../../electron/main/tasks/queue';
+import { enqueue, __setRunFnForTest } from '../../electron/main/tasks/queue';
 import type { Reply } from '../../electron/main/ws/server';
 
 let seq = 0;
@@ -156,11 +147,11 @@ const tick = () => new Promise((r) => setTimeout(r, 10));
 
 beforeEach(() => {
   vi.clearAllMocks();
-  __resetQueuesForTest();
+  __resetActiveTasksForTest();
 });
 
-describe('chat.abort = 对话级刹车', () => {
-  it('停当前轮 + 取消运行中任务（撤卡/抑播报）+ 撤排队派工 + 杀后台 bash；其他对话不动；全程静默', async () => {
+describe('chat.abort = 对话级刹车（去串行单一撤销）', () => {
+  it('停当前轮 + 单一撤销取消运行中任务（撤卡/抑播报）+ 杀后台 bash；其他对话不动；全程静默', async () => {
     const h = harness();
     const started: string[] = [];
     const gates: Array<() => void> = [];
@@ -169,14 +160,15 @@ describe('chat.abort = 对话级刹车', () => {
       await new Promise<void>((r) => gates.push(r));
     });
     try {
-      // 排队现场：blocker（conv_other）占住 proj_brake → p1（conv_target）/ p2（conv_other）排队
+      // 去串行：同/异对话派工全部立即并行起跑（无排队），目标问题本身——同一时间三个都 started
       const blocker = makeCodeProposal('conv_other');
       const p1 = makeCodeProposal('conv_target');
       const p2 = makeCodeProposal('conv_other');
       for (const p of [blocker, p1, p2]) {
         enqueue({ agentId: 'agent_test', proposal: p, emit: h.broadcast });
       }
-      expect(getQueueDepth()['proj_brake']?.pendingCount).toBe(2);
+      expect(started).toEqual([blocker.id, p1.id, p2.id]);
+
       // 运行中任务 task_active_1 悬在主对话的命令审批卡
       const subCard = makeSubagentBashProposal('task_active_1');
       rememberProposal(subCard);
@@ -192,20 +184,15 @@ describe('chat.abort = 对话级刹车', () => {
         items: [], // S08 · G14：回执携带类型化 items（此处无未消费项）
       });
 
-      // 2. 运行中任务：取消 + 撤悬卡 + 抑制播报
+      // 2. 单一撤销：取消运行中任务 + 撤悬卡 + 抑制播报
       expect(vi.mocked(cancelTasksForConversation)).toHaveBeenCalledWith('conv_target');
       expect(subCard.status).toBe('rejected'); // 悬着的回流审批卡被撤成终态
       expect(vi.mocked(markAnnounced)).toHaveBeenCalledWith('task_active_1'); // 播报轮抑制
 
-      // 3. 排队派工：目标对话的撤下并走合法终态；其他对话的原样排队
-      expect(p1.status).toBe('rejected');
-      expect(p2.status).toBe('pending');
-      expect(getQueueDepth()['proj_brake']?.pendingCount).toBe(1);
-
-      // 4. 后台 bash：恰好杀目标对话的（一次、且只有这一个 conversationId）
+      // 3. 杀该对话自己的后台 bash：恰好一次、且只有这个 conversationId
       expect(vi.mocked(killBashForConversation).mock.calls).toEqual([['conv_target']]);
 
-      // 5. 静默：不落任何对话消息、不触发播报轮
+      // 4. 静默：不落任何对话消息、不触发播报轮
       expect(vi.mocked(appendMessage)).not.toHaveBeenCalled();
       expect(vi.mocked(notifyTaskTerminal)).not.toHaveBeenCalled();
       const messageEvents = h.events.filter((e) =>
@@ -213,48 +200,10 @@ describe('chat.abort = 对话级刹车', () => {
       );
       expect(messageEvents).toEqual([]);
 
-      // 队列不因刹车卡死：blocker 跑完后 p2 照常起跑，p1 永不起跑
+      // 5. 无队列可推进：放行在跑任务自然收尾，不新增任何起跑（不会因刹车把排队项放行）
       gates.splice(0).forEach((r) => r());
       await tick();
-      gates.splice(0).forEach((r) => r());
-      await tick();
-      expect(started).toEqual([blocker.id, p2.id]);
-    } finally {
-      restore();
-    }
-  });
-
-  it('被 abort 任务 settle 推进队列时，同对话排队项不得被放行（双撤销间零 await）', async () => {
-    const h = harness();
-    const started: string[] = [];
-    const gates: Array<() => void> = [];
-    const restore = __setRunFnForTest(async (item) => {
-      started.push(item.proposal.id);
-      await new Promise<void>((r) => gates.push(r));
-    });
-    try {
-      // 同对话现场：blocker（conv_target）正在跑，p1（conv_target）排在它后面
-      const blocker = makeCodeProposal('conv_target');
-      const p1 = makeCodeProposal('conv_target');
-      enqueue({ agentId: 'agent_test', proposal: blocker, emit: h.broadcast });
-      enqueue({ agentId: 'agent_test', proposal: p1, emit: h.broadcast });
-      // 刹车取消 blocker 的瞬间它 settle（真实路径：abort 传导让 runTask resolve）——
-      // runWithDequeue finally 随即在 microtask 里推进队列。若 chat.abort 在两个撤销
-      // 之间夹了 await，p1 会在间隙被提升起跑、双双抓空。
-      vi.mocked(cancelTasksForConversation).mockImplementationOnce((conversationId) => {
-        if (conversationId !== 'conv_target') return [];
-        gates.splice(0).forEach((r) => r());
-        return ['task_blocker'];
-      });
-
-      await abort('conv_target', h);
-
-      // p1 必须在队列推进之前被同步撤下——被提升起跑即竞态复现
-      expect(started).toEqual([blocker.id]);
-      expect(p1.status).toBe('rejected');
-      await tick();
-      expect(started).toEqual([blocker.id]); // 队列推进之后也没有放行
-      expect(getQueueDepth()['proj_brake']?.running).toBe(false); // 队列不因刹车卡死
+      expect(started).toEqual([blocker.id, p1.id, p2.id]);
     } finally {
       restore();
     }

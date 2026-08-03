@@ -23,6 +23,8 @@ import { newMessageId, newSubagentTaskId } from '@shared/ids';
 import { appendSidecarMessage, ensureSidecarDir } from './sidecar';
 import { stringifyToolResultContent } from '../toolResultText';
 import { provisionAgent } from '../capabilities';
+import { resolveThinkingDisable } from '../backends';
+import { getSettings } from '../../projects/store';
 import { finalizeConversationBudget } from '../../search/budget';
 import { toolObject, shorten } from '@shared/agent/toolActivity';
 import { normalizeToolName } from '@shared/agent/toolName';
@@ -199,12 +201,18 @@ export async function runSubagent(
     // 而非冒泡导致 chip 卡在 running 状态
     await ensureSidecarDir(deps.ownerId, deps.agentId, deps.conversationId);
 
+    // 思考三态（Track B）：twinSubagent 跟随 twinMain（helper 的 effectiveUsage 映射），
+    // 干活/对话类默认开思考。
+    const disableReasoning = resolveThinkingDisable('twinSubagent', await getSettings());
+
     const handle = deps.backend.runConversation({
       agentId: deps.agentId,
       conversationId: deps.conversationId,
       userMessage: req.prompt,
       history: subagentHistory,
       systemContext: fullSystem,
+      // 思考三态（Track B）：同 twinMain 档
+      disableReasoning,
       // 关键：stable 段传 parentStable（不含 SUFFIX）—— cache_control marker 打在
       // 主对话相同位置，subagent 第一次请求即命中主对话 cache
       stableSystemContext: parentStable,

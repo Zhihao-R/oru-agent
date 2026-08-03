@@ -91,9 +91,10 @@
     "noAutoName": "（不自动命名）",
     "defaultLocalClaude": "（默认 · 本机 Claude 登录）",
     "localClaudeGroup": "本机 Claude 登录",
-    "asideThinkTitle": "默认不思考，回应更快；点亮后评点与短聊会先思考再开口",
-    "asideThinkAria": "评点时思考",
-    "asideThink": "思考"
+    "think": "思考",
+    "thinkTitle": "此用途是否开启思考（思考文字不展示，过程只显示「思考中」状态）",
+    "thinkDisabledTitle": "当前所选模型不支持思考，无法开启",
+    "thinkAria": "开启思考"
   },
   "webSearch": {
     "engineLabel": {

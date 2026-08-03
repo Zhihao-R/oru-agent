@@ -15,7 +15,8 @@
 import type { ChatAttachment, ChatMessage, ChecklistItem } from '@shared/types';
 import type { ConversationEvent } from '@shared/agent/backend';
 import { normalizeToolName } from '@shared/agent/toolName';
-import { getBackendFor } from '../agent/backends';
+import { getBackendFor, resolveThinkingDisable } from '../agent/backends';
+import { getSettings } from '../projects/store';
 import { singleUserTurn } from '../agent/singleUserTurn';
 import { instrumentConversation } from '../debug/instrument';
 import { newMessageId } from '@shared/ids';
@@ -129,6 +130,8 @@ export async function compileChecklist(opts: {
   signal?: AbortSignal;
 }): Promise<CompileOutcome> {
   const backend = await getBackendFor('loopCompile');
+  // 思考三态（Track B）：loopCompile 默认关（拆解要快、受限回合），走中央判据——可调。
+  const disableReasoning = resolveThinkingDisable('loopCompile', await getSettings());
   const prompt = buildCompilePrompt(opts.goal, opts.contextTail);
 
   const ac = new AbortController();
@@ -155,6 +158,8 @@ export async function compileChecklist(opts: {
       systemContext: COMPILE_SYSTEM_PROMPT,
       cwd: opts.cwd,
       abortController: ac,
+      // 思考三态（Track B）：loopCompile 默认关（拆解要快），可调
+      disableReasoning,
       // 受限第 ②③ 层：白名单交集 + claudeCode builtinTools 关断（backends 原生消费）。
       restrictToolsTo: ['submit_checklist'],
       toolContext: {

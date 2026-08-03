@@ -34,13 +34,6 @@ vi.mock('../../electron/main/tasks/subagentRunner', async (importOriginal) => {
     cancelTasksForConversation: vi.fn(() => []) satisfies typeof actual.cancelTasksForConversation,
   };
 });
-vi.mock('../../electron/main/tasks/queue', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../electron/main/tasks/queue')>();
-  return {
-    ...actual,
-    cancelQueuedForConversation: vi.fn(() => []) satisfies typeof actual.cancelQueuedForConversation,
-  };
-});
 vi.mock('../../electron/main/proposals/executeBashProposal', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../electron/main/proposals/executeBashProposal')>();
   return {
@@ -69,7 +62,6 @@ vi.mock('../../electron/main/conversations/attachments', async (importOriginal) 
 import { conversationHandlers } from '../../electron/main/ws/handlers/conversations';
 import { abortConversation } from '../../electron/main/agent/runner';
 import { cancelTasksForConversation } from '../../electron/main/tasks/subagentRunner';
-import { cancelQueuedForConversation } from '../../electron/main/tasks/queue';
 import { killBashForConversation } from '../../electron/main/proposals/executeBashProposal';
 import { deleteConversation, clearConversation, appendMessage } from '../../electron/main/conversations/store';
 import type { Reply } from '../../electron/main/ws/server';
@@ -95,7 +87,7 @@ function harness() {
 }
 
 describe('conv.delete = 对话级刹车', () => {
-  it('删除触发完整刹车：停当前轮 + 取消任务 + 撤排队 + 杀 bash（都指向该会话）', async () => {
+  it('删除触发完整刹车：停当前轮 + 取消任务 + 杀 bash（都指向该会话）', async () => {
     const h = harness();
     await conversationHandlers['conv.delete']!(
       { type: 'conv.delete', reqId: 'r_del', agentId, conversationId: 'conv_del' },
@@ -104,7 +96,6 @@ describe('conv.delete = 对话级刹车', () => {
 
     expect(vi.mocked(abortConversation)).toHaveBeenCalledWith(agentId, 'conv_del');
     expect(vi.mocked(cancelTasksForConversation)).toHaveBeenCalledWith('conv_del');
-    expect(vi.mocked(cancelQueuedForConversation)).toHaveBeenCalledWith('conv_del');
     expect(vi.mocked(killBashForConversation).mock.calls).toEqual([['conv_del']]);
     expect(vi.mocked(deleteConversation)).toHaveBeenCalledWith(agentId, 'conv_del');
   });
@@ -131,7 +122,7 @@ describe('conv.delete = 对话级刹车', () => {
 });
 
 describe('conv.clear = 对话级刹车（与 delete 对齐）', () => {
-  it('清空触发完整刹车：停当前轮 + 取消任务 + 撤排队 + 杀 bash（都指向该会话）', async () => {
+  it('清空触发完整刹车：停当前轮 + 取消任务 + 杀 bash（都指向该会话）', async () => {
     const h = harness();
     await conversationHandlers['conv.clear']!(
       { type: 'conv.clear', reqId: 'r_clr', agentId, conversationId: 'conv_clr' },
@@ -140,7 +131,6 @@ describe('conv.clear = 对话级刹车（与 delete 对齐）', () => {
 
     expect(vi.mocked(abortConversation)).toHaveBeenCalledWith(agentId, 'conv_clr');
     expect(vi.mocked(cancelTasksForConversation)).toHaveBeenCalledWith('conv_clr');
-    expect(vi.mocked(cancelQueuedForConversation)).toHaveBeenCalledWith('conv_clr');
     expect(vi.mocked(killBashForConversation).mock.calls).toEqual([['conv_clr']]);
     expect(vi.mocked(clearConversation)).toHaveBeenCalledWith(agentId, 'conv_clr');
   });

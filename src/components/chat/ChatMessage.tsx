@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { CheckCircle2, ChevronRight, Circle, Clock, Loader2, Repeat, XCircle } from 'lucide-react';
@@ -32,7 +32,14 @@ function renderToolCard(tc: ToolCall, settled = false) {
   return <ToolCallLine key={tc.id} tool={tc} settled={settled} />;
 }
 
-export function ChatMessage({ message }: { message: Msg }) {
+/**
+ * 单条聊天消息。导出包 memo：props 只有 message，父组件因无关原因重渲染时（置顶气泡 setPinnedMsg、
+ * 滚动、会话状态变动），message 引用稳定 → 整条消息子树（其内所有 markdown）都不重渲染，治列表
+ * 重渲染连坐整棵消息的 CPU 风暴（见 docs/plans/2026-08-03-…）。
+ * 不会漏更新：组件内部大量 useChatStore(selector) 订阅是独立于 memo 的 store 订阅通道，store 真
+ * 变化（新消息、流式进展）时 selector 变化会独立触发重渲染，与 memo 无关。
+ */
+export const ChatMessage = memo(function ChatMessage({ message }: { message: Msg }) {
   // turn-terminator 是 abort 时落盘给 LLM history 的标记，UI 不渲染卡片
   // （避免与同条 assistant message 末尾的"已中断"状态行重复）
   if (message.kind === 'turn-terminator') return null;
@@ -69,7 +76,7 @@ export function ChatMessage({ message }: { message: Msg }) {
   if (message.role === 'user') return <UserBubble message={message} />;
   if (message.role === 'system') return <SystemNote message={message} />;
   return <AssistantBlock message={message} />;
-}
+});
 
 // data-message-id：随手评点（aside）的消息指认锚点——⌥点消息时 resolver 凭它从
 // chatStore 取原文与前后文（src/aside/resolve.ts）。三种消息根节点都挂。

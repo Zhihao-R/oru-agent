@@ -14,7 +14,8 @@
  * - 同步审批 kind（bash / file.write）：批准 → executing → 工具完成经 finalizeProposalExecution 回报终态；
  * - mcp / plugin / skill / deck：独立执行器开跑即迁（都有数秒执行窗口，占住状态挡 reject），
  *   各执行器内部的 finalize 再从 executing 迁终态；
- * - code：queue 起跑即迁（排队中保持 pending，可经 cancelInQueue 撤下）。
+ * - code：queue 起跑即迁（去串行后无排队、approve 即起跑，无「排队中可撤」窗口——见
+ *   async-subagent-de-serial-plan review-rev 2）。
  */
 import type { ActionProposal, ProposalStatus } from '@shared/types';
 import type { ServerEvent } from '@shared/protocol';

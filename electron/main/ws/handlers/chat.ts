@@ -19,6 +19,10 @@ import { currentTwinSupportsVision } from '../../agent/backends/visionSupport';
 import { checkBackendReady } from '../../agent/backends/readiness';
 import { getAgent } from '../../agent/store/agents';
 import { appendMessage, getConversation } from '../../conversations/store';
+import {
+  maybeAutoNameAsideConversation,
+  maybeAutoNameConversation,
+} from '../../agent/autoNameConversation';
 import { AttachmentError, saveAttachments } from '../../conversations/attachments';
 import { steeringQueue, steeringKey } from '../../agent/steeringQueue';
 import { ackRecoveredSteering } from '../../agent/steeringBackup';
@@ -207,6 +211,12 @@ export const chatHandlers = {
     }
     dreamOnUserMessage();
     reply(req.reqId, { type: 'ack' });
+
+    // 自动命名前置（fire-and-forget）：首条 user 消息落盘后立即触发，不等回合跑完、只凭这条消息命名。
+    // 两个闸各自按 kind 短路（sub 首条 / aside 首条评点）；aside 浮层打字也走 chat.send 起回合。
+    // 写安全与「未配置不命名」短路见 autoNameConversation.ts 头注释。
+    void maybeAutoNameConversation({ agentId: req.agentId, conversationId, userText: req.text, broadcast });
+    void maybeAutoNameAsideConversation({ agentId: req.agentId, conversationId, userText: req.text, broadcast });
 
     // 起回合 → 跑统一回合装配（回合循环 + 分型 drain + 故障交还，单源见 mainTurnAssembly）。
     void runAssembledMainTurn({
