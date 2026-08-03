@@ -4,7 +4,7 @@
  * 匹配优先级（从高到低）：
  *   1. 完全匹配 project.name
  *   2. 大小写忽略匹配 project.name（'oru' ≈ 'Oru'）
- *   3. basename(project.path) 完全或大小写忽略匹配（'qa02' 匹配路径 .../Oru-qa02）
+ *   3. basename(project.path) 完全或大小写忽略匹配（'demo' 匹配路径 .../Oru-demo）
  *
  * 多歧义（任意一档命中多个项目）→ 返回 null + log warn。
  *   原因：自动选第一个会让用户困惑；让用户手动改 projectTag 更安全。

@@ -85,7 +85,7 @@ describe('pages / memory zh 文案快照', () => {
   it('整理记录 / 画像 / 项目附录（凌晨日期、明细计数、空态）', () => {
     expect(i18n.t('memory:nightlog.dateLabel', { month: 6, day: 5 })).toBe('6 月 5 日凌晨');
     expect(i18n.t('memory:nightlog.details', { count: 4 })).toBe('明细（4 笔）');
-    // qa01 记忆两区改名：事实→基本情况、散文画像→特质叙述、人设→自我；称呼接个体名 {{name}}
+    // 记忆两区改名：事实→基本情况、散文画像→特质叙述、人设→自我；称呼接个体名 {{name}}
     expect(i18n.t('memory:facts.heading')).toBe('基本情况');
     expect(i18n.t('memory:portrait.heading')).toBe('特质叙述');
     expect(i18n.t('memory:portrait.empty', { name: '阿果' })).toBe('（阿果 还没写你的特质叙述——多聊几次后会出现）');

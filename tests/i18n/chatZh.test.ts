@@ -69,7 +69,7 @@ describe('chat zh 文案快照', () => {
   it('记忆卡（称呼收敛：scope 接个体名、撤销确认插值）', () => {
     expect(i18n.t('chat:memoryCard.scopePersona', { name: '阿果' })).toBe('阿果 自我');
     expect(i18n.t('chat:memoryCard.scope.agent', { name: '阿果' })).toBe('阿果 关系');
-    // qa01 记忆两区合并：新值 user-basic/user-trait/self；旧值兜底归并到新措辞
+    // 记忆两区合并：新值 user-basic/user-trait/self；旧值兜底归并到新措辞
     expect(t('chat:memoryCard.type.user-basic')).toBe('基本情况');
     expect(t('chat:memoryCard.type.user-trait')).toBe('特质叙述');
     expect(t('chat:memoryCard.type.self')).toBe('自我');

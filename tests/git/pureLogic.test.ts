@@ -11,7 +11,7 @@ import { classifyOnePath } from '../../electron/main/tasks/git';
 describe('isProtectedBranch', () => {
   it('保护主干、放行特性分支', () => {
     expect(isProtectedBranch('main')).toBe(true);
-    expect(isProtectedBranch('dev/qa02')).toBe(false);
+    expect(isProtectedBranch('dev/feature-xyz')).toBe(false);
     expect(isProtectedBranch('oru/feat-x')).toBe(false);
   });
 });

@@ -5,7 +5,7 @@
  * 注册自定义 scheme，在 main 进程拦截请求，校验路径安全后从磁盘读取并返回。
  *
  * URL 格式：oru-avatar:///<absolute-path-to-png>
- *   例：oru-avatar:///Users/oru/.oru/users/local-user/avatars/twin-1234.png
+ *   例：oru-avatar:///<home>/.oru/users/local-user/avatars/twin-1234.png
  *
  * 安全约束：只允许 USERS_DIR 下的 /avatars/ 子目录，否则返回 403。
  */

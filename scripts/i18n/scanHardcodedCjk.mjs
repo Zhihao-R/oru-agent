@@ -97,7 +97,7 @@ export function flatKeys(all = scanAll()) {
   return [...keys].sort();
 }
 
-// 直接运行：打印清单（合并后即 qa01 待 i18n 适配清单）；--write-baseline 刷新基线棘轮。
+// 直接运行：打印清单（合并后即待 i18n 适配清单）；--write-baseline 刷新基线棘轮。
 if (import.meta.url === `file://${process.argv[1]}`) {
   if (process.argv.includes('--write-baseline')) {
     const { writeFileSync } = await import('node:fs');

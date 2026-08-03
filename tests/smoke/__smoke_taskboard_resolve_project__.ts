@@ -32,7 +32,7 @@ function mkProject(id: string, name: string, p: string): Project {
 
 async function main() {
   const projects: Project[] = [
-    mkProject('p1', 'Oru', '/home/user/Documents/Oru-qa02'),
+    mkProject('p1', 'Oru', '/home/user/Documents/Oru-demo'),
     mkProject('p2', '营销', '/home/user/Documents/marketing-site'),
     mkProject('p3', 'frontend-a', '/home/user/Documents/work/frontend-a'),
     mkProject('p4', 'frontend-b', '/home/user/Documents/work/frontend-b'),
@@ -46,12 +46,12 @@ async function main() {
   assert(resolve('oru', projects) === 'p1', '小写 "oru" 匹配 "Oru" → p1');
   assert(resolve('ORU', projects) === 'p1', '大写 "ORU" 匹配 "Oru" → p1');
 
-  // case 3: basename 匹配（"qa02" 在路径 .../Oru-qa02 末段不命中——但 Oru-qa02 是 basename，
-  //  所以 'Oru-qa02' / 'oru-qa02' 应该匹配）
-  assert(resolve('Oru-qa02', projects) === 'p1', 'basename "Oru-qa02" 匹配 → p1');
-  assert(resolve('oru-qa02', projects) === 'p1', '大小写 basename → p1');
-  // 'qa02' 既不匹配 name 也不匹配 basename → null
-  assert(resolve('qa02', projects) === null, '"qa02" 既非 name 也非 basename → null');
+  // case 3: basename 匹配（"demo" 在路径 .../Oru-demo 末段不命中——但 Oru-demo 是 basename，
+  //  所以 'Oru-demo' / 'oru-demo' 应该匹配）
+  assert(resolve('Oru-demo', projects) === 'p1', 'basename "Oru-demo" 匹配 → p1');
+  assert(resolve('oru-demo', projects) === 'p1', '大小写 basename → p1');
+  // 'demo' 既不匹配 name 也不匹配 basename → null
+  assert(resolve('demo', projects) === null, '"demo" 既非 name 也非 basename → null');
 
   // case 4: 多歧义
   // 加一个 name='Oru' 且不同 path 的项目，造成 name 完全匹配多个

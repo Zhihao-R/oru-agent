@@ -115,9 +115,9 @@ channels 七个 HTML 是已定稿的理想架构（01-07 章，PM 逐机制拍�
 - 修 bug 必配验证目标问题本身的回归测试（并发 / attacker / regression 场景），不能只跑既有用例。
 
 
-## 开发规范补充（从 qa02 Claude Code 记忆迁移）
+## 开发规范补充（历史反馈沉淀）
 
-以下规则来自 qa02 项目积累的反馈，按领域分组。每条是核心约束，完整上下文见 `.agents/memory/`
+以下规则来自项目长期积累的反馈，按领域分组。每条是核心约束，完整上下文见 `.agents/memory/`
 下同名 feedback 文件（索引在 `.agents/memory/MEMORY.md`，含更多未收录进本文件的项目状态记忆）。
 
 ### 文档与 Spec 写作

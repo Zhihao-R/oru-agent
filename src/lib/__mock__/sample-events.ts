@@ -18,7 +18,7 @@ export const sampleEvents: ServerEventPayload[] = [
         id: 'prj_mock_oru',
         ownerId: 'local-user',
         name: 'Oru',
-        path: '/Users/oru/Documents/Oru',
+        path: '/home/user/Documents/Oru',
         addedAt: Date.now() - 86_400_000,
         lastOpenedAt: Date.now(),
         hasClaudeMd: false,
