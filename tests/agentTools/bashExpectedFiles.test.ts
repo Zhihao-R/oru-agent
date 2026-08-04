@@ -52,7 +52,17 @@ beforeAll(async () => {
 
 afterAll(async () => {
   killBashForConversation('conv-bashexp');
-  await fs.rm(H.dir, { recursive: true, force: true });
+  // bash 工具的子进程/异步落盘可能在 kill 后仍短暂写入（`rm` 与重建竞态 → ENOTEMPTY，见
+  // manageFilesMoveRename：等异步落盘清空再 rm）。退避重试，避免 CI 并行下偶发清理失败。
+  for (let i = 0; i < 5; i++) {
+    try {
+      await fs.rm(H.dir, { recursive: true, force: true });
+      break;
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== 'ENOTEMPTY' && i === 4) throw e;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }
 });
 
 const run = async (input: Record<string, unknown>) => {

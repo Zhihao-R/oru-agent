@@ -51,6 +51,12 @@ vi.mock('../../electron/main/agent/runner', () => ({
   'abortConversation' | 'isConversationBusy' | 'runChat'
 >);
 
+// 后端就绪预检（chat.ts 起回合前置）必须 stub 掉——它走真实 backend.isReady()，依赖本机登录态，
+// 本地(已登录)过、CI(无鉴权)挂。本文件测 router 的 aside 接线，就绪检查不在测面，固定 ok 即可。
+vi.mock('../../electron/main/agent/backends/readiness', () => ({
+  checkBackendReady: vi.fn(async () => ({ ok: true, hint: '' })),
+}) satisfies Pick<typeof import('../../electron/main/agent/backends/readiness'), 'checkBackendReady'>);
+
 // ClaudeCode 带图断言用 engine mock（同 tests/agent/restrictToolsTo.test.ts 范式）
 vi.mock('../../electron/main/engine', () => {
   const engine = {

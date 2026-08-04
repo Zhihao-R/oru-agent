@@ -184,11 +184,12 @@ describe('权限策略表（2026-07-31 双向开关）', () => {
     expect(screen.getByText('读取内容').getAttribute('title')).toBeNull(); // 无 tipKey 的行不带
   });
 
-  it('只读挡下整表置灰：拨杆 disabled + 提示只读', async () => {
+  it('只读挡不渲染策略表、显示说明文本替代（2026-08-01 PM 拍板：置灰表误导）', async () => {
     setAgent('readonly');
     render(<PermissionsSection />);
-    const sw = await waitFor(() => within(rowOf('破坏性命令')).getByRole('switch'));
-    expect((sw as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.getByText(/策略表只读/)).toBeTruthy();
+    // 只读挡规则内建：策略表不渲染，留说明文本替代（不再出现「破坏性命令」这类表行）
+    await waitFor(() => screen.getByText(/当前是「只读」挡/));
+    expect(screen.queryByText('破坏性命令')).toBeNull();
+    expect(screen.queryByText('灾难级命令')).toBeNull();
   });
 });
