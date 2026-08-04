@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oru</title>
+    <script>
+      // 启动期同步应用主题，避免 React 挂载前闪一下默认主题。
+      // 不做白名单校验：脏值会在 React 挂载后由 initColorScheme 通过
+      // normalizeColorScheme 修正（最多闪一帧）。CSS 没匹配规则也会优雅 fallback 到 :root。
+      (function () {
+        try {
+          var cs = localStorage.getItem('oru.colorScheme');
+          if (cs && cs !== 'terracotta') {
+            document.documentElement.setAttribute('data-theme', cs);
+          }
+          var mode = localStorage.getItem('oru.theme');
+          var dark =
+            mode === 'dark' ||
+            (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (_) {
+          // localStorage 受限或 matchMedia 不可用：静默跳过，让 React 阶段兜底
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-canvas text-text-primary antialiased">
+    <div id="root"></div>
+    <script type="module" src="/main.tsx"></script>
+  </body>
+</html>

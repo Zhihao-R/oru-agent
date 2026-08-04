@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 dist/
 out/
 .cache/
@@ -51,7 +51,7 @@ context-memory.html
 conversation-flow.html
 data-durability.html
 error-retry.html
-index.html
+/index.html
 initiative.html
 long-task.html
 long-task-v2.html
