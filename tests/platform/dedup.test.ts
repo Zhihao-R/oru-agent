@@ -45,7 +45,17 @@ describe('MessageDedup 落盘跨重启（S11 · G07）', () => {
     await fs.mkdir(dir, { recursive: true });
   });
   afterAll(async () => {
-    await fs.rm(dir, { recursive: true, force: true });
+    // MessageDedup admit 触发 fire-and-forget 回写,可能在 rm 后异步重建子目录 → ENOTEMPTY。
+    // 退避重试,消 CI 并行偶发清理失败(同 bashExpectedFiles / manageFilesMoveRename 思路)。
+    for (let i = 0; i < 5; i++) {
+      try {
+        await fs.rm(dir, { recursive: true, force: true });
+        break;
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException).code !== 'ENOTEMPTY' && i === 4) throw e;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    }
   });
 
   /** admit 触发 fire-and-forget 回写；轮询等落盘完成（写链是异步的）。 */
