@@ -41,6 +41,7 @@ import { getSettings } from '../../electron/main/projects/store';
 import { AnthropicBackend } from '../../electron/main/agent/backends/anthropic';
 import { OpenAICompatibleBackend } from '../../electron/main/agent/backends/openaiCompatible';
 import { getBackendFor, __clearToolRegistryForTest } from '../../electron/main/agent/backends/factory';
+import { makeSettings } from '../helpers/settings';
 
 const EMPTY_ASSIGNMENTS = {
   twinMain: null,
@@ -61,17 +62,11 @@ function settingsWith(provider: BackendProvider, modelId: string): Settings {
     modelId,
     label: 'test model',
   } satisfies RegisteredModel;
-  return {
-    theme: 'system',
-    colorScheme: 'terracotta',
-    manualApiKey: null,
+  return makeSettings({
     providers: [provider],
     models: [model],
     modelAssignments: { ...EMPTY_ASSIGNMENTS, conversationTitle: model.id },
-  } satisfies Pick<
-    Settings,
-    'theme' | 'colorScheme' | 'manualApiKey' | 'providers' | 'models' | 'modelAssignments'
-  > as unknown as Settings;
+  });
 }
 
 beforeEach(() => {

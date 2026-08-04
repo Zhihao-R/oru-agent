@@ -14,10 +14,12 @@ if [ -n "$hits" ]; then
   fail=1
 fi
 
-# 规则 2：/N 透明度类对 var() 颜色全不生成——淡底用 -soft token、聚焦环用 accent-ring
-hits=$(grep -rEn '(text|bg|border|ring)-(accent|danger|success|warn)/[0-9]' src/ 2>/dev/null)
+# 规则 2：命名语义色（accent/danger/success/warn 及全部 token）均已走 tokenColor 以 color-mix
+# 暴露 <alpha-value>，/N 对它们有效——不再是死类。仅「[] 任意值里的裸 var(--x) + /N」仍会失效
+# （tailwind 对不含 <alpha-value> 的裸 var 任意值不生成 /NN），这类才拦。
+hits=$(grep -rEn '\[[^]]*var\(--[^)]*\)[^]]*\][^[:space:]?/]*/[0-9]' src/ 2>/dev/null)
 if [ -n "$hits" ]; then
-  echo "✗ [死类] /N 透明度类对 var() 颜色无效，淡底用 -soft token、聚焦环用 accent-ring、hover 用 opacity："
+  echo "✗ [死类] 裸 var(--x) 任意值搭配 /N 透明度类不生成（named 语义色已 tokenColor 化，/N 有效）："
   echo "$hits"
   fail=1
 fi
@@ -32,10 +34,12 @@ if [ -n "$hits" ]; then
   fail=1
 fi
 
-# 规则 4：mock 禁用 `as (unknown as )?(ToolContext|Settings)` 强转逃生舱——接口加必填字段时假绿。
+# 规则 4：mock 禁用 `as (unknown as )?(ToolContext|Settings)` 整对象强转逃生舱——接口加必填字段时假绿。
 # 单层与双层都堵：一律走工厂 tests/helpers/{toolContext,settings}.ts（内部 satisfies 收口），
 # 完整对象也可改 satisfies。helper 自身豁免。
-hits=$(grep -rEn 'as (unknown as )?(ToolContext|Settings)\b' tests/ 2>/dev/null \
+# 只拦「整对象 as Settings」——`Settings['...']` 索引类型访问不是逃生舱（如注入已下架枚举值测回落），不误报。
+# 边界含空白/分号/)/,/]/}：覆盖参数、数组/对象字面量等容器形态，堵整对象强转的一切出口。
+hits=$(grep -rEn 'as (unknown as )?(ToolContext|Settings)([[:space:];\)\],}]|$)' tests/ 2>/dev/null \
   | grep -v '^tests/helpers/')
 if [ -n "$hits" ]; then
   echo "✗ [mock] 禁用 as (unknown as) ToolContext/Settings——用 makeToolContext / makeSettings（tests/helpers/），或对完整对象改 satisfies："
