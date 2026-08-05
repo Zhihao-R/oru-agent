@@ -45,8 +45,6 @@ import {
   readWithIdleTimeout,
 } from '../util/retry';
 
-const DEFAULT_MAX_TOKENS = 8192;
-
 /** 各 provider 的默认 baseURL；custom-openai 必须用户自己传 */
 const DEFAULT_BASE_URL: Partial<Record<BackendProviderType, string>> = {
   openrouter: 'https://openrouter.ai/api/v1',
@@ -110,7 +108,7 @@ export class OpenAICompatibleBackend implements AgentBackend {
   private readonly defaultModel: string;
   private readonly baseURL: string;
   private readonly providerType: BackendProviderType;
-  /** 单次回复输出 token 上限；undefined → 用 DEFAULT_MAX_TOKENS */
+  /** 单次回复输出 token 上限；undefined → 不下发 max_tokens，由模型默认决定（默认不限制） */
   private readonly maxOutputTokens?: number;
   /** 是否支持视觉；historyAdapter 据此决定 image block 还是占位降级 */
   private readonly supportsVision: boolean;
@@ -252,7 +250,8 @@ export class OpenAICompatibleBackend implements AgentBackend {
       baseURL: this.baseURL,
       apiKey: this.apiKey,
       model,
-      maxTokens: this.maxOutputTokens ?? DEFAULT_MAX_TOKENS,
+      // undefined → streamOnce 不下发 max_tokens，让模型用自身默认输出上限（见方案 A）
+      maxTokens: this.maxOutputTokens,
       messages,
       hasSystem: !!systemMsg,
       buildSeed: async (h) => (await buildSeedMessages(h)).seed,
@@ -333,8 +332,10 @@ export class OpenAICompatibleBackend implements AgentBackend {
                   }
                 : m,
             ),
-        max_tokens: this.maxOutputTokens ?? DEFAULT_MAX_TOKENS,
       };
+      // 方案 A：未显式配置 maxOutputTokens 时不发 max_tokens，让模型用默认输出上限——
+      // 既不把回复悄悄钳到 8192，也不撞 qwen 等强制思考模型的 thinking_budget 校验。
+      if (this.maxOutputTokens != null) body.max_tokens = this.maxOutputTokens;
       if (useResponseFormat && input.outputSchema) {
         body.response_format = {
           type: 'json_schema',
@@ -688,7 +689,7 @@ class OpenAIRoundTripAdapter implements ProtocolAdapter {
       baseURL: string;
       apiKey: string;
       model: string;
-      maxTokens: number;
+      maxTokens?: number;
       messages: OAIMessage[];
       /** seed 段是否以 system 消息打头（messages[0]）——replaceSeedHistory 保留原位。 */
       hasSystem: boolean;
@@ -727,11 +728,12 @@ class OpenAIRoundTripAdapter implements ProtocolAdapter {
     const body: Record<string, unknown> = {
       model: this.d.model,
       messages: this.d.messages,
-      max_tokens: this.d.maxTokens,
       stream: true,
       // 让 streaming 末尾 chunk 返回 usage（OpenAI / 大多数 OpenAI-兼容 provider 支持）
       stream_options: { include_usage: true },
     };
+    // 方案 A：maxTokens 显式配置才下发；undefined → 不发 max_tokens，模型默认输出上限。
+    if (this.d.maxTokens != null) body.max_tokens = this.d.maxTokens;
     if (this.d.toolDefs.length > 0) body.tools = this.d.toolDefs;
     Object.assign(body, this.d.orReasoning(this.d.disableReasoning));
 
